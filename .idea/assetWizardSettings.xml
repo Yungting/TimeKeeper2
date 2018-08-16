@@ -14,11 +14,11 @@
                         <option name="values">
                           <map>
                             <entry key="assetSourceType" value="FILE" />
-                            <entry key="height" value="25" />
-                            <entry key="outputName" value="ai_group_checked_true" />
+                            <entry key="height" value="30" />
+                            <entry key="outputName" value="repeat_back" />
                             <entry key="overrideSize" value="true" />
-                            <entry key="sourceFile" value="C:\Users\USER\Desktop\ai_group_checked_true.svg" />
-                            <entry key="width" value="25" />
+                            <entry key="sourceFile" value="C:\Users\USER\Desktop\repeat_back.svg" />
+                            <entry key="width" value="19" />
                           </map>
                         </option>
                       </PersistentState>

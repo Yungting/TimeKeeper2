@@ -114,6 +114,93 @@
             android:layout_width="match_parent"
             android:layout_height="40dp"
             android:orientation="horizontal"
+            android:layout_marginTop="10dp"  >
+
+
+            <Button
+                android:id="@+id/button"
+                android:layout_width="19dp"
+                android:layout_height="30dp"
+                android:layout_marginLeft="27dp"
+                android:layout_marginRight="13dp"
+                android:background="@drawable/repeat_back"/>
+
+            <CheckBox
+                android:id="@+id/su"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Su"
+                android:button="@null"
+                android:background="@drawable/normal_repeat_btn"
+                android:textColor="@drawable/normal_repeat_text"/>
+
+            <CheckBox
+                android:id="@+id/m"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="M"
+                android:button="@null"
+                android:background="@drawable/normal_repeat_btn"
+                android:textColor="@drawable/normal_repeat_text"/>
+
+            <CheckBox
+                android:id="@+id/T"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="T"
+                android:button="@null"
+                android:background="@drawable/normal_repeat_btn"
+                android:textColor="@drawable/normal_repeat_text"/>
+
+            <CheckBox
+                android:id="@+id/W"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="W"
+                android:button="@null"
+                android:background="@drawable/normal_repeat_btn"
+                android:textColor="@drawable/normal_repeat_text"/>
+
+            <CheckBox
+                android:id="@+id/Th"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Th"
+                android:button="@null"
+                android:background="@drawable/normal_repeat_btn"
+                android:textColor="@drawable/normal_repeat_text"/>
+
+            <CheckBox
+                android:id="@+id/F"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="F"
+                android:button="@null"
+                android:background="@drawable/normal_repeat_btn"
+                android:textColor="@drawable/normal_repeat_text"/>
+
+            <CheckBox
+                android:id="@+id/S"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="S"
+                android:button="@null"
+                android:background="@drawable/normal_repeat_btn"
+                android:textColor="@drawable/normal_repeat_text"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:orientation="horizontal"
             android:layout_marginTop="50dp">
 
 
