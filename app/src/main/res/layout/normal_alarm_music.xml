@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     xmlns:fab="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".normal_alarm_music"
@@ -28,12 +28,12 @@
         <TextView
             android:layout_width="300dp"
             android:layout_height="wrap_content"
+            android:layout_gravity="center"
             android:layout_weight="1"
             android:text="@string/music"
-            android:textSize="18sp"
-            android:textColor="@color/white"
             android:textAlignment="center"
-            android:layout_gravity="center"/>
+            android:textColor="@color/white"
+            android:textSize="18sp" />
 
         <View
             android:layout_width="wrap_content"
@@ -54,19 +54,26 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-
-    <LinearLayout
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/music_recyclerview"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:layout_marginTop="90dp"
+        android:scrollbars="vertical" />
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
 
         <Button
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:background="@drawable/mainpage_normal_alarm_btn"
-            android:layout_gravity="center"
-            android:layout_marginTop="560dp"
+            android:layout_height="56dp"
+            android:layout_gravity="center|bottom"
+            android:layout_marginBottom="7dp"
+            android:background="@drawable/normal_btn"
             android:text="APPLY" />
-    </LinearLayout>
+
+    </FrameLayout>
+
 
 </android.support.constraint.ConstraintLayout>
