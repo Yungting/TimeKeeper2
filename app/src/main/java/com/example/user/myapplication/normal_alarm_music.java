@@ -5,7 +5,9 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.View;
 import android.view.Window;
+import android.widget.Button;
 
 import java.util.ArrayList;
 
@@ -14,10 +16,11 @@ public class normal_alarm_music extends Activity {
     private RecyclerView nrecyclerView;
     private RecyclerView.Adapter nadapter;
     private RecyclerView.LayoutManager nlayoutManager;
+    Button go_back;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+            super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.normal_alarm_music);
 
@@ -41,5 +44,15 @@ public class normal_alarm_music extends Activity {
 
         nrecyclerView.setLayoutManager(nlayoutManager);
         nrecyclerView.setAdapter(nadapter);
+
+        //返回上一頁
+        go_back = findViewById(R.id.go_back);
+        go_back.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                finish();
+            }
+        });
+
     }
 }
