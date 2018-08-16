@@ -30,7 +30,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:layout_weight="1"
-            android:text="GROUP"
+            android:text="@string/music"
             android:textAlignment="center"
             android:textColor="@color/black"
             android:textSize="18sp" />
@@ -55,7 +55,7 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <ListView
-        android:id="@+id/group_list"
+        android:id="@+id/music_list"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_marginTop="70dp"
@@ -72,7 +72,7 @@
             android:layout_gravity="center|bottom"
             android:layout_marginBottom="7dp"
             android:background="@drawable/ai_btn"
-            android:text="SAVE"
+            android:text="APPLY"
             android:textColor="@color/black" />
 
     </FrameLayout>

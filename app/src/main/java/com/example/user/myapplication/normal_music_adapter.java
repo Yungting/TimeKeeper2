@@ -30,7 +30,7 @@ public class normal_music_adapter extends RecyclerView.Adapter<normal_music_adap
 
     @Override
     public viewholder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
-        View v = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.normal_music_item, viewGroup, false);
+        View v = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.music_item, viewGroup, false);
         viewholder vh = new viewholder(v, nListener);
         return vh;
     }

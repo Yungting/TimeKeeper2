@@ -6,12 +6,14 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.view.Window;
+import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 public class ai_alarm extends Activity {
 
     TextView group;
+    LinearLayout rington;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -24,6 +26,15 @@ public class ai_alarm extends Activity {
             @Override
             public void onClick(View view) {
                 Intent intent1 = new Intent(ai_alarm.this, ai_alarm_group.class);
+                startActivity(intent1);
+            }
+        });
+
+        rington = findViewById(R.id.rington);
+        rington.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent1 = new Intent(ai_alarm.this, ai_alarm_music.class);
                 startActivity(intent1);
             }
         });

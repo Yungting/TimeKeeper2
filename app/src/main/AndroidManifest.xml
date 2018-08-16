@@ -19,7 +19,8 @@
         <activity android:name=".normal_alarm" />
         <activity android:name=".normal_alarm_music" />
         <activity android:name=".ai_alarm" />
-        <activity android:name=".ai_alarm_group"></activity>
+        <activity android:name=".ai_alarm_group" />
+        <activity android:name=".ai_alarm_music"></activity>
     </application>
 
 </manifest>
