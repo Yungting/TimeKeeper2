@@ -14,6 +14,8 @@ public class ai_alarm extends Activity {
 
     TextView group;
     LinearLayout rington;
+    LinearLayout ai_layout;
+    LinearLayout repeat_day;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,6 +38,21 @@ public class ai_alarm extends Activity {
             public void onClick(View view) {
                 Intent intent1 = new Intent(ai_alarm.this, ai_alarm_music.class);
                 startActivity(intent1);
+            }
+        });
+
+        //展開
+        ai_layout = findViewById(R.id.repeat_layout);
+        repeat_day = findViewById(R.id.repeat_day);
+
+        ai_layout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(repeat_day.getVisibility() == View.VISIBLE){
+                    repeat_day.setVisibility(View.GONE);
+                }else{
+                    repeat_day.setVisibility(View.VISIBLE);
+                }
             }
         });
     }

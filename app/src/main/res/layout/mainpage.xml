@@ -30,13 +30,23 @@
 
         <ImageButton
             android:id="@+id/add_btn"
-            android:layout_width="50dp"
+            android:layout_width="80dp"
             android:layout_height="55dp"
             android:layout_gravity="center|bottom"
             android:layout_marginBottom="17dp"
             android:src="@drawable/mainpage_add_btn"
-            android:backgroundTint="@color/white"/>
+            android:scaleType="centerCrop"
+            android:backgroundTint="@android:color/transparent"/>
         <include layout="@layout/mainpage_add_fab"/>
+
+        <cdflynn.android.library.crossview.CrossView
+            android:id="@+id/cross_view"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_gravity="center|bottom"
+            android:layout_marginBottom="21dp"
+            android:padding="14dp"
+            app:lineColor="@android:color/white" />
 
     </FrameLayout>
 

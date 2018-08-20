@@ -14,10 +14,13 @@ import android.widget.LinearLayout;
 import android.widget.PopupMenu;
 import android.widget.TextView;
 
+import cdflynn.android.library.crossview.CrossView;
+
 public class mainpage extends Activity{
 
     ImageButton add_btn, normal_btn, ai_btn, counter_btn;
     LinearLayout normal_layout, ai_layout, counter_layout;
+    CrossView crossView;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -31,11 +34,13 @@ public class mainpage extends Activity{
         normal_layout = findViewById(R.id.normal_layout);
         counter_btn = findViewById(R.id.counter_btn);
         counter_layout = findViewById(R.id.counter_layout);
+        crossView = findViewById(R.id.cross_view);
 
         //設定增加的子按鈕顯示或隱藏
         add_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                crossView.toggle();
                 if(normal_layout.getVisibility() == View.VISIBLE && ai_layout.getVisibility() == View.VISIBLE && counter_layout.getVisibility() == View.VISIBLE){
                     normal_layout.setVisibility(View.GONE);
                     ai_layout.setVisibility(View.GONE);
