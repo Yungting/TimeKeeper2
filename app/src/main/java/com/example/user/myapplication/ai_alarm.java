@@ -12,7 +12,7 @@ import android.widget.TextView;
 
 public class ai_alarm extends Activity {
 
-    TextView group;
+    TextView group, ai_manage;
     LinearLayout rington;
     LinearLayout ai_layout;
     LinearLayout repeat_day;
@@ -28,6 +28,15 @@ public class ai_alarm extends Activity {
             @Override
             public void onClick(View view) {
                 Intent intent1 = new Intent(ai_alarm.this, ai_alarm_group.class);
+                startActivity(intent1);
+            }
+        });
+
+        ai_manage = findViewById(R.id.ai_manage);
+        ai_manage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent1 = new Intent(ai_alarm.this, ai_alarm_manage.class);
                 startActivity(intent1);
             }
         });
