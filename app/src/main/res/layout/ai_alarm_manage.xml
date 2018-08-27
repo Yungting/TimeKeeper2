@@ -66,9 +66,7 @@
                 app:tabSelectedTextColor="@android:color/white"
                 app:tabTextAppearance="@android:style/TextAppearance.Holo.Medium"
                 app:tabIndicatorHeight="3dp"
-                app:tabTextColor="@color/gray"
-                android:layout_marginLeft="20dp"
-                android:layout_marginRight="20dp">
+                app:tabTextColor="@color/light_gray">
 
 
                 <android.support.design.widget.TabItem

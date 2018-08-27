@@ -7,7 +7,9 @@ import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.View;
 import android.view.Window;
+import android.widget.Button;
 
 public class ai_alarm_manage extends AppCompatActivity{
 
@@ -15,12 +17,23 @@ public class ai_alarm_manage extends AppCompatActivity{
     private ViewPager mViewPager;
     private ai_manage_traffic traffic = new ai_manage_traffic();
     private ai_manage_holiday holiday = new ai_manage_holiday();
+    Button go_back;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.ai_alarm_manage);
 
+        //返回鍵
+        go_back = findViewById(R.id.go_back);
+        go_back.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                finish();
+            }
+        });
+
+        //fragment換頁
         mTabs = (android.support.design.widget.TabLayout) findViewById(R.id.tabs);
         mViewPager = (ViewPager) findViewById(R.id.viewpager);
 

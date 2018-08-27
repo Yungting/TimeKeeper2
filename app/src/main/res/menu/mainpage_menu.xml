@@ -12,9 +12,4 @@
         android:title="FRIEND"
         app:showAsAction="never"/>
 
-    <item
-        android:id="@+id/action_about"
-        android:title="ABOUT"
-        app:showAsAction="never"/>
-
 </menu>

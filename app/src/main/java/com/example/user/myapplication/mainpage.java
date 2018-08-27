@@ -5,7 +5,9 @@ import android.content.Intent;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.Menu;
 import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
 import android.widget.Button;
@@ -16,11 +18,12 @@ import android.widget.TextView;
 
 import cdflynn.android.library.crossview.CrossView;
 
-public class mainpage extends Activity{
+public class mainpage extends Activity {
 
     ImageButton add_btn, normal_btn, ai_btn, counter_btn;
     LinearLayout normal_layout, ai_layout, counter_layout;
     CrossView crossView;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -41,11 +44,11 @@ public class mainpage extends Activity{
             @Override
             public void onClick(View view) {
                 crossView.toggle();
-                if(normal_layout.getVisibility() == View.VISIBLE && ai_layout.getVisibility() == View.VISIBLE && counter_layout.getVisibility() == View.VISIBLE){
+                if (normal_layout.getVisibility() == View.VISIBLE && ai_layout.getVisibility() == View.VISIBLE && counter_layout.getVisibility() == View.VISIBLE) {
                     normal_layout.setVisibility(View.GONE);
                     ai_layout.setVisibility(View.GONE);
                     counter_layout.setVisibility(View.GONE);
-                }else{
+                } else {
                     normal_layout.setVisibility(View.VISIBLE);
                     ai_layout.setVisibility(View.VISIBLE);
                     counter_layout.setVisibility(View.VISIBLE);
@@ -76,5 +79,26 @@ public class mainpage extends Activity{
         MenuInflater inflater = popup.getMenuInflater();
         inflater.inflate(R.menu.mainpage_menu, popup.getMenu());
         popup.show();
+
+        //點擊選單選項，然後換頁
+        popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem menuItem) {
+                switch (menuItem.getItemId()){
+                    case R.id.action_setup :
+                        Intent intent3 = new Intent(mainpage.this, setting_setup.class);
+                        startActivity(intent3);
+                        return true;
+
+                    case R.id.action_friends :
+                        Intent intent4 = new Intent(mainpage.this, setting_friend.class);
+                        startActivity(intent4);
+                        return true;
+                }
+                return false;
+            }
+        });
     }
+
+
 }

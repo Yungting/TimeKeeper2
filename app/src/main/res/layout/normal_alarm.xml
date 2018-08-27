@@ -37,7 +37,7 @@
     <View
         android:layout_width="match_parent"
         android:layout_height="161dp"
-        android:background="@drawable/normal_title_bar"
+        android:background="@drawable/normal_titlebar"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
