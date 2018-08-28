@@ -10,7 +10,7 @@
         android:id="@+id/view"
         android:layout_width="match_parent"
         android:layout_height="124dp"
-        android:background="@drawable/timekeeper_titlebar"/>
+        android:background="@drawable/timekeeper_titlebar" />
 
     <Button
         android:id="@+id/menu"
@@ -21,32 +21,76 @@
         android:layout_marginEnd="29dp"
         android:layout_marginTop="21dp"
         android:background="@drawable/mainpage_menu"
-        android:onClick="showPopup"/>
+        android:onClick="showPopup" />
 
     <LinearLayout
+        android:id="@+id/search_bar"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentStart="true"
-        android:layout_below="@+id/view"
-        android:layout_marginTop="35dp"
-        android:orientation="horizontal"
-        android:layout_marginRight="20dp">
+        android:gravity="center"
+        android:layout_height="50dp"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="158dp"
+        android:orientation="horizontal">
 
         <EditText
             android:id="@+id/search_friend"
-            android:layout_width="216dp"
-            android:layout_height="30dp"
-            android:layout_weight="1"
-            android:ems="10"
-            android:background="@drawable/textframe"/>
+            android:layout_width="220dp"
+            android:layout_height="37dp"
+            android:layout_gravity="center_vertical"
+            android:background="@drawable/friend_search_edtext"
+            android:layout_marginRight="4dp"
+            android:elevation="1dp"
+            android:ems="15"
+            android:paddingLeft="22dp" />
 
-        <Button
-            android:id="@+id/button"
-            android:layout_width="wrap_content"
-            android:layout_height="100dp"
-            android:layout_weight="1"
-            android:backgroundTint="@color/black"/>
+        <ImageButton
+            android:id="@+id/search_btn"
+            android:layout_width="60dp"
+            android:layout_height="37dp"
+            android:layout_gravity="center_vertical"
+            android:background="@drawable/friend_search_btn"
+            android:src="@drawable/ic_search_black_24dp"
+            android:scaleType="center"
+            android:elevation="4dp"/>
     </LinearLayout>
 
+
+    <LinearLayout
+        android:id="@+id/friend_show"
+        android:layout_below="@+id/search_bar"
+        android:layout_marginTop="65dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:visibility="gone">
+
+        <ImageView
+            android:id="@+id/friend_photo"
+            android:layout_width="150dp"
+            android:layout_height="150dp"
+            android:background="@drawable/ic_photo_black_24dp"/>
+
+        <TextView
+            android:id="@+id/friend_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textAlignment="center"
+            android:text="Friend Name"
+            android:textSize="20sp"
+            android:layout_marginTop="15dp"
+            android:textColor="@color/black"/>
+
+        <Button
+            android:id="@+id/friend_add_btn"
+            android:layout_width="100dp"
+            android:layout_height="35dp"
+            android:layout_marginTop="35dp"
+            android:background="@drawable/setting_btn"
+            android:text="ADD"
+            android:textSize="14sp"/>
+
+    </LinearLayout>
 
 </RelativeLayout>
