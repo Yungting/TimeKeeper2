@@ -14,12 +14,14 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.view.Window;
 import android.widget.Button;
+import android.widget.CursorAdapter;
+import android.widget.SimpleCursorAdapter;
 
 import java.io.File;
 import java.util.ArrayList;
 
 public class normal_alarm_music extends Activity {
-
+    Cursor cursor;
     private RecyclerView nrecyclerView;
     private RecyclerView.Adapter nadapter;
     private RecyclerView.LayoutManager nlayoutManager;
@@ -32,25 +34,13 @@ public class normal_alarm_music extends Activity {
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.normal_alarm_music);
 
-        Cursor cursor = getContentResolver().query(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, null,
-                null, null, MediaStore.Audio.Media.DEFAULT_SORT_ORDER);
-        String url = cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Audio.Media.DATA));
-        String artist = cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Audio.Media.ARTIST));
-        String tilte = cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Audio.Media.TITLE));
-        String album = cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Audio.Media.ALBUM));
-        Integer id = cursor.getInt(cursor.getColumnIndexOrThrow(MediaStore.Audio.Media._ID));
+        String selection = MediaStore.Audio.Media.DURATION+">5000";
+        cursor = getContentResolver().query(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, null,
+                selection, null, MediaStore.Audio.Media.DEFAULT_SORT_ORDER);
 
-        itemlist.add(new normal_music_item("Default"));
-        itemlist.add(new normal_music_item("Default"));
-        itemlist.add(new normal_music_item("Default"));
-        itemlist.add(new normal_music_item("Default"));
-        itemlist.add(new normal_music_item("Default"));
-        itemlist.add(new normal_music_item("Default"));
-        itemlist.add(new normal_music_item("Default"));
-        itemlist.add(new normal_music_item("Default"));
-        itemlist.add(new normal_music_item("Default"));
-        itemlist.add(new normal_music_item("Default"));
-        itemlist.add(new normal_music_item("Default"));
+        String[] str = new String[]{MediaStore.Audio.Media.TITLE , MediaStore.Audio.Media.ARTIST};
+        int[] displayViews = new int[]{R.id.music_name};
+        SimpleCursorAdapter adapter = new SimpleCursorAdapter(this, R.layout.music_item, cursor, str, displayViews, CursorAdapter.FLAG_REGISTER_CONTENT_OBSERVER);
 
         nrecyclerView = findViewById(R.id.music_recyclerview);
         nrecyclerView.setHasFixedSize(true);
