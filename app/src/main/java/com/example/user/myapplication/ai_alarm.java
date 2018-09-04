@@ -48,7 +48,7 @@ public class ai_alarm extends Activity {
                 new TimePickerDialog(ai_alarm.this, new TimePickerDialog.OnTimeSetListener(){
 
                     public void onTimeSet(TimePicker view, int hourOfDay, int minute1) {
-                        alarm_number.setText(hourOfDay + ":" + minute1);
+                        alarm_number.setText(hourOfDay + " : " + minute1);
 
                         calendar.set(Calendar.HOUR_OF_DAY, hourOfDay);
                         calendar.set(Calendar.MINUTE, minute1);

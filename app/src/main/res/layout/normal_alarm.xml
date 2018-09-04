@@ -104,7 +104,6 @@
                     android:layout_marginLeft="55dp"
                     android:layout_marginStart="55dp"
                     android:layout_weight="1"
-                    android:text="@string/repeat_show"
                     android:textSize="14sp" />
             </LinearLayout>
 
