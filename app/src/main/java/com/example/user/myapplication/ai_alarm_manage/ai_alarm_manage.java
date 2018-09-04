@@ -1,6 +1,5 @@
-package com.example.user.myapplication;
+package com.example.user.myapplication.ai_alarm_manage;
 
-import android.app.Activity;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentPagerAdapter;
@@ -8,8 +7,9 @@ import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
-import android.view.Window;
 import android.widget.Button;
+
+import com.example.user.myapplication.R;
 
 public class ai_alarm_manage extends AppCompatActivity{
 
@@ -34,8 +34,8 @@ public class ai_alarm_manage extends AppCompatActivity{
         });
 
         //fragment換頁
-        mTabs = (android.support.design.widget.TabLayout) findViewById(R.id.tabs);
-        mViewPager = (ViewPager) findViewById(R.id.viewpager);
+        mTabs = findViewById(R.id.tabs);
+        mViewPager = findViewById(R.id.viewpager);
 
         mTabs.addOnTabSelectedListener(new TabLayout.ViewPagerOnTabSelectedListener(mViewPager));
         mViewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(mTabs));

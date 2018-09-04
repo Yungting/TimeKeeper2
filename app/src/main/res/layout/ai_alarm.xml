@@ -19,13 +19,12 @@
         <View
             android:layout_width="4dp"
             android:layout_height="wrap_content"
-            android:background="@drawable/ai_line"/>
+            android:background="@drawable/ai_line" />
 
         <View
             android:layout_width="300dp"
             android:layout_height="wrap_content"
-            android:background="#FFFFFF"
-            />
+            android:background="#FFFFFF" />
 
         <View
             android:layout_width="wrap_content"
@@ -68,20 +67,20 @@
             android:id="@+id/repeat_layout"
             android:layout_width="match_parent"
             android:layout_height="47dp"
-            android:orientation="horizontal"
-            android:layout_marginTop="90dp">
+            android:layout_marginTop="100dp"
+            android:orientation="horizontal">
 
             <CheckBox
                 android:id="@+id/repeat_checkbox"
                 android:layout_width="33dp"
                 android:layout_height="33dp"
                 android:layout_gravity="center_vertical"
-                android:background="@drawable/ai_checkbox"
-                android:button="@null"
-                android:layout_marginRight="20dp"
                 android:layout_marginEnd="20dp"
+                android:layout_marginLeft="27dp"
+                android:layout_marginRight="20dp"
                 android:layout_marginStart="27dp"
-                android:layout_marginLeft="27dp"/>
+                android:background="@drawable/ai_checkbox"
+                android:button="@null" />
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -95,16 +94,16 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/repeat"
-                    android:textSize="18sp"/>
+                    android:textSize="18sp" />
 
                 <TextView
                     android:id="@+id/repeat_show"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:textSize="14sp"
                     android:layout_marginLeft="55dp"
-                    android:layout_marginStart="55dp"/>
+                    android:layout_marginStart="55dp"
+                    android:layout_weight="1"
+                    android:textSize="14sp" />
             </LinearLayout>
 
         </LinearLayout>
@@ -113,11 +112,11 @@
             android:id="@+id/repeat_day"
             android:layout_width="wrap_content"
             android:layout_height="40dp"
-            android:layout_marginTop="10dp"
-            android:orientation="horizontal"
             android:layout_gravity="center"
             android:layout_marginLeft="20dp"
             android:layout_marginRight="20dp"
+            android:layout_marginTop="10dp"
+            android:orientation="horizontal"
             android:visibility="gone">
 
             <CheckBox
@@ -208,8 +207,8 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="47dp"
-            android:orientation="horizontal"
-            android:layout_marginTop="38dp">
+            android:layout_marginTop="38dp"
+            android:orientation="horizontal">
 
 
             <CheckBox
@@ -217,12 +216,12 @@
                 android:layout_width="33dp"
                 android:layout_height="33dp"
                 android:layout_gravity="center_vertical"
-                android:background="@drawable/ai_checkbox"
-                android:button="@null"
-                android:layout_marginRight="20dp"
                 android:layout_marginEnd="20dp"
+                android:layout_marginLeft="27dp"
+                android:layout_marginRight="20dp"
                 android:layout_marginStart="27dp"
-                android:layout_marginLeft="27dp"/>
+                android:background="@drawable/ai_checkbox"
+                android:button="@null" />
 
             <LinearLayout
                 android:id="@+id/rington"
@@ -236,17 +235,17 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/rington"
-                    android:textSize="18sp"/>
+                    android:textSize="18sp" />
 
                 <TextView
                     android:id="@+id/rington_show"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="@string/rington_show"
                     android:layout_marginLeft="55dp"
                     android:layout_marginStart="55dp"
-                    android:textSize="14sp"/>
+                    android:layout_weight="1"
+                    android:text="@string/rington_show"
+                    android:textSize="14sp" />
             </LinearLayout>
 
 
@@ -255,8 +254,8 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="40dp"
-            android:orientation="horizontal"
-            android:layout_marginTop="38dp">
+            android:layout_marginTop="38dp"
+            android:orientation="horizontal">
 
 
             <CheckBox
@@ -264,12 +263,12 @@
                 android:layout_width="33dp"
                 android:layout_height="33dp"
                 android:layout_gravity="center_vertical"
-                android:background="@drawable/ai_checkbox"
-                android:button="@null"
-                android:layout_marginRight="20dp"
                 android:layout_marginEnd="20dp"
+                android:layout_marginLeft="27dp"
+                android:layout_marginRight="20dp"
                 android:layout_marginStart="27dp"
-                android:layout_marginLeft="27dp"/>
+                android:background="@drawable/ai_checkbox"
+                android:button="@null" />
 
             <TextView
                 android:id="@+id/ai_manage"
@@ -277,27 +276,27 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
                 android:text="AI MANAGE"
-                android:textSize="18sp"/>
+                android:textSize="18sp" />
 
         </LinearLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="40dp"
-            android:orientation="horizontal"
-            android:layout_marginTop="38dp">
+            android:layout_marginTop="38dp"
+            android:orientation="horizontal">
 
             <CheckBox
                 android:id="@+id/group_checkbox"
                 android:layout_width="33dp"
                 android:layout_height="33dp"
                 android:layout_gravity="center_vertical"
-                android:background="@drawable/ai_checkbox"
-                android:button="@null"
-                android:layout_marginRight="20dp"
                 android:layout_marginEnd="20dp"
+                android:layout_marginLeft="27dp"
+                android:layout_marginRight="20dp"
                 android:layout_marginStart="27dp"
-                android:layout_marginLeft="27dp"/>
+                android:background="@drawable/ai_checkbox"
+                android:button="@null" />
 
             <TextView
                 android:id="@+id/group"
@@ -305,20 +304,27 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
                 android:text="GROUP"
-                android:textSize="18sp"/>
+                android:textSize="18sp" />
 
         </LinearLayout>
 
-        <Button
-            android:id="@+id/creat_btn"
-            android:layout_width="165dp"
-            android:layout_height="47dp"
-            android:layout_gravity="center"
-            android:background="@drawable/ai_btn"
-            android:layout_marginTop="47dp"
-            android:textSize="14sp"
-            android:textColor="@color/white"
-            android:text="CREATE"/>
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <Button
+                android:id="@+id/creat_btn"
+                android:layout_width="165dp"
+                android:layout_height="47dp"
+                android:layout_gravity="center|bottom"
+                android:layout_marginBottom="40dp"
+                android:background="@drawable/ai_btn"
+                android:elevation="2dp"
+                android:text="CREATE"
+                android:textColor="@color/white"
+                android:textSize="14sp" />
+
+        </FrameLayout>
 
     </LinearLayout>
 

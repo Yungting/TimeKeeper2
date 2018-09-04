@@ -113,11 +113,11 @@
             android:id="@+id/repeat_day"
             android:layout_width="wrap_content"
             android:layout_height="40dp"
-            android:layout_marginTop="10dp"
-            android:orientation="horizontal"
             android:layout_gravity="center"
             android:layout_marginLeft="20dp"
             android:layout_marginRight="20dp"
+            android:layout_marginTop="10dp"
+            android:orientation="horizontal"
             android:visibility="gone">
 
             <CheckBox
@@ -252,16 +252,22 @@
 
         </LinearLayout>
 
-        <Button
-            android:id="@+id/creat_btn"
-            android:layout_width="165dp"
-            android:layout_height="47dp"
-            android:layout_gravity="center"
-            android:layout_marginTop="180dp"
-            android:background="@drawable/normal_btn"
-            android:text="CREATE"
-            android:textSize="14sp"
-            android:elevation="2dp"/>
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <Button
+                android:id="@+id/creat_btn"
+                android:layout_width="165dp"
+                android:layout_height="47dp"
+                android:layout_marginBottom="40dp"
+                android:layout_gravity="center|bottom"
+                android:background="@drawable/normal_btn"
+                android:elevation="2dp"
+                android:text="CREATE"
+                android:textSize="14sp" />
+
+        </FrameLayout>
 
     </LinearLayout>
 

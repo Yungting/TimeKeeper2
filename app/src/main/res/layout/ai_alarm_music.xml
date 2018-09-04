@@ -69,7 +69,8 @@
         android:backgroundTint="@color/white"
         android:choiceMode="singleChoice"
         android:layout_below="@+id/music_list1"
-        android:divider="@null" />
+        android:divider="@null"
+        android:choiceMode="singleChoice" />
 
     <FrameLayout
         android:layout_width="match_parent"
@@ -79,7 +80,7 @@
             android:layout_width="167dp"
             android:layout_height="48dp"
             android:layout_gravity="center|bottom"
-            android:layout_marginBottom="7dp"
+            android:layout_marginBottom="28dp"
             android:background="@drawable/ai_btn"
             android:text="APPLY"
             android:textColor="@color/white"

@@ -14,11 +14,11 @@
                         <option name="values">
                           <map>
                             <entry key="assetSourceType" value="FILE" />
-                            <entry key="height" value="55" />
-                            <entry key="outputName" value="ic_rectangle_5" />
+                            <entry key="height" value="512" />
+                            <entry key="outputName" value="menu_btn" />
                             <entry key="overrideSize" value="true" />
-                            <entry key="sourceFile" value="C:\Users\USER\Desktop\Rectangle 5.svg" />
-                            <entry key="width" value="336" />
+                            <entry key="sourceFile" value="C:\Users\USER\Downloads\bars-solid.svg" />
+                            <entry key="width" value="448" />
                           </map>
                         </option>
                       </PersistentState>

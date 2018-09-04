@@ -18,7 +18,6 @@
             android:paddingLeft="30dp"
             android:gravity="center_vertical"
             android:textColor="@color/black" />
-
     </RelativeLayout>
 
 </android.support.v7.widget.CardView>
