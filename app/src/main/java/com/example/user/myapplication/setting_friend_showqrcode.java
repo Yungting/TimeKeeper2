@@ -13,6 +13,7 @@ import android.widget.PopupMenu;
 public class setting_friend_showqrcode extends AppCompatActivity {
 
     Button qrcode_scanner;
+    View timekeeper_logo;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -24,6 +25,16 @@ public class setting_friend_showqrcode extends AppCompatActivity {
             public void onClick(View view) {
                 Intent intent1 = new Intent(setting_friend_showqrcode.this, setting_friend_search.class);
                 startActivity(intent1);
+            }
+        });
+
+        //回首頁
+        timekeeper_logo = findViewById(R.id.timekeeper_logo);
+        timekeeper_logo.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent2 = new Intent(setting_friend_showqrcode.this, mainpage.class);
+                startActivity(intent2);
             }
         });
     }

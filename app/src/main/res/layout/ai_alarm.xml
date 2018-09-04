@@ -3,7 +3,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:theme="@style/HoloTheme">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -66,7 +67,7 @@
         <LinearLayout
             android:id="@+id/repeat_layout"
             android:layout_width="match_parent"
-            android:layout_height="40dp"
+            android:layout_height="47dp"
             android:orientation="horizontal"
             android:layout_marginTop="90dp">
 
@@ -206,7 +207,7 @@
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="40dp"
+            android:layout_height="47dp"
             android:orientation="horizontal"
             android:layout_marginTop="38dp">
 
@@ -310,13 +311,13 @@
 
         <Button
             android:id="@+id/creat_btn"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="165dp"
+            android:layout_height="47dp"
             android:layout_gravity="center"
-            android:width="166dp"
-            android:height="48dp"
             android:background="@drawable/ai_btn"
             android:layout_marginTop="47dp"
+            android:textSize="14sp"
+            android:textColor="@color/white"
             android:text="CREATE"/>
 
     </LinearLayout>

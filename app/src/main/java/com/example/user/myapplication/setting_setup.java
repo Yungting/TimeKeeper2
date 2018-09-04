@@ -15,10 +15,21 @@ import android.widget.PopupMenu;
 
 public class setting_setup extends AppCompatActivity {
 
+    View timekeeper_logo;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.setting_setup);
+
+        //回首頁
+        timekeeper_logo = findViewById(R.id.timekeeper_logo);
+        timekeeper_logo.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent2 = new Intent(setting_setup.this, mainpage.class);
+                startActivity(intent2);
+            }
+        });
     }
 
     //跳出選單
