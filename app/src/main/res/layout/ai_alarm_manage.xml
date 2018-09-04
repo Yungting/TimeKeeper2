@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical" >
+    android:orientation="vertical">
 
     <FrameLayout
         android:layout_width="wrap_content"
@@ -64,7 +64,6 @@
                 app:tabIndicatorColor="@android:color/white"
                 app:tabMode="fixed"
                 app:tabSelectedTextColor="@android:color/white"
-                app:tabTextAppearance="@android:style/TextAppearance.Holo.Medium"
                 app:tabIndicatorHeight="3dp"
                 app:tabTextColor="@color/light_gray">
 

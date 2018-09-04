@@ -11,6 +11,7 @@ import android.widget.PopupMenu;
 
 public class setting_friend extends AppCompatActivity {
     Button add_friend_btn;
+    View timekeeper_logo;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -23,6 +24,16 @@ public class setting_friend extends AppCompatActivity {
             public void onClick(View view) {
                 Intent intent1 = new Intent(setting_friend.this, setting_friend_showqrcode.class);
                 startActivity(intent1);
+            }
+        });
+
+        //回首頁
+        timekeeper_logo = findViewById(R.id.timekeeper_logo);
+        timekeeper_logo.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent2 = new Intent(setting_friend.this, mainpage.class);
+                startActivity(intent2);
             }
         });
     }

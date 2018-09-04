@@ -17,6 +17,8 @@ public class setting_friend_search extends AppCompatActivity {
 
     ImageButton search_btn;
     LinearLayout friend_show;
+    View timekeeper_logo;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -30,6 +32,16 @@ public class setting_friend_search extends AppCompatActivity {
                 if(friend_show.getVisibility() != View.VISIBLE){
                     friend_show.setVisibility(View.VISIBLE);
                 }
+            }
+        });
+
+        //回首頁
+        timekeeper_logo = findViewById(R.id.timekeeper_logo);
+        timekeeper_logo.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent2 = new Intent(setting_friend_search.this, mainpage.class);
+                startActivity(intent2);
             }
         });
 
@@ -61,4 +73,6 @@ public class setting_friend_search extends AppCompatActivity {
             }
         });
     }
+
+
 }

@@ -66,12 +66,15 @@
         android:layout_height="match_parent">
 
         <Button
-            android:layout_width="wrap_content"
-            android:layout_height="56dp"
+            android:layout_width="167dp"
+            android:layout_height="48dp"
             android:layout_gravity="center|bottom"
             android:layout_marginBottom="7dp"
             android:background="@drawable/normal_btn"
-            android:text="APPLY" />
+            android:text="APPLY"
+            android:textSize="14sp"
+            android:textColor="@color/black"
+            android:elevation="2dp"/>
 
     </FrameLayout>
 

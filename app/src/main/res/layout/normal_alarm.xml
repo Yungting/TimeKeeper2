@@ -232,7 +232,6 @@
                 android:orientation="vertical">
 
                 <TextView
-
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
@@ -255,14 +254,14 @@
 
         <Button
             android:id="@+id/creat_btn"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="165dp"
+            android:layout_height="47dp"
             android:layout_gravity="center"
             android:layout_marginTop="180dp"
-            android:width="166dp"
-            android:height="48dp"
             android:background="@drawable/normal_btn"
-            android:text="CREATE" />
+            android:text="CREATE"
+            android:textSize="14sp"
+            android:elevation="2dp"/>
 
     </LinearLayout>
 
