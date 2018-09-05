@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:fab="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
@@ -54,12 +54,25 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/music_recyclerview"
+    <TextView
+        android:id="@+id/music_list1"
+        android:layout_width="match_parent"
+        android:layout_height="65dp"
+        android:text="Default"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        android:paddingLeft="30dp"
+        android:gravity="center_vertical"
+        android:textColor="@color/black"
+        android:layout_marginTop="70dp" />
+
+    <ListView
+        android:id="@+id/music_list"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginTop="90dp"
-        android:scrollbars="vertical" />
+        android:backgroundTint="@color/white"
+        android:layout_below="@+id/music_list1"
+        android:divider="@null" />
 
     <FrameLayout
         android:layout_width="match_parent"
@@ -79,4 +92,4 @@
     </FrameLayout>
 
 
-</android.support.constraint.ConstraintLayout>
+</RelativeLayout>

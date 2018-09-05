@@ -45,18 +45,6 @@ public class ai_alarm_music extends Activity {
         music_list1 = findViewById(R.id.music_list1);
         music_list1.setBackgroundColor(Color.GRAY);
 
-        music_list1.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                select_item = -1;
-                music_list1.setBackgroundColor(Color.GRAY);
-                music_list.setBackgroundColor(Color.WHITE);
-                index = "Default";
-                if (view2 != null){
-                    view2.setBackgroundColor(Color.WHITE);
-                }
-            }
-        });
 
         final String[] str = new String[]{MediaStore.Audio.Media.TITLE, MediaStore.Audio.Media.ARTIST};
         final int[] displayViews = new int[]{R.id.music_name};
@@ -65,10 +53,17 @@ public class ai_alarm_music extends Activity {
         music_list.setAdapter(adapter);
 
         music_list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-
+            int select_item = -1;
             @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                select_item = -1;
+            public void onItemClick(AdapterView<?> adapterView, final View view, int i, long l) {
+                music_list1.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        v.setBackgroundColor(Color.GRAY);
+                        view.setBackgroundColor(Color.WHITE);
+                    }
+                });
+
                 //點選某個item並呈現被選取的狀態
                 if ((select_item == -1) || (select_item == i)) {
                     view.setBackgroundColor(Color.GRAY);
@@ -124,5 +119,5 @@ public class ai_alarm_music extends Activity {
         }
     }
 }
-}
+
 

@@ -4,34 +4,38 @@ import android.app.Activity;
 import android.content.ContentValues;
 import android.content.Intent;
 import android.database.Cursor;
+import android.graphics.Color;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.provider.MediaStore;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.View;
-import android.view.Window;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.CursorAdapter;
+import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
+import android.widget.TextView;
 
 import java.io.File;
-import java.util.ArrayList;
 
 public class normal_alarm_music extends Activity {
-    Cursor cursor;
-    private RecyclerView nrecyclerView;
-    private RecyclerView.Adapter nadapter;
-    private RecyclerView.LayoutManager nlayoutManager;
+//    private RecyclerView nrecyclerView;
+//    private RecyclerView.Adapter nadapter;
+//    private RecyclerView.LayoutManager nlayoutManager;
+//    ArrayList<normal_music_item> itemlist = new ArrayList<>();
+
+    ListView music_list;
+    TextView music_list1;
+    View view2;
+    String index = "Default";
     Button go_back;
-    ArrayList<normal_music_item> itemlist = new ArrayList<>();
+    Cursor cursor;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
-        requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.normal_alarm_music);
 
         String selection = MediaStore.Audio.Media.DURATION+">5000";
@@ -42,13 +46,50 @@ public class normal_alarm_music extends Activity {
         int[] displayViews = new int[]{R.id.music_name};
         SimpleCursorAdapter adapter = new SimpleCursorAdapter(this, R.layout.music_item, cursor, str, displayViews, CursorAdapter.FLAG_REGISTER_CONTENT_OBSERVER);
 
-        nrecyclerView = findViewById(R.id.music_recyclerview);
-        nrecyclerView.setHasFixedSize(true);
-        nlayoutManager = new LinearLayoutManager(this);
-        nadapter = new normal_music_adapter(itemlist);
+        // listview
+        music_list = findViewById(R.id.music_list);
+        music_list1 = findViewById(R.id.music_list1);
+        music_list1.setBackgroundColor(Color.GRAY);
 
-        nrecyclerView.setLayoutManager(nlayoutManager);
-        nrecyclerView.setAdapter(nadapter);
+        music_list.setAdapter(adapter);
+
+        music_list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            int select_item = -1;
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, final View view, int i, long l) {
+                music_list1.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        v.setBackgroundColor(Color.GRAY);
+                        view.setBackgroundColor(Color.WHITE);
+                    }
+                });
+
+                //點選某個item並呈現被選取的狀態
+                if ((select_item == -1) || (select_item == i)) {
+                    view.setBackgroundColor(Color.GRAY);
+                    index = cursor.getString(cursor.getColumnIndex("TITLE"));
+                    music_list1.setBackgroundColor(Color.WHITE);
+                    Log.d("i",";:"+i);
+                } else {
+                    view2.setBackgroundColor(Color.WHITE); //將上一次點選的View保存在view2
+                    view.setBackgroundColor(Color.GRAY); //為View加上選取效果
+                    index = cursor.getString(cursor.getColumnIndex("TITLE"));
+                    music_list1.setBackgroundColor(Color.WHITE);
+                }
+                view2 = view; //保存點選的View
+                select_item = i; //保存目前的View位置
+            }
+        });
+
+        //舊的recyclerview
+//        nrecyclerView = findViewById(R.id.music_recyclerview);
+//        nrecyclerView.setHasFixedSize(true);
+//        nlayoutManager = new LinearLayoutManager(this);
+//        nadapter = new normal_music_adapter(itemlist);
+//
+//        nrecyclerView.setLayoutManager(nlayoutManager);
+//        nrecyclerView.setAdapter(nadapter);
 
         //返回上一頁
         go_back = findViewById(R.id.go_back);
