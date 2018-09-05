@@ -14,8 +14,8 @@
             android:id="@+id/photo"
             android:layout_width="60dp"
             android:layout_height="60dp"
-            android:layout_marginLeft="10dp"
             android:layout_gravity="center"
+            android:layout_marginLeft="10dp"
             android:src="@drawable/ai_alarm_btn" />
 
         <TextView
@@ -23,7 +23,10 @@
             android:layout_width="210dp"
             android:layout_height="match_parent"
             android:layout_marginLeft="20dp"
+            android:ellipsize="end"
             android:gravity="center_vertical"
+            android:paddingRight="10dp"
+            android:singleLine="true"
             android:text="TextView"
             android:textColor="@color/black"
             android:textSize="18sp"

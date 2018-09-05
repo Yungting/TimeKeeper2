@@ -15,9 +15,10 @@
         android:textSize="16sp"
         android:background="@drawable/textframe"
         android:elevation="3dp"
-        android:ems="15"
         android:hint="Search"
+        android:singleLine="true"
         android:padding="13dp"
+        android:scrollbars="vertical"
         android:paddingStart="15dp" />
 
 </RelativeLayout>

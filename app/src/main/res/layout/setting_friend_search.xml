@@ -48,7 +48,8 @@
             android:layout_marginRight="4dp"
             android:background="@drawable/friend_search_edtext"
             android:elevation="1dp"
-            android:ems="15"
+            android:singleLine="true"
+            android:paddingRight="10dp"
             android:paddingLeft="22dp" />
 
         <ImageButton

@@ -92,7 +92,7 @@ public class CardPagerAdapter extends PagerAdapter implements CardAdapter {
             view1.setVisibility(View.GONE);
             button2.setText("ADD");
             locationlist = view.findViewById(R.id.location_list);
-            String[] str = {"Default","Default","123","2131","1231","123123"};
+            String[] str = {"HOME","WORK","SCHOOL"};
             ArrayAdapter adapter = new ArrayAdapter(view.getContext(), R.layout.setting_setup_location_item, R.id.textView1, str);
             locationlist.setAdapter(adapter);
         }else if(type == "info"){

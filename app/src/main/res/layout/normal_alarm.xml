@@ -221,7 +221,7 @@
                 android:layout_marginLeft="27dp"
                 android:layout_marginRight="20dp"
                 android:layout_marginStart="27dp"
-                android:background="@drawable/normal_checkbox"
+                android:background="@drawable/normal_check_btn"
                 android:button="@null" />
 
             <LinearLayout
@@ -245,6 +245,8 @@
                     android:layout_marginLeft="55dp"
                     android:layout_marginStart="55dp"
                     android:layout_weight="1"
+                    android:singleLine="true"
+                    android:ellipsize="end"
                     android:text="@string/rington_show"
                     android:textSize="14sp" />
             </LinearLayout>
