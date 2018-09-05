@@ -1,4 +1,4 @@
-﻿package com.example.user.myapplication;
+package com.example.user.myapplication;
 
 import android.app.Activity;
 import android.graphics.Color;
@@ -123,5 +123,6 @@ public class ai_alarm_music extends Activity {
             startActivity(intent);
         }
     }
-
 }
+}
+

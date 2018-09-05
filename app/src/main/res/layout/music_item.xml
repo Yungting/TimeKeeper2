@@ -18,9 +18,6 @@
             android:paddingLeft="30dp"
             android:gravity="center_vertical"
             android:textColor="@color/black" />
-
-        <!--android:background="@drawable/music_option_background"-->
-
     </RelativeLayout>
 
 </android.support.v7.widget.CardView>
