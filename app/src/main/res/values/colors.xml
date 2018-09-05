@@ -12,4 +12,5 @@
     <color name="pressed_btn">#88888888</color>
     <color name="background_gray">#646464</color>
     <color name="pink">#FFB9A5</color>
+    <color name="title">#63553B</color>
 </resources>

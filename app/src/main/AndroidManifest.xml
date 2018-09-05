@@ -29,7 +29,7 @@
         <activity android:name=".ai_alarm_group" />
         <activity android:name=".ai_alarm_music" />
         <activity android:name=".ai_alarm_manage.ai_alarm_manage" />
-        <activity android:name=".setting_setup" />
+        <activity android:name=".setting_setup.setting_setup" />
         <activity android:name=".setting_friend" />
         <activity android:name=".setting_friend_showqrcode" />
         <activity android:name=".setting_friend_search"></activity>

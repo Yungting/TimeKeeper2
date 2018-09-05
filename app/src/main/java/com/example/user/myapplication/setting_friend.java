@@ -9,6 +9,8 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.PopupMenu;
 
+import com.example.user.myapplication.setting_setup.setting_setup;
+
 public class setting_friend extends AppCompatActivity {
     Button add_friend_btn;
     View timekeeper_logo;

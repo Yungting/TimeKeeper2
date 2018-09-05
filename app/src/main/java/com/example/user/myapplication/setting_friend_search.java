@@ -13,6 +13,8 @@ import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.PopupMenu;
 
+import com.example.user.myapplication.setting_setup.setting_setup;
+
 public class setting_friend_search extends AppCompatActivity {
 
     ImageButton search_btn;

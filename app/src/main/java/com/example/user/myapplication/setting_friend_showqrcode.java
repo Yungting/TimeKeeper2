@@ -10,6 +10,8 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.PopupMenu;
 
+import com.example.user.myapplication.setting_setup.setting_setup;
+
 public class setting_friend_showqrcode extends AppCompatActivity {
 
     Button qrcode_scanner;
