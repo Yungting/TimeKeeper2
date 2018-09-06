@@ -62,13 +62,12 @@
         android:layout_marginTop="15dp"
         android:fadingEdge="none"
         android:gravity="center_horizontal"
-        android:horizontalSpacing="13dp"
         android:numColumns="3"
         android:overScrollMode="never"
         android:paddingLeft="10dp"
         android:paddingRight="10dp"
         android:scrollbars="none"
-        android:verticalSpacing="13dp" />
+        android:horizontalSpacing="13dp" />
 
     <Button
         android:id="@+id/add_friend_btn"

@@ -49,6 +49,7 @@
             android:background="@drawable/friend_search_edtext"
             android:elevation="1dp"
             android:singleLine="true"
+            android:hint="請輸入好友信箱"
             android:paddingRight="10dp"
             android:paddingLeft="22dp" />
 
