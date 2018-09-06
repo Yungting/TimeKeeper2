@@ -1,6 +1,7 @@
 package com.example.user.myapplication;
 
 import android.app.Activity;
+import android.database.sqlite.SQLiteBindOrColumnIndexOutOfRangeException;
 import android.graphics.Color;
 import android.content.Intent;
 import android.database.Cursor;
@@ -63,6 +64,7 @@ public class ai_alarm_music extends Activity {
             @Override
             public void onItemClick(AdapterView<?> adapterView, final View view, final int i, long l) {
                 //點選某個item並呈現被選取的狀態
+                music_list.getSelectedView().findFocus().setBackgroundColor(Color.GRAY);
                 index = cursor.getString(cursor.getColumnIndex("TITLE"));
                 music_list1.setBackgroundColor(Color.WHITE);
                 Log.d("i", ";:" + i);
