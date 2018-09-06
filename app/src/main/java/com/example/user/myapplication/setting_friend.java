@@ -1,56 +1,66 @@
 package com.example.user.myapplication;
 
+import android.content.Context;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
+import android.view.HapticFeedbackConstants;
+import android.view.KeyEvent;
+import android.view.LayoutInflater;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.GridView;
+import android.widget.ImageView;
 import android.widget.PopupMenu;
-import android.widget.SimpleAdapter;
+import android.widget.TextView;
 
 import com.example.user.myapplication.setting_setup.setting_setup;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 public class setting_friend extends AppCompatActivity {
-    Button add_friend_btn;
+    Button add_friend_btn, friend_delete;
     View timekeeper_logo;
+
     private GridView gridView;
+    private boolean isShowDelete = false;
+    private GridViewAdapter mGridAdapter;
+    private List<AreaEntity> areaEneities = new ArrayList<AreaEntity>();
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.setting_friend);
 
-        //設定friend的照片與名稱
-        int[] image = {R.drawable.ai_open};
-        String[] str = {"Tina", "AAAAAAAAA", "AAAAAAAAAAAAAAAAAAAAAAAa","B","C","D","B","C","D","B","C","D"};
-
-        List<Map<String, Object>> items = new ArrayList<>();
-        for (int i = 0; i < str.length; i++) {
-            Map<String, Object> item = new HashMap<>();
-            item.put("image", image[0]);
-            item.put("text", str[i]);
-            items.add(item);
+        //增加好友
+        gridView = findViewById(R.id.friend_list);
+        for (int i = 0; i < 10; i++) {
+            AreaEntity areaEntity = new AreaEntity(i + "", R.drawable.ai_open, "" + i);
+            areaEneities.add(areaEntity);
         }
 
-        SimpleAdapter adapter = new SimpleAdapter(this,
-                items, R.layout.setting_friend_item, new String[]{"image", "text"},
-                new int[]{R.id.friend_photo, R.id.friend_name});
-        gridView = findViewById(R.id.friend_list);
-        gridView.setNumColumns(3);
-        gridView.setAdapter(adapter);
-        gridView.setOnItemClickListener(new AdapterView.OnItemClickListener(){
+        //好友長按事件
+        mGridAdapter = new GridViewAdapter(areaEneities, setting_friend.this);
+        gridView.setAdapter(mGridAdapter);
+        gridView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-//                Toast.makeText(MainActivity.this, "你選擇了" + imgText[position], Toast.LENGTH_SHORT).show();
+            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+                if (isShowDelete) {
+                    isShowDelete = false;
+                } else {
+                    isShowDelete = true;
+                }
+                mGridAdapter.setIsShowDelete(isShowDelete);
+                view.performHapticFeedback(HapticFeedbackConstants.LONG_PRESS);
+                return true;
             }
         });
 
@@ -59,7 +69,7 @@ public class setting_friend extends AppCompatActivity {
         add_friend_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent1 = new Intent(setting_friend.this, setting_friend_showqrcode.class);
+                Intent intent1 = new Intent(setting_friend.this, setting_friend_search.class);
                 startActivity(intent1);
             }
         });
@@ -86,13 +96,13 @@ public class setting_friend extends AppCompatActivity {
         popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(MenuItem menuItem) {
-                switch (menuItem.getItemId()){
-                    case R.id.action_setup :
+                switch (menuItem.getItemId()) {
+                    case R.id.action_setup:
                         Intent intent3 = new Intent(setting_friend.this, setting_setup.class);
                         startActivity(intent3);
                         return true;
 
-                    case R.id.action_friends :
+                    case R.id.action_friends:
                         Intent intent4 = new Intent(setting_friend.this, setting_friend.class);
                         startActivity(intent4);
                         return true;
@@ -100,5 +110,128 @@ public class setting_friend extends AppCompatActivity {
                 return false;
             }
         });
+    }
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if(keyCode == KeyEvent.KEYCODE_BACK){
+            if (isShowDelete == true) {
+                isShowDelete = false;
+                mGridAdapter.setIsShowDelete(false);
+            } else {
+                finish();
+            }
+        }
+        return false;
+    }
+
+//    @Override
+//    public void onBackPressed() {
+//        super.onBackPressed();
+//        if (isShowDelete == true) {
+//            isShowDelete = false;
+//            mGridAdapter.setIsShowDelete(false);
+//        } else {
+//            finish();
+//        }
+//    }
+
+    class GridViewAdapter extends BaseAdapter {
+        private boolean isShowDelete; //根据这个布尔型变量来判断是否显示删除图标，true是显示，false是不显示
+        private List<AreaEntity> areaEneity;
+        private LayoutInflater mInflater;
+        private Context mContext;
+
+        public GridViewAdapter(List<AreaEntity> areaEneities, Context context) {
+            super();
+            this.areaEneity = areaEneities;
+            this.mInflater = LayoutInflater.from(context);
+            this.mContext = context;
+        }
+
+        public void setIsShowDelete(boolean isShowDelete) {
+            this.isShowDelete = isShowDelete;
+            notifyDataSetChanged();
+        }
+
+        @Override
+        public int getCount() {
+            return areaEneity.size();
+        }
+
+        @Override
+        public Object getItem(int position) {
+            return areaEneity.get(position);
+        }
+
+        @Override
+        public long getItemId(int position) {
+            return position;
+        }
+
+        @Override
+        public View getView(final int position, View convertView, ViewGroup parent) {
+
+            ViewHolder holder;
+            if (convertView == null) {
+                convertView = mInflater.inflate(R.layout.setting_friend_item, null);
+                holder = new ViewHolder();
+                holder.img = convertView.findViewById(R.id.friend_photo);
+                holder.name_tv = convertView.findViewById(R.id.friend_name);
+                holder.delete_btn = convertView.findViewById(R.id.friend_delete);
+                convertView.setTag(holder);
+            } else {
+                holder = (ViewHolder) convertView.getTag();
+            }
+            holder.name_tv.setText(areaEneity.get(position).getArea());
+            holder.delete_btn.setVisibility(isShowDelete ? View.VISIBLE : View.GONE);
+            holder.delete_btn.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    areaEneity.remove(areaEneity.get(position));
+                    notifyDataSetChanged();
+                }
+            });
+            return convertView;
+        }
+
+        class ViewHolder {
+            private Button delete_btn;
+            private ImageView img;
+            private TextView name_tv;
+        }
+    }
+
+    class AreaEntity {
+        private String id;
+        private int pic;
+        private String area;
+
+        public AreaEntity(String id, int pic, String area) {
+            this.id = id;
+            this.pic = pic;
+            this.area = area;
+        }
+
+        public String getId() {
+            return id;
+        }
+
+        public void setId(String id) {
+            this.id = id;
+        }
+
+        public Integer getPic() {
+            return pic;
+        }
+
+        public void setPic(Integer pic) {
+            this.pic = pic;
+        }
+
+        public String getArea() {
+            return area;
+        }
+
     }
 }

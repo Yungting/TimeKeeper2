@@ -59,7 +59,7 @@
         android:layout_height="match_parent"
         android:layout_below="@+id/music_list1"
         android:focusableInTouchMode="true"
-        android:listSelector="@drawable/normal_music_select"
+        android:choiceMode="singleChoice"
         android:divider="@null" />
 
     <FrameLayout

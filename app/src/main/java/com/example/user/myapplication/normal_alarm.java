@@ -62,6 +62,11 @@ public class normal_alarm extends Activity {
         });
 
         rington = findViewById(R.id.rington);
+        Intent intent_apply = this.getIntent();
+        String index = intent_apply.getStringExtra("index");
+        if (index == null){index = "Default";}
+        TextView rington_show = findViewById(R.id.rington_show);
+        rington_show.setText(index);
         rington.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

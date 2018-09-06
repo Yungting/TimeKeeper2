@@ -37,7 +37,7 @@ public class ai_alarm extends Activity {
         setContentView(R.layout.ai_alarm);
 
         am = (AlarmManager) getSystemService(ALARM_SERVICE);
-        alarm_number = (TextView) findViewById(R.id.alarm_number);
+        alarm_number = findViewById(R.id.alarm_number);
         alarm_number.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
