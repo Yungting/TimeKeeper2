@@ -92,13 +92,6 @@ public class normal_alarm_music extends Activity {
 //        nrecyclerView.setAdapter(nadapter);
 
         //返回上一頁
-        go_back = findViewById(R.id.go_back);
-        go_back.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                finish();
-            }
-        });
 
     }
 

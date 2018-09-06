@@ -28,7 +28,6 @@ public class ai_alarm_music extends Activity {
     TextView music_list1;
     Button go_back;
     Cursor cursor;
-    int select_item;
     View view2;
     String index = "Default";
 
@@ -45,47 +44,28 @@ public class ai_alarm_music extends Activity {
         music_list1 = findViewById(R.id.music_list1);
         music_list1.setBackgroundColor(Color.GRAY);
 
-
         final String[] str = new String[]{MediaStore.Audio.Media.TITLE, MediaStore.Audio.Media.ARTIST};
         final int[] displayViews = new int[]{R.id.music_name};
         SimpleCursorAdapter adapter = new SimpleCursorAdapter(this, R.layout.music_item, cursor, str, displayViews, CursorAdapter.FLAG_REGISTER_CONTENT_OBSERVER);
-
         music_list.setAdapter(adapter);
 
-        music_list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            int select_item = -1;
+        music_list1.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onItemClick(AdapterView<?> adapterView, final View view, int i, long l) {
-                music_list1.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        v.setBackgroundColor(Color.GRAY);
-                        view.setBackgroundColor(Color.WHITE);
-                    }
-                });
-
-                //點選某個item並呈現被選取的狀態
-                if ((select_item == -1) || (select_item == i)) {
-                    view.setBackgroundColor(Color.GRAY);
-                    index = cursor.getString(cursor.getColumnIndex("TITLE"));
-                    music_list1.setBackgroundColor(Color.WHITE);
-                    Log.d("i",";:"+i);
-                } else {
-                    view2.setBackgroundColor(Color.WHITE); //將上一次點選的View保存在view2
-                    view.setBackgroundColor(Color.GRAY); //為View加上選取效果
-                    index = cursor.getString(cursor.getColumnIndex("TITLE"));
-                    music_list1.setBackgroundColor(Color.WHITE);
-                }
-                view2 = view; //保存點選的View
-                select_item = i; //保存目前的View位置
+            public void onClick(View v) {
+                v.setBackgroundColor(Color.GRAY);
+                view2.setBackgroundColor(Color.WHITE);
             }
         });
 
-        go_back = findViewById(R.id.go_back);
-        go_back.setOnClickListener(new View.OnClickListener() {
+        music_list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            int select_item = -1;
+
             @Override
-            public void onClick(View view) {
-                finish();
+            public void onItemClick(AdapterView<?> adapterView, final View view, final int i, long l) {
+                //點選某個item並呈現被選取的狀態
+                index = cursor.getString(cursor.getColumnIndex("TITLE"));
+                music_list1.setBackgroundColor(Color.WHITE);
+                Log.d("i", ";:" + i);
             }
         });
 
