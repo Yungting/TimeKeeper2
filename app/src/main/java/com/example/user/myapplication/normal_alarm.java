@@ -34,7 +34,7 @@ public class normal_alarm extends Activity {
     CheckBox day_Su, day_M, day_T, day_W, day_Th, day_F, day_S, repeat_checkbox;
     LinearLayout rington;
     LinearLayout repeat_layout,repeat_day;
-    int[] repeatday;
+    int[] repeatday = new int[7];
     
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -111,7 +111,6 @@ public class normal_alarm extends Activity {
 
     public void pickday(){
         repeat_text="";
-        repeatday = null;
         i = 0;
         day_Su = (CheckBox) findViewById(R.id.su);
         day_M = (CheckBox) findViewById(R.id.m);
@@ -145,9 +144,8 @@ public class normal_alarm extends Activity {
             am2.setRepeating(AlarmManager.RTC_WAKEUP, calendar2.getTimeInMillis(), 60*1000, pi);
             ifrepeat = true;
         }else {
-            PendingIntent pi = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+            PendingIntent pi = PendingIntent.getActivity(this, requestcode, intent, PendingIntent.FLAG_UPDATE_CURRENT);
             am2.set(AlarmManager.RTC_WAKEUP, calendar2.getTimeInMillis(), pi);
-            Log.d("setalarm", "set"+calendar2.getTimeInMillis());
             ifrepeat = false;
         }
 
@@ -160,7 +158,7 @@ public class normal_alarm extends Activity {
         bundle.putString("audioFilePath", audioFilePath);
         bundle.putInt("requestcode", requestcode);
         bundle.putBoolean("ifrepeat", ifrepeat);
-        bundle.putString("normal_edit_title", normal_edit_title);
+        bundle.putString("edit_title", normal_edit_title);
         bundle.putString("alarmtime", alarmtime);
         bundle.putString("type", "normal");
         intent_set.putExtras(bundle);
