@@ -161,11 +161,10 @@ public class mainpage extends Activity implements RecyclerTouchListener.Recycler
         List<mainpage_RowModel> list = new ArrayList<>(25);
 
         list.add(new mainpage_RowModel("Row " + 1, "Some Text... ", "08:00", "ai", 1));
+        Bundle bundle = getIntent().getExtras();
+        if (bundle != null){
 
-        list.add(new mainpage_RowModel("Row " + 2, "Some Text... ", "08:00","normal", 1));
-
-        list.add(new mainpage_RowModel("Row " + 3, "Some Text... ", "08:00","ai", 1));
-
+        }
         return list;
     }
 

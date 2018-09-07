@@ -58,14 +58,6 @@ public class ai_alarmalert extends AppCompatActivity {
         builder.setNegativeButton("CLOSED", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-
-                Calendar cd = Calendar.getInstance();
-                cd.setTimeInMillis(System.currentTimeMillis());
-                long time = cd.getTimeInMillis();
-//                Intent intent1 = new Intent(ai_alarmalert.this, usagecount.class);
-                Log.d("alert", "time"+time);
-//                intent1.putExtra("time", time);
-//                startActivity(intent1);
                 mp.stop();
             }
         });

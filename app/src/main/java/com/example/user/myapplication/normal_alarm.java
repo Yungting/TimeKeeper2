@@ -7,10 +7,12 @@ import android.app.TimePickerDialog;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -27,11 +29,12 @@ public class normal_alarm extends Activity {
     AlarmManager am2;
     TextView alarm_number;
     Calendar calendar2 = Calendar.getInstance();
-    int hour,minute;
-    String repeat_text;
+    int hour,minute, i, requestcode;
+    String repeat_text, index, mimeType, audioFilePath, alarmtime;
     CheckBox day_Su, day_M, day_T, day_W, day_Th, day_F, day_S, repeat_checkbox;
     LinearLayout rington;
     LinearLayout repeat_layout,repeat_day;
+    int[] repeatday;
     
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,18 +44,18 @@ public class normal_alarm extends Activity {
 
         am2 = (AlarmManager) getSystemService(ALARM_SERVICE);
         alarm_number = (TextView) findViewById(R.id.alarm_number);
+        calendar2.setTimeInMillis(System.currentTimeMillis());
+        hour = calendar2.get(Calendar.HOUR_OF_DAY);
+        minute = calendar2.get(Calendar.MINUTE);
+        alarm_number.setText(hour+" : "+minute);
         alarm_number.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                calendar2.setTimeInMillis(System.currentTimeMillis());
-                hour = calendar2.get(Calendar.HOUR_OF_DAY);
-                minute = calendar2.get(Calendar.MINUTE);
-
                 new TimePickerDialog(normal_alarm.this, new TimePickerDialog.OnTimeSetListener(){
 
                     public void onTimeSet(TimePicker view, int hourOfDay, int minute1) {
                         alarm_number.setText(hourOfDay + " : " + minute1);
-
+                        alarmtime = hourOfDay+":"+minute1;
                         calendar2.set(Calendar.HOUR_OF_DAY, hourOfDay);
                         calendar2.set(Calendar.MINUTE, minute1);
                         calendar2.set(Calendar.SECOND, 0);
@@ -62,8 +65,12 @@ public class normal_alarm extends Activity {
         });
 
         rington = findViewById(R.id.rington);
-        Intent intent_apply = this.getIntent();
-        String index = intent_apply.getStringExtra("index");
+        Bundle bundle = getIntent().getExtras();
+        if (bundle != null){
+            index = bundle.getString("index");
+            mimeType = bundle.getString("mimeType");
+            audioFilePath = bundle.getString("audioFilePath");
+        }
         if (index == null){index = "Default";}
         TextView rington_show = findViewById(R.id.rington_show);
         rington_show.setText(index);
@@ -92,10 +99,20 @@ public class normal_alarm extends Activity {
             }
         });
 
+        Button creat_btn = findViewById(R.id.creat_btn);
+        creat_btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                setAlarm();
+            }
+        });
+
     }
 
     public void pickday(){
         repeat_text="";
+        repeatday = null;
+        i = 0;
         day_Su = (CheckBox) findViewById(R.id.su);
         day_M = (CheckBox) findViewById(R.id.m);
         day_T = (CheckBox) findViewById(R.id.T);
@@ -104,64 +121,50 @@ public class normal_alarm extends Activity {
         day_F = (CheckBox) findViewById(R.id.F);
         day_S = (CheckBox) findViewById(R.id.S);
 
-        if (day_Su.isChecked()){ repeat_text = "Su "; }
-        if (day_M.isChecked()){ repeat_text = repeat_text+"M  "; }
-        if (day_T.isChecked()){ repeat_text = repeat_text+"T  "; }
-        if (day_W.isChecked()){ repeat_text = repeat_text+"W  "; }
-        if (day_Th.isChecked()){ repeat_text = repeat_text+"Th  "; }
-        if (day_F.isChecked()){ repeat_text = repeat_text+"F  "; }
-        if (day_S.isChecked()){ repeat_text = repeat_text+"S  "; }
+        if (day_Su.isChecked()){ repeat_text = "Su "; repeatday[i] = 1; i++;}
+        if (day_M.isChecked()){ repeat_text = repeat_text+"M  "; repeatday[i] = 2; i++;}
+        if (day_T.isChecked()){ repeat_text = repeat_text+"T  "; repeatday[i] = 3; i++;}
+        if (day_W.isChecked()){ repeat_text = repeat_text+"W  "; repeatday[i] = 4; i++;}
+        if (day_Th.isChecked()){ repeat_text = repeat_text+"Th  "; repeatday[i] = 5; i++;}
+        if (day_F.isChecked()){ repeat_text = repeat_text+"F  "; repeatday[i] = 6; i++;}
+        if (day_S.isChecked()){ repeat_text = repeat_text+"S  "; repeatday[i] = 7; i++;}
         TextView repeat_show = findViewById(R.id.repeat_show);
         repeat_show.setText(repeat_text);
-
     }
 
     public void setAlarm(){
         repeat_checkbox = (CheckBox)findViewById(R.id.repeat_checkbox);
-        List<Integer> alarmnum;
+        requestcode = (int)System.currentTimeMillis();
+        Boolean ifrepeat;
+        String normal_edit_title = findViewById(R.id.normal_edit_title).toString();
 
-        Intent intent = new Intent(getApplication(), ai_alarmalert.class);
+        Intent intent = new Intent(this, ai_alarmalert.class);
 
         if (repeat_checkbox.isChecked()){
-            if (day_Su.isChecked()){
-                calendar2.set(Calendar.DAY_OF_WEEK, 1);
-                PendingIntent pi = PendingIntent.getActivity(getApplicationContext(), 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
-                am2.setRepeating(AlarmManager.RTC_WAKEUP, calendar2.getTimeInMillis(), 60*1000, pi);
-            }
-            if (day_M.isChecked()){
-                calendar2.set(Calendar.DAY_OF_WEEK, 2);
-                PendingIntent pi = PendingIntent.getActivity(getApplicationContext(), 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
-                am2.setRepeating(AlarmManager.RTC_WAKEUP, calendar2.getTimeInMillis(), 60*1000, pi);
-            }
-            if (day_T.isChecked()){
-                calendar2.set(Calendar.DAY_OF_WEEK, 3);
-                PendingIntent pi = PendingIntent.getActivity(getApplicationContext(), 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
-                am2.setRepeating(AlarmManager.RTC_WAKEUP, calendar2.getTimeInMillis(), 60*1000, pi);
-            }
-            if (day_W.isChecked()){
-                calendar2.set(Calendar.DAY_OF_WEEK, 4);
-                PendingIntent pi = PendingIntent.getActivity(getApplicationContext(), 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
-                am2.setRepeating(AlarmManager.RTC_WAKEUP, calendar2.getTimeInMillis(), 60*1000, pi);
-            }
-            if (day_Th.isChecked()){
-                calendar2.set(Calendar.DAY_OF_WEEK, 5);
-                PendingIntent pi = PendingIntent.getActivity(getApplicationContext(), 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
-                am2.setRepeating(AlarmManager.RTC_WAKEUP, calendar2.getTimeInMillis(), 60*1000, pi);}
-            if (day_F.isChecked()){
-                calendar2.set(Calendar.DAY_OF_WEEK, 6);
-                PendingIntent pi = PendingIntent.getActivity(getApplicationContext(), 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
-                am2.setRepeating(AlarmManager.RTC_WAKEUP, calendar2.getTimeInMillis(), 60*1000, pi);
-            }
-            if (day_S.isChecked()){
-                calendar2.set(Calendar.DAY_OF_WEEK, 7);
-                PendingIntent pi = PendingIntent.getActivity(getApplicationContext(), 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
-                am2.setRepeating(AlarmManager.RTC_WAKEUP, calendar2.getTimeInMillis(), 60*1000, pi);
-            }
+            PendingIntent pi = PendingIntent.getActivity(this, requestcode, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+            am2.setRepeating(AlarmManager.RTC_WAKEUP, calendar2.getTimeInMillis(), 60*1000, pi);
+            ifrepeat = true;
         }else {
-            PendingIntent pi = PendingIntent.getActivity(getApplicationContext(), 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+            PendingIntent pi = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
             am2.set(AlarmManager.RTC_WAKEUP, calendar2.getTimeInMillis(), pi);
+            Log.d("setalarm", "set"+calendar2.getTimeInMillis());
+            ifrepeat = false;
         }
 
+        Intent intent_set = new Intent();
+        intent_set.setClass(this, mainpage.class);
+        Bundle bundle = new Bundle();
+        bundle.putString("repeat_text", repeat_text);
+        bundle.putIntArray("repeatday", repeatday);
+        bundle.putString("mimeType", mimeType);
+        bundle.putString("audioFilePath", audioFilePath);
+        bundle.putInt("requestcode", requestcode);
+        bundle.putBoolean("ifrepeat", ifrepeat);
+        bundle.putString("normal_edit_title", normal_edit_title);
+        bundle.putString("alarmtime", alarmtime);
+        bundle.putString("type", "normal");
+        intent_set.putExtras(bundle);
+        startActivity(intent_set);
     }
 
 }
