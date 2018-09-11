@@ -135,10 +135,11 @@ public class normal_alarm extends Activity {
         repeat_checkbox = (CheckBox)findViewById(R.id.repeat_checkbox);
         requestcode = (int)System.currentTimeMillis();
         Boolean ifrepeat;
-        String normal_edit_title = findViewById(R.id.normal_edit_title).toString();
+        TextView normal_edit_title = findViewById(R.id.normal_edit_title);
+        String edit_text = normal_edit_title.getText().toString();
 
         Intent intent = new Intent(this, ai_alarmalert.class);
-
+        intent.putExtra("requestcode", requestcode);
         if (repeat_checkbox.isChecked()){
             PendingIntent pi = PendingIntent.getActivity(this, requestcode, intent, PendingIntent.FLAG_UPDATE_CURRENT);
             am2.setRepeating(AlarmManager.RTC_WAKEUP, calendar2.getTimeInMillis(), 60*1000, pi);
@@ -149,19 +150,12 @@ public class normal_alarm extends Activity {
             ifrepeat = false;
         }
 
+        DB_normal_alarm db = new DB_normal_alarm(this);
+        String millis = String.valueOf(calendar2.getTimeInMillis());
+        db.insert(repeat_text, mimeType, requestcode, ifrepeat, edit_text, millis,"normal",1);
+
         Intent intent_set = new Intent();
         intent_set.setClass(this, mainpage.class);
-        Bundle bundle = new Bundle();
-        bundle.putString("repeat_text", repeat_text);
-        bundle.putIntArray("repeatday", repeatday);
-        bundle.putString("mimeType", mimeType);
-        bundle.putString("audioFilePath", audioFilePath);
-        bundle.putInt("requestcode", requestcode);
-        bundle.putBoolean("ifrepeat", ifrepeat);
-        bundle.putString("edit_title", normal_edit_title);
-        bundle.putString("alarmtime", alarmtime);
-        bundle.putString("type", "normal");
-        intent_set.putExtras(bundle);
         startActivity(intent_set);
     }
 
