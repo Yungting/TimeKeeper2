@@ -10,6 +10,7 @@ import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.Window;
 import android.view.WindowManager;
 
@@ -24,7 +25,6 @@ public class ai_alarmalert extends AppCompatActivity {
         Window win = getWindow();
         win.addFlags(WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD | WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED);
         win.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON | WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON);
-        setContentView(R.layout.mainpage);
         mp = new MediaPlayer();
 
         mp = MediaPlayer.create(this, R.raw.test);
@@ -45,7 +45,7 @@ public class ai_alarmalert extends AppCompatActivity {
     }
 
     public void alarmDialog(){
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        final AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setMessage("WAKE UP NOW!!");
         builder.setPositiveButton("LATER", new DialogInterface.OnClickListener() {
             @Override
@@ -58,15 +58,15 @@ public class ai_alarmalert extends AppCompatActivity {
         builder.setNegativeButton("CLOSED", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-
-                Calendar cd = Calendar.getInstance();
-                cd.setTimeInMillis(System.currentTimeMillis());
-                long time = cd.getTimeInMillis();
-//                Intent intent1 = new Intent(ai_alarmalert.this, usagecount.class);
-                Log.d("alert", "time"+time);
-//                intent1.putExtra("time", time);
-//                startActivity(intent1);
                 mp.stop();
+                finish();
+            }
+        });
+        builder.setOnKeyListener(new DialogInterface.OnKeyListener() {
+            @Override
+            public boolean onKey(DialogInterface dialog, int keyCode, KeyEvent event) {
+                // Prevent dialog close on back press button
+                return keyCode == KeyEvent.KEYCODE_BACK;
             }
         });
         builder.show();

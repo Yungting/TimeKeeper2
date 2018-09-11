@@ -4,22 +4,16 @@ import android.app.Activity;
 import android.graphics.Color;
 import android.content.Intent;
 import android.database.Cursor;
-import android.net.Uri;
 import android.provider.MediaStore;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.view.Window;
-import android.widget.Adapter;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CursorAdapter;
 import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import java.io.File;
 
@@ -30,6 +24,7 @@ public class ai_alarm_music extends Activity {
     Cursor cursor;
     View view2;
     String index = "Default";
+    int select_item = -1;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -53,19 +48,22 @@ public class ai_alarm_music extends Activity {
             @Override
             public void onClick(View v) {
                 v.setBackgroundColor(Color.GRAY);
-                view2.setBackgroundColor(Color.WHITE);
+                if (select_item != -1){
+                    view2.setBackgroundColor(Color.WHITE);
+                }
+                select_item = -1;
             }
         });
 
         music_list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            int select_item = -1;
 
             @Override
             public void onItemClick(AdapterView<?> adapterView, final View view, final int i, long l) {
                 //點選某個item並呈現被選取的狀態
+                select_item = i;
                 index = cursor.getString(cursor.getColumnIndex("TITLE"));
                 music_list1.setBackgroundColor(Color.WHITE);
-                Log.d("i", ";:" + i);
+                view2 = view;
             }
         });
 
@@ -75,28 +73,24 @@ public class ai_alarm_music extends Activity {
             public void onClick(View v) {
                 Intent intent_apply = new Intent();
                 intent_apply.setClass(ai_alarm_music.this, ai_alarm.class);
-                intent_apply.putExtra("index", index);
+                Bundle bundle = new Bundle();
+                bundle.putString("index", index);
+                if (cursor.moveToPosition(select_item)) {
+
+                    int fileColumn = cursor.getColumnIndex(MediaStore.Audio.Media.DATA);
+                    int mimeTypeColumn = cursor.getColumnIndex(MediaStore.Audio.Media.MIME_TYPE);
+
+                    String audioFilePath = cursor.getString(fileColumn);
+                    String mimeType = cursor.getString(mimeTypeColumn);
+
+                    File newFile = new File(audioFilePath);
+                    bundle.putString("audioFilePath", audioFilePath);
+                    bundle.putString("mimeType", mimeType);
+                }
+                intent_apply.putExtras(bundle);
                 startActivity(intent_apply);
             }
         });
-    }
-
-    protected void onListItemClick(ListView l, View v, int position, long id) {
-        if (cursor.moveToPosition(position)) {
-
-            int fileColumn = cursor.getColumnIndex(MediaStore.Audio.Media.DATA);
-            int mimeTypeColumn = cursor.getColumnIndex(MediaStore.Audio.Media.MIME_TYPE);
-
-            String audioFilePath = cursor.getString(fileColumn);
-            String mimeType = cursor.getString(mimeTypeColumn);
-
-            Intent intent = new Intent(android.content.Intent.ACTION_VIEW);
-
-            File newFile = new File(audioFilePath);
-            intent.setDataAndType(Uri.fromFile(newFile), mimeType);
-
-            startActivity(intent);
-        }
     }
 }
 
