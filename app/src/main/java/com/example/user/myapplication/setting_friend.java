@@ -12,6 +12,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.AlphaAnimation;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.Button;
@@ -33,6 +34,8 @@ public class setting_friend extends AppCompatActivity {
     private boolean isShowDelete = false;
     private GridViewAdapter mGridAdapter;
     private List<AreaEntity> areaEneities = new ArrayList<AreaEntity>();
+    AlphaAnimation alphaAnimation1 = new AlphaAnimation(1.0f, 0.1f);
+    AlphaAnimation alphaAnimation2 = new AlphaAnimation(0.1f, 1.0f);
 
 
     @Override
@@ -185,6 +188,7 @@ public class setting_friend extends AppCompatActivity {
             }
             holder.name_tv.setText(areaEneity.get(position).getArea());
             holder.delete_btn.setVisibility(isShowDelete ? View.VISIBLE : View.GONE);
+            holder.img.setAlpha(isShowDelete ? 0.5f : 1.0f);
             holder.delete_btn.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {

@@ -3,6 +3,7 @@ package com.example.user.myapplication;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.database.Cursor;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -26,6 +27,7 @@ import com.nikhilpanju.recyclerviewenhanced.OnActivityTouchListener;
 import com.nikhilpanju.recyclerviewenhanced.RecyclerTouchListener;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 import cdflynn.android.library.crossview.CrossView;
@@ -44,7 +46,7 @@ public class mainpage extends Activity implements RecyclerTouchListener.Recycler
     private RecyclerTouchListener onTouchListener;
     private int openOptionsPosition;
     private OnActivityTouchListener touchListener;
-    ArrayList<Integer> state;
+    ArrayList<Integer> state, requestcode;
     ArrayList<String> type;
 
     @Override
@@ -94,7 +96,6 @@ public class mainpage extends Activity implements RecyclerTouchListener.Recycler
                 startActivity(intent1);
             }
         });
-
 
         //recyclerview
         unclickableRows = new ArrayList<>();
@@ -159,13 +160,31 @@ public class mainpage extends Activity implements RecyclerTouchListener.Recycler
 
     private List<mainpage_RowModel> getData() {
         List<mainpage_RowModel> list = new ArrayList<>(25);
+        DB_normal_alarm db = new DB_normal_alarm(this);
 
-        list.add(new mainpage_RowModel("Row " + 1, "Some Text... ", "08:00", "ai", 1));
-
-        list.add(new mainpage_RowModel("Row " + 2, "Some Text... ", "08:00","normal", 1));
-
-        list.add(new mainpage_RowModel("Row " + 3, "Some Text... ", "08:00","ai", 1));
-
+        //cursor
+        if (db!= null){
+            Cursor cursor = db.select();
+            if (cursor.getCount()>0){
+                for (cursor.moveToFirst(); !cursor.isAfterLast(); cursor.moveToNext()){
+                    Calendar cal = Calendar.getInstance();
+                    Long t = Long.parseLong(cursor.getString(5));
+                    cal.setTimeInMillis(t);
+                    int hour = cal.get(Calendar.HOUR_OF_DAY);
+                    int min = cal.get(Calendar.MINUTE);
+                    String time = "";
+                    if (hour < 10 && min < 10){
+                        time = "0"+hour+":0"+min;
+                    }else if (hour < 10 && min>=10){
+                        time = "0"+hour+":"+min;
+                    }else if (hour >= 10 && min<10){
+                        time = hour+":0"+min;
+                    }else if (hour >= 10 && min >= 10){time = hour+":"+min;}
+                    list.add(new mainpage_RowModel(cursor.getString(0), cursor.getString(1), cursor.getInt(2), Boolean.parseBoolean(cursor.getString(3))
+                            ,cursor.getString(4), time, cursor.getString(6), cursor.getInt(7)));
+                }
+            }
+        }
         return list;
     }
 
@@ -196,7 +215,7 @@ public class mainpage extends Activity implements RecyclerTouchListener.Recycler
         }
 
         @Override
-        public void onBindViewHolder(MainViewHolder holder, final int position) {
+        public void onBindViewHolder(final MainViewHolder holder, final int position) {
             holder.bindData(modelList.get(position));
 
             //點擊刪除layout後的動作
@@ -216,6 +235,7 @@ public class mainpage extends Activity implements RecyclerTouchListener.Recycler
             //删除动画
             notifyItemRemoved(position);
             notifyDataSetChanged();
+            DB_normal_alarm db = new DB_normal_alarm(mainpage.this);
         }
 
         @Override
@@ -246,8 +266,7 @@ public class mainpage extends Activity implements RecyclerTouchListener.Recycler
                 alarm_btn.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        Log.d("type是","");
-                        if( type == "ai"){
+                        if( type.equals("ai")){
                             switch (state) {
                                 case 1:
                                     alarm_btn.setBackground(getResources().getDrawable(R.drawable.ai_close));
@@ -279,14 +298,14 @@ public class mainpage extends Activity implements RecyclerTouchListener.Recycler
             }
 
             public void bindData(mainpage_RowModel rowModel) {
-                mainText.setText(rowModel.getTitle());
-                repeatday.setText(rowModel.getRepeatday());
+                mainText.setText(rowModel.getNormal_edit_title());
+                repeatday.setText(rowModel.getRepeat());
                 alarm_time.setText(rowModel.getAlarm_time());
                 type = rowModel.getType();
                 state = rowModel.getState();
-                if (type == "normal"){
+                if (type.equals("normal")){
                     alarm_btn.setBackground(getResources().getDrawable(R.drawable.normal));
-                } else if (type == "ai") {
+                } else if (type.equals("ai")) {
                     alarm_btn.setBackground(getResources().getDrawable(R.drawable.ai_open));
                 }
             }
