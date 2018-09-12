@@ -5,6 +5,7 @@ import android.content.ContentValues;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Color;
+import android.media.MediaPlayer;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.provider.MediaStore;
@@ -25,13 +26,20 @@ public class normal_alarm_music extends Activity {
     TextView music_list1;
     View view2;
     String index = "Default";
-    Cursor cursor;
+    Cursor cursor, cursor1;
     int select_item = -1;
+    int rcode;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
         setContentView(R.layout.normal_alarm_music);
+
+        Intent intent1 = getIntent();
+        if (intent1 != null){
+            rcode = intent1.getIntExtra("rcode",0);
+        }
+
 
         String selection = MediaStore.Audio.Media.DURATION+">5000";
         cursor = getContentResolver().query(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, null,
@@ -52,7 +60,7 @@ public class normal_alarm_music extends Activity {
             @Override
             public void onClick(View v) {
                 v.setBackgroundColor(Color.GRAY);
-                if (select_item == 1){
+                if (select_item != 1){
                     view2.setBackgroundColor(Color.WHITE);
                 }
                 select_item = -1;
@@ -64,10 +72,11 @@ public class normal_alarm_music extends Activity {
             @Override
             public void onItemClick(AdapterView<?> adapterView, final View view, final int i, long l) {
                 //點選某個item並呈現被選取的狀態
-                select_item = 1;
+                select_item = i;
                 index = cursor.getString(cursor.getColumnIndex("TITLE"));
                 music_list1.setBackgroundColor(Color.WHITE);
                 view2 = view;
+
             }
         });
 
@@ -79,6 +88,7 @@ public class normal_alarm_music extends Activity {
                 intent_apply.setClass(normal_alarm_music.this, normal_alarm.class);
                 Bundle bundle = new Bundle();
                 bundle.putString("index", index);
+                bundle.putString("from", "music");
                 if (cursor.moveToPosition(select_item)) {
 
                     int fileColumn = cursor.getColumnIndex(MediaStore.Audio.Media.DATA);

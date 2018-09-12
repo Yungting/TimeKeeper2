@@ -17,7 +17,8 @@ public class DB_normal_alarm extends SQLiteOpenHelper{
     //public static final String KEY_ID = "_id";
 
     public static final String REPEAT_TXT = "repeat_txt";
-    public static final String MIME_TYPE = "mime_type";
+    public static final String AUDIOPATH = "audiopath";
+    public static final String AUDIONAME = "audioname";
     public static final String REQUESTCODE = "requestcode";
     public static final String IFREPEAT = "ifrepeat";
     public static final String NORMAL_EDIT_TITLE = "normal_edit_title";
@@ -38,7 +39,8 @@ public class DB_normal_alarm extends SQLiteOpenHelper{
         String CREATE_TABLE =
                 "CREATE TABLE IF NOT EXISTS " + TABLE_NAME + " (" +
                         REPEAT_TXT + " TEXT," +
-                        MIME_TYPE + " TEXT , " +
+                        AUDIOPATH + " TEXT , " +
+                        AUDIONAME + " TEXT , " +
                         REQUESTCODE + " INTEGER PRIMARY KEY, " +
                         IFREPEAT + " BOOLEAN , " +
                         NORMAL_EDIT_TITLE + " TEXT," +
@@ -56,7 +58,7 @@ public class DB_normal_alarm extends SQLiteOpenHelper{
         Cursor cursor = db.query(TABLE_NAME,null,null,null,null,null,null);
         return cursor;
     }
-    public long insert(String repeat_txt , String mime_type, int request_code, boolean ifrepeat, String normal_edit_title ,
+    public long insert(String repeat_txt , String audiopath, String audioname, int request_code, boolean ifrepeat, String normal_edit_title ,
                        String alarmtime, String type, int state) {
         //SQLiteDatabase db = this.getWritableDatabase();
         // 建立準備新增資料的ContentValues物件
@@ -64,7 +66,8 @@ public class DB_normal_alarm extends SQLiteOpenHelper{
         // 加入ContentValues物件包裝的新增資料
         // 第一個參數是欄位名稱， 第二個參數是欄位的資料
         cv.put(REPEAT_TXT,repeat_txt);
-        cv.put(MIME_TYPE, mime_type);
+        cv.put(AUDIOPATH, audiopath);
+        cv.put(AUDIONAME, audioname);
         cv.put(REQUESTCODE, request_code);
         cv.put(IFREPEAT, ifrepeat);
         cv.put(NORMAL_EDIT_TITLE, normal_edit_title);
@@ -79,16 +82,23 @@ public class DB_normal_alarm extends SQLiteOpenHelper{
         long row = db.insert(TABLE_NAME, null, cv);
         return row;
     }
-    public void update(int request_code,String repeat_txt ,String mime_type, boolean ifrepeat, String normal_edit_title , String alarmtime, String type, int state){
+    public void updateall(int request_code,String repeat_txt ,String audiopath, String audioname, boolean ifrepeat, String normal_edit_title , String alarmtime, String type, int state){
         ContentValues values = new ContentValues();
         values.put(REPEAT_TXT,repeat_txt);
-        values.put(MIME_TYPE, mime_type);
+        values.put(AUDIOPATH, audiopath);
+        values.put(AUDIONAME, audioname);
         values.put(IFREPEAT, ifrepeat);
         values.put(NORMAL_EDIT_TITLE, normal_edit_title);
         values.put(ALARMTIME, alarmtime);
         values.put(TYPE, type);
         values.put(STATE, state);
         db.update(TABLE_NAME,values,"requestcode="+request_code,null);
+    }
+
+    public void updatestate(int requestcode, int state){
+        ContentValues values = new ContentValues();
+        values.put(STATE, state);
+        db.update(TABLE_NAME, values, "requestcode="+requestcode, null);
     }
     public void delete(int requestcode)
     {
@@ -102,5 +112,11 @@ public class DB_normal_alarm extends SQLiteOpenHelper{
     {
         SQLiteDatabase db = this.getWritableDatabase();
         db.execSQL("DELETE FROM " + TABLE_NAME );
+    }
+
+    public Cursor selectbycode(int requestcode){
+        String selection = "requestcode" + " = " + Integer.toString(requestcode);
+        Cursor cursor = db.query(TABLE_NAME,null, selection,null,null,null,null);
+        return cursor;
     }
 }

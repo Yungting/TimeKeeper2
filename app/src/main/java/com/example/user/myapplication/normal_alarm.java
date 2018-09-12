@@ -5,6 +5,7 @@ import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.app.TimePickerDialog;
 import android.content.Intent;
+import android.database.Cursor;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -35,42 +36,48 @@ public class normal_alarm extends Activity {
     LinearLayout rington;
     LinearLayout repeat_layout,repeat_day;
     int[] repeatday = new int[7];
-    
+    int rcode1 = 0;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.normal_alarm);
+        TextView normal_edit_title = findViewById(R.id.normal_edit_title);
 
+        Intent intentcode = getIntent();
+        if (intentcode!= null){
+            rcode1 = intentcode.getIntExtra("requestcode", 0);
+        }
         am2 = (AlarmManager) getSystemService(ALARM_SERVICE);
         alarm_number = (TextView) findViewById(R.id.alarm_number);
-        calendar2.setTimeInMillis(System.currentTimeMillis());
-        hour = calendar2.get(Calendar.HOUR_OF_DAY);
-        minute = calendar2.get(Calendar.MINUTE);
-        alarm_number.setText(hour+" : "+minute);
-        alarm_number.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                new TimePickerDialog(normal_alarm.this, new TimePickerDialog.OnTimeSetListener(){
-
-                    public void onTimeSet(TimePicker view, int hourOfDay, int minute1) {
-                        alarm_number.setText(hourOfDay + " : " + minute1);
-                        alarmtime = hourOfDay+":"+minute1;
-                        calendar2.set(Calendar.HOUR_OF_DAY, hourOfDay);
-                        calendar2.set(Calendar.MINUTE, minute1);
-                        calendar2.set(Calendar.SECOND, 0);
-                    }
-                }, hour, minute, false).show();
+        if (rcode1 == 0){
+            calendar2.setTimeInMillis(System.currentTimeMillis());
+        }else{
+            DB_normal_alarm db = new DB_normal_alarm(this);
+            Cursor cursor = db.selectbycode(rcode1);
+            if (cursor != null && cursor.moveToFirst()){
+                Long t = Long.parseLong(cursor.getString(6));
+                calendar2.setTimeInMillis(t);
+                normal_edit_title.setText(cursor.getString(5));
+                index = cursor.getString(2);
+                audioFilePath = cursor.getString(1);
+                Log.d("index",":"+cursor.getString(1));
             }
-        });
+
+        }
+        alarmpicker();
 
         rington = findViewById(R.id.rington);
         Bundle bundle = getIntent().getExtras();
         if (bundle != null){
-            index = bundle.getString("index");
-            mimeType = bundle.getString("mimeType");
-            audioFilePath = bundle.getString("audioFilePath");
+            if (bundle.getString("from") != null){
+                index = bundle.getString("index");
+                mimeType = bundle.getString("mimeType");
+                audioFilePath = bundle.getString("audioFilePath");
+            }
         }
+
         if (index == null){index = "Default";}
         TextView rington_show = findViewById(R.id.rington_show);
         rington_show.setText(index);
@@ -78,6 +85,7 @@ public class normal_alarm extends Activity {
             @Override
             public void onClick(View view) {
                 Intent intent1 = new Intent(normal_alarm.this, normal_alarm_music.class);
+                intent1.putExtra("rcode", rcode1);
                 startActivity(intent1);
             }
         });
@@ -107,6 +115,40 @@ public class normal_alarm extends Activity {
             }
         });
 
+    }
+
+    //////////Method//////////
+    public void alarmpicker(){
+        hour = calendar2.get(Calendar.HOUR_OF_DAY);
+        minute = calendar2.get(Calendar.MINUTE);
+        alarm_number.setText(zeroinclock(hour, minute));
+        alarm_number.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                new TimePickerDialog(normal_alarm.this, new TimePickerDialog.OnTimeSetListener(){
+
+                    public void onTimeSet(TimePicker view, int hourOfDay, int minute1) {
+                        alarm_number.setText(zeroinclock(hourOfDay, minute1));
+                        alarmtime = hourOfDay+":"+minute1;
+                        calendar2.set(Calendar.HOUR_OF_DAY, hourOfDay);
+                        calendar2.set(Calendar.MINUTE, minute1);
+                        calendar2.set(Calendar.SECOND, 0);
+                    }
+                }, hour, minute, false).show();
+            }
+        });
+    }
+
+    public String zeroinclock(int hour, int min){
+        String time = "";
+        if (hour < 10 && minute < 10){
+            return time = "0"+hour+" : 0"+minute;
+        }else if (hour < 10 && minute>=10){
+            return time = "0"+hour+" : "+minute;
+        }else if (hour >= 10 && minute<10){
+            return time = hour+" : 0"+minute;
+        }else if (hour >= 10 && minute >= 10){ return time = hour+" : "+minute;}
+        return time;
     }
 
     public void pickday(){
@@ -152,11 +194,15 @@ public class normal_alarm extends Activity {
 
         DB_normal_alarm db = new DB_normal_alarm(this);
         String millis = String.valueOf(calendar2.getTimeInMillis());
-        db.insert(repeat_text, mimeType, requestcode, ifrepeat, edit_text, millis,"normal",1);
+        db.insert(repeat_text, audioFilePath, index, requestcode, ifrepeat, edit_text, millis,"normal",1);
 
         Intent intent_set = new Intent();
         intent_set.setClass(this, mainpage.class);
         startActivity(intent_set);
+    }
+
+    public void updateAlarm(){
+
     }
 
 }

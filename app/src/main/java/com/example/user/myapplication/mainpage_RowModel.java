@@ -1,13 +1,14 @@
 package com.example.user.myapplication;
 
 public class mainpage_RowModel {
-    String repeat_txt, mime_type, normal_edit_title, type, alarmtime;
+    String repeat_txt, audioname, normal_edit_title, type, alarmtime, audiopath;
     int request_code, state;
     boolean ifrepeat;
 
-    public mainpage_RowModel(String repeat_txt , String mime_type, int request_code, boolean ifrepeat, String normal_edit_title , String alarmtime, String type, int state) {
+    public mainpage_RowModel(String repeat_txt , String audiopath, String audioname, int request_code, boolean ifrepeat, String normal_edit_title , String alarmtime, String type, int state) {
         this.repeat_txt = repeat_txt;
-        this.mime_type = mime_type;
+        this.audiopath = audiopath;
+        this.audioname = audioname;
         this.request_code = request_code;
         this.ifrepeat = ifrepeat;
         this.normal_edit_title = normal_edit_title;
@@ -19,7 +20,11 @@ public class mainpage_RowModel {
     public String getNormal_edit_title() {
         return normal_edit_title;
     }
-    public String getMime_type(){return  mime_type;}
+
+    public String getAudiopath() {
+        return audiopath;
+    }
+    public String getAudioname(){ return  audioname;}
     public int getRequestcode() {
         return request_code;
     }

@@ -46,8 +46,8 @@ public class mainpage extends Activity implements RecyclerTouchListener.Recycler
     private RecyclerTouchListener onTouchListener;
     private int openOptionsPosition;
     private OnActivityTouchListener touchListener;
-    ArrayList<Integer> state, requestcode;
-    ArrayList<String> type;
+    int[] requestcode = new int[50];
+    String[] alarmtype = new String[50];
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -117,7 +117,12 @@ public class mainpage extends Activity implements RecyclerTouchListener.Recycler
                 .setClickable(new RecyclerTouchListener.OnRowClickListener() {
                     @Override
                     public void onRowClicked(int position) {
-//                        ToastUtil.makeToast(getApplicationContext(), "Row " + (position + 1) + " clicked!");
+                        Intent intent;
+                        if (alarmtype[position].equals("normal")){
+                            intent = new Intent(mainpage.this, normal_alarm.class);
+                        }else {intent = new Intent(mainpage.this, ai_alarm.class);}
+                        intent.putExtra("requestcode", requestcode[position]);
+                        startActivity(intent);
                     }
 
                     @Override
@@ -139,8 +144,6 @@ public class mainpage extends Activity implements RecyclerTouchListener.Recycler
                         if (viewID == R.id.delete) {
                             message += "Change";
                         }
-                        message += " clicked for row " + (position + 1);
-//                        ToastUtil.makeToast(getApplicationContext(), message);
                     }
                 });
     }
@@ -166,9 +169,10 @@ public class mainpage extends Activity implements RecyclerTouchListener.Recycler
         if (db!= null){
             Cursor cursor = db.select();
             if (cursor.getCount()>0){
+                int i = 0;
                 for (cursor.moveToFirst(); !cursor.isAfterLast(); cursor.moveToNext()){
                     Calendar cal = Calendar.getInstance();
-                    Long t = Long.parseLong(cursor.getString(5));
+                    Long t = Long.parseLong(cursor.getString(6));
                     cal.setTimeInMillis(t);
                     int hour = cal.get(Calendar.HOUR_OF_DAY);
                     int min = cal.get(Calendar.MINUTE);
@@ -180,8 +184,11 @@ public class mainpage extends Activity implements RecyclerTouchListener.Recycler
                     }else if (hour >= 10 && min<10){
                         time = hour+":0"+min;
                     }else if (hour >= 10 && min >= 10){time = hour+":"+min;}
-                    list.add(new mainpage_RowModel(cursor.getString(0), cursor.getString(1), cursor.getInt(2), Boolean.parseBoolean(cursor.getString(3))
-                            ,cursor.getString(4), time, cursor.getString(6), cursor.getInt(7)));
+                    list.add(new mainpage_RowModel(cursor.getString(0), cursor.getString(1), cursor.getString(2), cursor.getInt(3), Boolean.parseBoolean(cursor.getString(4))
+                            ,cursor.getString(5), time, cursor.getString(7), cursor.getInt(8)));
+                    requestcode[i] = cursor.getInt(3);
+                    alarmtype[i] = cursor.getString(7);
+                    i++;
                 }
             }
         }
@@ -236,6 +243,7 @@ public class mainpage extends Activity implements RecyclerTouchListener.Recycler
             notifyItemRemoved(position);
             notifyDataSetChanged();
             DB_normal_alarm db = new DB_normal_alarm(mainpage.this);
+            db.delete(requestcode[position]);
         }
 
         @Override
@@ -249,7 +257,7 @@ public class mainpage extends Activity implements RecyclerTouchListener.Recycler
             Button alarm_btn;
             LinearLayout alarm, rowFG;
             RelativeLayout delete;
-            int state;
+            int state, requestcode;
             String type;
 
             public MainViewHolder(View itemView) {
@@ -266,18 +274,21 @@ public class mainpage extends Activity implements RecyclerTouchListener.Recycler
                 alarm_btn.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
+                        DB_normal_alarm db = new DB_normal_alarm(mainpage.this);
                         if( type.equals("ai")){
                             switch (state) {
                                 case 1:
                                     alarm_btn.setBackground(getResources().getDrawable(R.drawable.ai_close));
                                     alarm.setBackground(getResources().getDrawable(R.drawable.mainpage_alarm_background_close));
                                     state = 0;
+
                                     break;
 
                                 case 0:
                                     alarm_btn.setBackground(getResources().getDrawable(R.drawable.ai_open));
                                     alarm.setBackground(getResources().getDrawable(R.drawable.mainpage_alarm_background));
                                     state = 1;
+
                                     break;
                             }
                         }else {
@@ -285,11 +296,15 @@ public class mainpage extends Activity implements RecyclerTouchListener.Recycler
                                 case 1:
                                     alarm.setBackground(getResources().getDrawable(R.drawable.mainpage_alarm_background_close));
                                     state = 0;
+                                    db.updatestate(requestcode, state);
+                                    Log.d("state","upload");
                                     break;
 
                                 case 0:
                                     alarm.setBackground(getResources().getDrawable(R.drawable.mainpage_alarm_background));
                                     state = 1;
+                                    db.updatestate(requestcode, state);
+                                    Log.d("state","upload");
                                     break;
                             }
                         }
@@ -303,10 +318,17 @@ public class mainpage extends Activity implements RecyclerTouchListener.Recycler
                 alarm_time.setText(rowModel.getAlarm_time());
                 type = rowModel.getType();
                 state = rowModel.getState();
+                requestcode = rowModel.getRequestcode();
+
                 if (type.equals("normal")){
                     alarm_btn.setBackground(getResources().getDrawable(R.drawable.normal));
                 } else if (type.equals("ai")) {
                     alarm_btn.setBackground(getResources().getDrawable(R.drawable.ai_open));
+                }
+                if (state == 0){
+                    alarm.setBackground(getResources().getDrawable(R.drawable.mainpage_alarm_background_close));
+                }else{
+                    alarm.setBackground(getResources().getDrawable(R.drawable.mainpage_alarm_background));
                 }
             }
         }
