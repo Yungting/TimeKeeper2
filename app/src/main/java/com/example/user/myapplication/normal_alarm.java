@@ -64,7 +64,6 @@ public class normal_alarm extends Activity {
                 audioFilePath = cursor.getString(1);
                 Log.d("index",":"+cursor.getString(1));
             }
-
         }
         alarmpicker();
 
@@ -90,6 +89,8 @@ public class normal_alarm extends Activity {
             }
         });
 
+
+
         //展開
         repeat_layout = findViewById(R.id.repeat_layout);
         repeat_day = findViewById(R.id.repeat_day);
@@ -111,7 +112,12 @@ public class normal_alarm extends Activity {
         creat_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                setAlarm();
+                if (rcode1 == 0){
+                    setAlarm();
+                }else {
+                    updateAlarm(rcode1);
+                }
+
             }
         });
 
@@ -138,19 +144,19 @@ public class normal_alarm extends Activity {
             }
         });
     }
-
+    //alarm兩單位
     public String zeroinclock(int hour, int min){
         String time = "";
-        if (hour < 10 && minute < 10){
-            return time = "0"+hour+" : 0"+minute;
-        }else if (hour < 10 && minute>=10){
-            return time = "0"+hour+" : "+minute;
-        }else if (hour >= 10 && minute<10){
-            return time = hour+" : 0"+minute;
-        }else if (hour >= 10 && minute >= 10){ return time = hour+" : "+minute;}
+        if (hour < 10 && min < 10){
+            return time = "0"+hour+" : 0"+min;
+        }else if (hour < 10 && min>=10){
+            return time = "0"+hour+" : "+min;
+        }else if (hour >= 10 && min<10){
+            return time = hour+" : 0"+min;
+        }else if (hour >= 10 && min >= 10){ return time = hour+" : "+min;}
         return time;
     }
-
+    //星期選擇
     public void pickday(){
         repeat_text="";
         i = 0;
@@ -171,8 +177,9 @@ public class normal_alarm extends Activity {
         if (day_S.isChecked()){ repeat_text = repeat_text+"S  "; repeatday[i] = 7; i++;}
         TextView repeat_show = findViewById(R.id.repeat_show);
         repeat_show.setText(repeat_text);
+//        repeat_checkbox.setChecked(true);
     }
-
+    //新增鬧鐘
     public void setAlarm(){
         repeat_checkbox = (CheckBox)findViewById(R.id.repeat_checkbox);
         requestcode = (int)System.currentTimeMillis();
@@ -184,7 +191,7 @@ public class normal_alarm extends Activity {
         intent.putExtra("requestcode", requestcode);
         if (repeat_checkbox.isChecked()){
             PendingIntent pi = PendingIntent.getActivity(this, requestcode, intent, PendingIntent.FLAG_UPDATE_CURRENT);
-            am2.setRepeating(AlarmManager.RTC_WAKEUP, calendar2.getTimeInMillis(), 60*1000, pi);
+            am2.setRepeating(AlarmManager.RTC_WAKEUP, calendar2.getTimeInMillis(), 24*60*60*1000, pi);
             ifrepeat = true;
         }else {
             PendingIntent pi = PendingIntent.getActivity(this, requestcode, intent, PendingIntent.FLAG_UPDATE_CURRENT);
@@ -195,13 +202,36 @@ public class normal_alarm extends Activity {
         DB_normal_alarm db = new DB_normal_alarm(this);
         String millis = String.valueOf(calendar2.getTimeInMillis());
         db.insert(repeat_text, audioFilePath, index, requestcode, ifrepeat, edit_text, millis,"normal",1);
-
+        db.close();
         Intent intent_set = new Intent();
         intent_set.setClass(this, mainpage.class);
         startActivity(intent_set);
     }
+    //修改鬧鐘
+    public void updateAlarm(int requestcode){
+        repeat_checkbox = (CheckBox)findViewById(R.id.repeat_checkbox);
+        Boolean ifrepeat;
+        TextView normal_edit_title = findViewById(R.id.normal_edit_title);
+        String edit_text = normal_edit_title.getText().toString();
+        Intent intent = new Intent(this, ai_alarmalert.class);
+        intent.putExtra("requestcode", requestcode);
+        if (repeat_checkbox.isChecked()){
+            PendingIntent pi = PendingIntent.getActivity(this, requestcode, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+            am2.setRepeating(AlarmManager.RTC_WAKEUP, calendar2.getTimeInMillis(), 24*60*60*1000, pi);
+            ifrepeat = true;
+        }else {
+            PendingIntent pi = PendingIntent.getActivity(this, requestcode, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+            am2.set(AlarmManager.RTC_WAKEUP, calendar2.getTimeInMillis(), pi);
+            ifrepeat = false;
+        }
 
-    public void updateAlarm(){
+        DB_normal_alarm db = new DB_normal_alarm(this);
+        String millis = String.valueOf(calendar2.getTimeInMillis());
+        db.updateall(requestcode, repeat_text, audioFilePath, index, ifrepeat, edit_text, millis,"normal",1);
+        db.close();
+        Intent intent_set = new Intent();
+        intent_set.setClass(this, mainpage.class);
+        startActivity(intent_set);
 
     }
 

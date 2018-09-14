@@ -6,31 +6,40 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.database.Cursor;
 import android.media.MediaPlayer;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Window;
 import android.view.WindowManager;
 
+import java.io.IOException;
 import java.util.Calendar;
 
 public class ai_alarmalert extends AppCompatActivity {
-
+    int requestcode;
     MediaPlayer mp;
+    String musicpath;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        DB_normal_alarm db = new DB_normal_alarm(this);
+        Intent intent = getIntent();
+        requestcode = intent.getIntExtra("requestcode", 0);
+        Cursor cursor = db.selectbycode(requestcode);
+        if (cursor != null && cursor.moveToFirst()){
+            musicpath = cursor.getString(1);
+        }
+
         Window win = getWindow();
         win.addFlags(WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD | WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED);
         win.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON | WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON);
-        mp = new MediaPlayer();
 
-        mp = MediaPlayer.create(this, R.raw.test);
-        mp.setLooping(true);
-        mp.start();
-        alarmDialog();
+        detectrepeat(requestcode, cursor);
     }
 
     @Override
@@ -75,12 +84,74 @@ public class ai_alarmalert extends AppCompatActivity {
     private void alarm(){
         AlarmManager am = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
 
-        long triggertime = System.currentTimeMillis()+5000;
+        long triggertime = System.currentTimeMillis()+300000;
         Intent intent = new Intent(this, ai_alarmalert.class);
         PendingIntent op = PendingIntent.getActivity(this,0, intent ,PendingIntent.FLAG_UPDATE_CURRENT);
 
         am.set(AlarmManager.RTC, triggertime,op);
-
     }
 
+    public void oneminute(){
+        Handler h = new Handler();
+        Runnable stopPlaybackRun = new Runnable() {
+            public void run(){
+                mp.stop();
+                mp.release();
+                alarm();
+            }
+        };
+        h.postDelayed(stopPlaybackRun, 60 * 1000);
+    }
+
+    public void detectrepeat(int requestcode, Cursor cursor){
+        String rday = cursor.getString(0);
+        if (rday != null){
+            String[] arrays = rday.trim().split("\\s+");
+            int i = 0;
+            int[] d = new int[7];
+
+            Calendar calendar = Calendar.getInstance();
+            calendar.setTimeInMillis(System.currentTimeMillis());
+
+            for(String s : arrays){
+                if (s.equals("Su")){ d[i] = 1;}
+                if (s.equals("M")){ d[i] = 2;}
+                if (s.equals("T")){ d[i] = 3;}
+                if (s.equals("W")){ d[i] = 4;}
+                if (s.equals("Th")){ d[i] = 5;}
+                if (s.equals("F")){ d[i] = 6;}
+                if (s.equals("S")){ d[i] = 7;}
+                i++;
+            }
+            for (int j = 0; j<7; j++){
+                if (d[j] == calendar.get(Calendar.DAY_OF_WEEK)){
+                    ring(musicpath);
+                    break;
+                }
+            }
+        }else {
+            ring(musicpath);
+        }
+    }
+
+    public void ring(String musicpath){
+        mp = new MediaPlayer();
+        if (musicpath == null){
+            mp = MediaPlayer.create(this, R.raw.test);
+            mp.setLooping(true);
+            mp.start();
+            oneminute();
+            alarmDialog();
+        }else {
+            try {
+                mp.setDataSource(musicpath);
+                mp.prepare();
+                mp.start();
+                oneminute();
+                alarmDialog();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
 }

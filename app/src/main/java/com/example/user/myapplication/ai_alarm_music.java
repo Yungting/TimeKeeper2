@@ -25,6 +25,7 @@ public class ai_alarm_music extends Activity {
     View view2;
     String index = "Default";
     int select_item = -1;
+    int[] pois = new int[300];
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -34,6 +35,11 @@ public class ai_alarm_music extends Activity {
 
         final String selection = MediaStore.Audio.Media.DURATION + ">5000";
         cursor = getContentResolver().query(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, null, selection, null, MediaStore.Audio.Media.DEFAULT_SORT_ORDER);
+        int i = 0;
+        for (cursor.moveToFirst(); !cursor.isAfterLast(); cursor.moveToNext()){
+            pois[i] = i;
+            i++;
+        }
 
         music_list = findViewById(R.id.music_list);
         music_list1 = findViewById(R.id.music_list1);

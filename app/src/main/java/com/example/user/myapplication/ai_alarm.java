@@ -41,7 +41,7 @@ public class ai_alarm extends Activity {
         calendar.setTimeInMillis(System.currentTimeMillis());
         hour = calendar.get(Calendar.HOUR_OF_DAY);
         minute = calendar.get(Calendar.MINUTE);
-        alarm_number.setText(hour+" : "+minute);
+//        alarm_number.setText(hour+" : "+minute);
         alarm_number = findViewById(R.id.alarm_number);
         alarm_number.setOnClickListener(new View.OnClickListener() {
             @Override

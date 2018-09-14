@@ -29,10 +29,11 @@ public class normal_alarm_music extends Activity {
     Cursor cursor, cursor1;
     int select_item = -1;
     int rcode;
+    int[] pois = new int[300];
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-            super.onCreate(savedInstanceState);
+        super.onCreate(savedInstanceState);
         setContentView(R.layout.normal_alarm_music);
 
         Intent intent1 = getIntent();
@@ -44,7 +45,11 @@ public class normal_alarm_music extends Activity {
         String selection = MediaStore.Audio.Media.DURATION+">5000";
         cursor = getContentResolver().query(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, null,
                 selection, null, MediaStore.Audio.Media.DEFAULT_SORT_ORDER);
-
+        int i = 0;
+        for (cursor.moveToFirst(); !cursor.isAfterLast(); cursor.moveToNext()){
+            pois[i] = i;
+            i++;
+        }
         String[] str = new String[]{MediaStore.Audio.Media.TITLE , MediaStore.Audio.Media.ARTIST};
         int[] displayViews = new int[]{R.id.music_name};
         SimpleCursorAdapter adapter = new SimpleCursorAdapter(this, R.layout.music_item, cursor, str, displayViews, CursorAdapter.FLAG_REGISTER_CONTENT_OBSERVER);

@@ -1,6 +1,8 @@
 package com.example.user.myapplication;
 
 import android.app.Activity;
+import android.app.AlarmManager;
+import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
@@ -243,7 +245,12 @@ public class mainpage extends Activity implements RecyclerTouchListener.Recycler
             notifyItemRemoved(position);
             notifyDataSetChanged();
             DB_normal_alarm db = new DB_normal_alarm(mainpage.this);
+            AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+            Intent intent = new Intent(mainpage.this, ai_alarmalert.class);
+            PendingIntent pi = PendingIntent.getActivity(mainpage.this, requestcode[position], intent, PendingIntent.FLAG_UPDATE_CURRENT);
+            alarmManager.cancel(pi);
             db.delete(requestcode[position]);
+            db.close();
         }
 
         @Override
@@ -281,7 +288,10 @@ public class mainpage extends Activity implements RecyclerTouchListener.Recycler
                                     alarm_btn.setBackground(getResources().getDrawable(R.drawable.ai_close));
                                     alarm.setBackground(getResources().getDrawable(R.drawable.mainpage_alarm_background_close));
                                     state = 0;
-
+                                    AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+                                    Intent intent = new Intent(mainpage.this, ai_alarmalert.class);
+                                    PendingIntent pi = PendingIntent.getActivity(mainpage.this, requestcode, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+                                    alarmManager.cancel(pi);
                                     break;
 
                                 case 0:
@@ -297,14 +307,17 @@ public class mainpage extends Activity implements RecyclerTouchListener.Recycler
                                     alarm.setBackground(getResources().getDrawable(R.drawable.mainpage_alarm_background_close));
                                     state = 0;
                                     db.updatestate(requestcode, state);
-                                    Log.d("state","upload");
+                                    AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+                                    Intent intent = new Intent(mainpage.this, ai_alarmalert.class);
+                                    PendingIntent pi = PendingIntent.getActivity(mainpage.this, requestcode, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+                                    alarmManager.cancel(pi);
                                     break;
 
                                 case 0:
                                     alarm.setBackground(getResources().getDrawable(R.drawable.mainpage_alarm_background));
                                     state = 1;
                                     db.updatestate(requestcode, state);
-                                    Log.d("state","upload");
+
                                     break;
                             }
                         }
