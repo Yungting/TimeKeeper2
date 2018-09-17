@@ -198,6 +198,7 @@ public class normal_alarm extends Activity {
         repeat_checkbox = (CheckBox)findViewById(R.id.repeat_checkbox);
         requestcode = (int)System.currentTimeMillis();
         Boolean ifrepeat;
+        pickday();
         TextView normal_edit_title = findViewById(R.id.normal_edit_title);
         String edit_text = normal_edit_title.getText().toString();
 
@@ -210,8 +211,13 @@ public class normal_alarm extends Activity {
             ifrepeat = true;
         }else {
             PendingIntent pi = PendingIntent.getActivity(this, requestcode, intent, PendingIntent.FLAG_UPDATE_CURRENT);
-            am2.set(AlarmManager.RTC_WAKEUP, calendar2.getTimeInMillis(), pi);
-            Log.d("set",":set");
+            if (System.currentTimeMillis() > calendar2.getTimeInMillis()){
+                Log.d("case",":settmr");
+                am2.set(AlarmManager.RTC_WAKEUP, calendar2.getTimeInMillis()+24*60*60*1000, pi);
+            }else{
+                Log.d("case",":settoday");
+                am2.set(AlarmManager.RTC_WAKEUP, calendar2.getTimeInMillis(), pi);
+            }
             ifrepeat = false;
         }
 
@@ -227,6 +233,7 @@ public class normal_alarm extends Activity {
     public void updateAlarm(int requestcode){
         repeat_checkbox = (CheckBox)findViewById(R.id.repeat_checkbox);
         Boolean ifrepeat;
+        pickday();
         TextView normal_edit_title = findViewById(R.id.normal_edit_title);
         String edit_text = normal_edit_title.getText().toString();
         Intent intent = new Intent(this, ai_alarmalert.class);
@@ -237,7 +244,13 @@ public class normal_alarm extends Activity {
             ifrepeat = true;
         }else {
             PendingIntent pi = PendingIntent.getActivity(this, requestcode, intent, PendingIntent.FLAG_UPDATE_CURRENT);
-            am2.set(AlarmManager.RTC_WAKEUP, calendar2.getTimeInMillis(), pi);
+            if (System.currentTimeMillis() > calendar2.getTimeInMillis()){
+                Log.d("case",":settmr");
+                am2.set(AlarmManager.RTC_WAKEUP, calendar2.getTimeInMillis()+24*60*60*1000, pi);
+            }else{
+                Log.d("case",":settoday");
+                am2.set(AlarmManager.RTC_WAKEUP, calendar2.getTimeInMillis(), pi);
+            }
             ifrepeat = false;
         }
 
