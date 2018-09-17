@@ -31,7 +31,7 @@ public class normal_alarm extends Activity {
     TextView alarm_number;
     Calendar calendar2 = Calendar.getInstance();
     int hour,minute, i, requestcode;
-    String repeat_text, index, mimeType, audioFilePath, alarmtime;
+    String repeat_text, index, mimeType, audioFilePath, alarmtime, rday;
     CheckBox day_Su, day_M, day_T, day_W, day_Th, day_F, day_S, repeat_checkbox;
     LinearLayout rington;
     LinearLayout repeat_layout,repeat_day;
@@ -62,20 +62,13 @@ public class normal_alarm extends Activity {
                 normal_edit_title.setText(cursor.getString(5));
                 index = cursor.getString(2);
                 audioFilePath = cursor.getString(1);
-                Log.d("index",":"+cursor.getString(1));
+                rday = cursor.getString(0);
+                pickday();
             }
         }
         alarmpicker();
 
         rington = findViewById(R.id.rington);
-        Bundle bundle = getIntent().getExtras();
-        if (bundle != null){
-            if (bundle.getString("from") != null){
-                index = bundle.getString("index");
-                mimeType = bundle.getString("mimeType");
-                audioFilePath = bundle.getString("audioFilePath");
-            }
-        }
 
         if (index == null){index = "Default";}
         TextView rington_show = findViewById(R.id.rington_show);
@@ -85,7 +78,8 @@ public class normal_alarm extends Activity {
             public void onClick(View view) {
                 Intent intent1 = new Intent(normal_alarm.this, normal_alarm_music.class);
                 intent1.putExtra("rcode", rcode1);
-                startActivity(intent1);
+                intent1.putExtra("audiopath", audioFilePath);
+                startActivityForResult(intent1, 1);
             }
         });
 
@@ -117,7 +111,6 @@ public class normal_alarm extends Activity {
                 }else {
                     updateAlarm(rcode1);
                 }
-
             }
         });
 
@@ -158,8 +151,7 @@ public class normal_alarm extends Activity {
     }
     //星期選擇
     public void pickday(){
-        repeat_text="";
-        i = 0;
+        TextView repeat_show = findViewById(R.id.repeat_show);
         day_Su = (CheckBox) findViewById(R.id.su);
         day_M = (CheckBox) findViewById(R.id.m);
         day_T = (CheckBox) findViewById(R.id.T);
@@ -167,6 +159,24 @@ public class normal_alarm extends Activity {
         day_Th = (CheckBox) findViewById(R.id.Th);
         day_F = (CheckBox) findViewById(R.id.F);
         day_S = (CheckBox) findViewById(R.id.S);
+        repeat_checkbox = findViewById(R.id.repeat_checkbox);
+
+        if (rday != null){
+            repeat_checkbox.setChecked(true);
+            String[] arrays = rday.trim().split("\\s+");
+            for(String s : arrays){
+                if (s.equals("Su")){ day_Su.setChecked(true);}
+                if (s.equals("M")){ day_M.setChecked(true);}
+                if (s.equals("T")){ day_T.setChecked(true);}
+                if (s.equals("W")){ day_W.setChecked(true);}
+                if (s.equals("Th")){ day_Th.setChecked(true);}
+                if (s.equals("F")){ day_F.setChecked(true);}
+                if (s.equals("S")){ day_S.setChecked(true);}
+            }
+            repeat_show.setText(rday);
+        }
+        repeat_text="";
+        i = 0;
 
         if (day_Su.isChecked()){ repeat_text = "Su "; repeatday[i] = 1; i++;}
         if (day_M.isChecked()){ repeat_text = repeat_text+"M  "; repeatday[i] = 2; i++;}
@@ -175,9 +185,13 @@ public class normal_alarm extends Activity {
         if (day_Th.isChecked()){ repeat_text = repeat_text+"Th  "; repeatday[i] = 5; i++;}
         if (day_F.isChecked()){ repeat_text = repeat_text+"F  "; repeatday[i] = 6; i++;}
         if (day_S.isChecked()){ repeat_text = repeat_text+"S  "; repeatday[i] = 7; i++;}
-        TextView repeat_show = findViewById(R.id.repeat_show);
+
         repeat_show.setText(repeat_text);
-//        repeat_checkbox.setChecked(true);
+        if (repeat_text.equals("")){
+            repeat_checkbox.setChecked(false);
+        }else {
+            repeat_checkbox.setChecked(true);
+        }
     }
     //新增鬧鐘
     public void setAlarm(){
@@ -189,13 +203,15 @@ public class normal_alarm extends Activity {
 
         Intent intent = new Intent(this, ai_alarmalert.class);
         intent.putExtra("requestcode", requestcode);
-        if (repeat_checkbox.isChecked()){
+        if (repeat_checkbox.isChecked() && !repeat_text.equals("")){
             PendingIntent pi = PendingIntent.getActivity(this, requestcode, intent, PendingIntent.FLAG_UPDATE_CURRENT);
             am2.setRepeating(AlarmManager.RTC_WAKEUP, calendar2.getTimeInMillis(), 24*60*60*1000, pi);
+            Log.d("sest",":set");
             ifrepeat = true;
         }else {
             PendingIntent pi = PendingIntent.getActivity(this, requestcode, intent, PendingIntent.FLAG_UPDATE_CURRENT);
             am2.set(AlarmManager.RTC_WAKEUP, calendar2.getTimeInMillis(), pi);
+            Log.d("set",":set");
             ifrepeat = false;
         }
 
@@ -215,7 +231,7 @@ public class normal_alarm extends Activity {
         String edit_text = normal_edit_title.getText().toString();
         Intent intent = new Intent(this, ai_alarmalert.class);
         intent.putExtra("requestcode", requestcode);
-        if (repeat_checkbox.isChecked()){
+        if (repeat_checkbox.isChecked() && !repeat_text.equals("")){
             PendingIntent pi = PendingIntent.getActivity(this, requestcode, intent, PendingIntent.FLAG_UPDATE_CURRENT);
             am2.setRepeating(AlarmManager.RTC_WAKEUP, calendar2.getTimeInMillis(), 24*60*60*1000, pi);
             ifrepeat = true;
@@ -233,6 +249,26 @@ public class normal_alarm extends Activity {
         intent_set.setClass(this, mainpage.class);
         startActivity(intent_set);
 
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(data == null){
+            return;
+        }
+        if(resultCode == 2){
+            if(requestCode== 1){
+                if (data.getExtras() != null){
+                    index = data.getExtras().getString("index");
+                    mimeType = data.getExtras().getString("mimeType");
+                    audioFilePath = data.getExtras().getString("audioFilePath");
+                    Log.d("index",":"+index);
+                    TextView rington_show = findViewById(R.id.rington_show);
+                    rington_show.setText(index);
+                }
+            }
+        }
     }
 
 }

@@ -298,6 +298,9 @@ public class mainpage extends Activity implements RecyclerTouchListener.Recycler
                                     alarm_btn.setBackground(getResources().getDrawable(R.drawable.ai_open));
                                     alarm.setBackground(getResources().getDrawable(R.drawable.mainpage_alarm_background));
                                     state = 1;
+                                    AlarmManager alarm = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+                                    Intent intent1 = new Intent(mainpage.this, ai_alarmalert.class);
+                                    PendingIntent pi1 = PendingIntent.getActivity(mainpage.this, requestcode, intent1, PendingIntent.FLAG_UPDATE_CURRENT);
 
                                     break;
                             }
@@ -317,7 +320,7 @@ public class mainpage extends Activity implements RecyclerTouchListener.Recycler
                                     alarm.setBackground(getResources().getDrawable(R.drawable.mainpage_alarm_background));
                                     state = 1;
                                     db.updatestate(requestcode, state);
-
+                                    
                                     break;
                             }
                         }

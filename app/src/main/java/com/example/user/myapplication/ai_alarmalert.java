@@ -23,6 +23,7 @@ public class ai_alarmalert extends AppCompatActivity {
     int requestcode;
     MediaPlayer mp;
     String musicpath;
+    Handler h = new Handler();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,6 +62,8 @@ public class ai_alarmalert extends AppCompatActivity {
             public void onClick(DialogInterface dialog, int which) {
 
                 alarm();
+                h.removeCallbacksAndMessages(null);
+                dialog.dismiss();
                 finish();
             }
         });
@@ -68,6 +71,8 @@ public class ai_alarmalert extends AppCompatActivity {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 mp.stop();
+                h.removeCallbacksAndMessages(null);
+                dialog.dismiss();
                 finish();
             }
         });
@@ -92,7 +97,6 @@ public class ai_alarmalert extends AppCompatActivity {
     }
 
     public void oneminute(){
-        Handler h = new Handler();
         Runnable stopPlaybackRun = new Runnable() {
             public void run(){
                 mp.stop();
@@ -129,6 +133,7 @@ public class ai_alarmalert extends AppCompatActivity {
                     break;
                 }
             }
+            finish();
         }else {
             ring(musicpath);
         }
@@ -139,6 +144,7 @@ public class ai_alarmalert extends AppCompatActivity {
         if (musicpath == null){
             mp = MediaPlayer.create(this, R.raw.test);
             mp.setLooping(true);
+            mp.setVolume(1.0f, 1.0f);
             mp.start();
             oneminute();
             alarmDialog();
@@ -146,6 +152,7 @@ public class ai_alarmalert extends AppCompatActivity {
             try {
                 mp.setDataSource(musicpath);
                 mp.prepare();
+                mp.setVolume(1.0f, 1.0f);
                 mp.start();
                 oneminute();
                 alarmDialog();
