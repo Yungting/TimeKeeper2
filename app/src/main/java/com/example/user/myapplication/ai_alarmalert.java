@@ -96,7 +96,7 @@ public class ai_alarmalert extends AppCompatActivity {
         AlarmManager am = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
 
         Log.d("code",":"+requestcode);
-        long triggertime = System.currentTimeMillis()+3000;
+        long triggertime = System.currentTimeMillis()+300000;
         Intent intent = new Intent(this, ai_alarmalert.class);
         intent.putExtra("requestcode", requestcode);
         PendingIntent op = PendingIntent.getActivity(this, requestcode, intent ,PendingIntent.FLAG_UPDATE_CURRENT);
@@ -116,7 +116,7 @@ public class ai_alarmalert extends AppCompatActivity {
                 }
             }
         };
-        h.postDelayed(stopPlaybackRun, 60 * 100);
+        h.postDelayed(stopPlaybackRun, 60 * 1000);
     }
 
     public void detectrepeat(int requestcode, Cursor cursor){
