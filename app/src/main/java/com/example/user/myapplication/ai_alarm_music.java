@@ -20,7 +20,6 @@ import java.io.File;
 public class ai_alarm_music extends Activity {
     ListView music_list;
     TextView music_list1;
-    Button go_back;
     Cursor cursor;
     View view2;
     String index = "Default";

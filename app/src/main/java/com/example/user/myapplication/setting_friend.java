@@ -2,6 +2,7 @@ package com.example.user.myapplication;
 
 import android.content.Context;
 import android.content.Intent;
+import android.os.IBinder;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -10,12 +11,15 @@ import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.AlphaAnimation;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.PopupMenu;
@@ -115,9 +119,10 @@ public class setting_friend extends AppCompatActivity {
         });
     }
 
+    // 按返回鍵取消delete狀態
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
-        if(keyCode == KeyEvent.KEYCODE_BACK){
+        if (keyCode == KeyEvent.KEYCODE_BACK) {
             if (isShowDelete == true) {
                 isShowDelete = false;
                 mGridAdapter.setIsShowDelete(false);
@@ -128,16 +133,41 @@ public class setting_friend extends AppCompatActivity {
         return false;
     }
 
-//    @Override
-//    public void onBackPressed() {
-//        super.onBackPressed();
-//        if (isShowDelete == true) {
-//            isShowDelete = false;
-//            mGridAdapter.setIsShowDelete(false);
-//        } else {
-//            finish();
-//        }
-//    }
+
+    // 按空白處取消delete狀態
+    public boolean dispatchTouchEvent(MotionEvent ev) {
+        if (ev.getAction() == MotionEvent.ACTION_DOWN) {
+
+            View v = gridView;
+
+            if (isShouldHideInput(v, ev)) {
+                if (isShowDelete == true) {
+                    isShowDelete = false;
+                    mGridAdapter.setIsShowDelete(false);
+                }
+            }
+        }
+        return super.dispatchTouchEvent(ev);
+    }
+
+    private boolean isShouldHideInput(View v, MotionEvent event) {
+        if (v != null) {
+            int[] l = {0, 0};
+            v.getLocationInWindow(l);
+            int left = l[0], top = l[1], bottom = top + v.getHeight(), right = left
+                    + v.getWidth();
+            if (event.getX() > left && event.getX() < right
+                    && event.getY() > top && event.getY() < bottom) {
+                // 点击EditText的事件，忽略它。
+                return false;
+            } else {
+                return true;
+            }
+        }
+        // 如果焦点不是EditText则忽略，这个发生在视图刚绘制完，第一个焦点不在EditView上，和用户用轨迹球选择其他的焦点
+        return false;
+    }
+
 
     class GridViewAdapter extends BaseAdapter {
         private boolean isShowDelete; //根据这个布尔型变量来判断是否显示删除图标，true是显示，false是不显示

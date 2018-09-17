@@ -49,9 +49,10 @@
             android:background="@drawable/friend_search_edtext"
             android:elevation="1dp"
             android:singleLine="true"
+            android:textSize="14sp"
             android:hint="請輸入好友信箱"
             android:paddingRight="10dp"
-            android:paddingLeft="22dp" />
+            android:paddingLeft="17dp" />
 
         <ImageButton
             android:id="@+id/search_btn"

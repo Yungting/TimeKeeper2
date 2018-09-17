@@ -11,7 +11,6 @@ import android.widget.ListView;
 
 public class ai_alarm_group extends Activity {
     ListView ai_gruop;
-    Button go_back;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -24,12 +23,5 @@ public class ai_alarm_group extends Activity {
         ArrayAdapter adapter = new ArrayAdapter(this, R.layout.ai_group_item, R.id.name, str);
         ai_gruop.setAdapter(adapter);
 
-        go_back = findViewById(R.id.go_back);
-        go_back.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                finish();
-            }
-        });
     }
 }
