@@ -7,6 +7,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
+import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.Handler;
@@ -32,6 +33,9 @@ public class ai_alarmalert extends AppCompatActivity {
         DB_normal_alarm db = new DB_normal_alarm(this);
         Intent intent = getIntent();
         requestcode = intent.getIntExtra("requestcode", 0);
+        AudioManager audioManager =(AudioManager)this.getSystemService(Context.AUDIO_SERVICE);
+        // Set the volume of played media to your choice.
+        audioManager.setStreamVolume (AudioManager.STREAM_MUSIC,10,0);
         Cursor cursor = db.selectbycode(requestcode);
         if (cursor != null && cursor.moveToFirst()){
             musicpath = cursor.getString(1);
