@@ -24,6 +24,7 @@ public class ai_alarmalert extends AppCompatActivity {
     MediaPlayer mp;
     String musicpath;
     Handler h = new Handler();
+    AlertDialog dialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,6 +53,12 @@ public class ai_alarmalert extends AppCompatActivity {
             }
             mp.release();
         }
+        if (dialog != null && dialog.isShowing()){
+            Log.d("destory",":set");
+            dialog.dismiss();
+            dialog.cancel();
+        }
+
     }
 
     public void alarmDialog(){
@@ -60,10 +67,8 @@ public class ai_alarmalert extends AppCompatActivity {
         builder.setPositiveButton("LATER", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-
                 alarm();
                 h.removeCallbacksAndMessages(null);
-                dialog.dismiss();
                 finish();
             }
         });
@@ -72,7 +77,6 @@ public class ai_alarmalert extends AppCompatActivity {
             public void onClick(DialogInterface dialog, int which) {
                 mp.stop();
                 h.removeCallbacksAndMessages(null);
-                dialog.dismiss();
                 finish();
             }
         });
@@ -83,15 +87,19 @@ public class ai_alarmalert extends AppCompatActivity {
                 return keyCode == KeyEvent.KEYCODE_BACK;
             }
         });
+        dialog = builder.show();
         builder.show();
+
     }
 
     private void alarm(){
         AlarmManager am = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
 
-        long triggertime = System.currentTimeMillis()+300000;
+        Log.d("code",":"+requestcode);
+        long triggertime = System.currentTimeMillis()+3000;
         Intent intent = new Intent(this, ai_alarmalert.class);
-        PendingIntent op = PendingIntent.getActivity(this,0, intent ,PendingIntent.FLAG_UPDATE_CURRENT);
+        intent.putExtra("requestcode", requestcode);
+        PendingIntent op = PendingIntent.getActivity(this, requestcode, intent ,PendingIntent.FLAG_UPDATE_CURRENT);
 
         am.set(AlarmManager.RTC, triggertime,op);
     }
@@ -99,17 +107,21 @@ public class ai_alarmalert extends AppCompatActivity {
     public void oneminute(){
         Runnable stopPlaybackRun = new Runnable() {
             public void run(){
-                mp.stop();
-                mp.release();
-                alarm();
+                try {
+                    alarm();
+                    finish();
+                    mp.stop();
+                }catch(Exception e) {
+                    e.printStackTrace();
+                }
             }
         };
-        h.postDelayed(stopPlaybackRun, 60 * 1000);
+        h.postDelayed(stopPlaybackRun, 60 * 100);
     }
 
     public void detectrepeat(int requestcode, Cursor cursor){
         String rday = cursor.getString(0);
-        if (rday != null){
+        if (rday != null && !rday.equals("")){
             String[] arrays = rday.trim().split("\\s+");
             int i = 0;
             int[] d = new int[7];
@@ -133,7 +145,6 @@ public class ai_alarmalert extends AppCompatActivity {
                     break;
                 }
             }
-            finish();
         }else {
             ring(musicpath);
         }
