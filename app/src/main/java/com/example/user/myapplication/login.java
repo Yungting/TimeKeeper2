@@ -2,9 +2,12 @@ package com.example.user.myapplication;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.IBinder;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
@@ -12,14 +15,25 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
-public class login extends AppCompatActivity {
+import static com.example.user.myapplication.mainpage.KEY;
 
+public class login extends AppCompatActivity {
+    Connect_To_Server db_select;
     TextView signup;
     EditText user_mail, user_pwd;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.login);
+
+        Button login = (Button)findViewById(R.id.login_btn);
+        user_mail = (EditText)findViewById(R.id.user_mail);
+        user_pwd = (EditText)findViewById(R.id.user_pwd);
+        db_select = new Connect_To_Server();
+
+        user_mail.setText(getSharedPreferences(KEY,MODE_PRIVATE).getString("u_id",null));
+        user_pwd.setText(getSharedPreferences(KEY,MODE_PRIVATE).getString("u_pwd",null));
 
         signup = findViewById(R.id.signup_text);
         signup.setOnClickListener(new View.OnClickListener() {
@@ -30,6 +44,53 @@ public class login extends AppCompatActivity {
             }
         });
 
+        login.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String usermail = "";
+                String userpwd = "";
+                usermail = user_mail.getText().toString();
+                userpwd = user_pwd.getText().toString();
+                final String finalUsername = usermail;
+                Thread get_data = new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        db_select.connect("select_sql","SELECT user_id,u_password FROM `user` WHERE user_id ='"+ finalUsername +"'");
+                        Log.d("連線","安安SELECT user_id,u_password FROM `user` WHERE user_id ='"+ finalUsername +"'");
+                    }
+                });
+                get_data.start();
+                try {
+                    Thread.sleep(400);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                String db_data =  db_select.get_data;
+                Log.d("連線","安安"+db_data);
+                String[] token = db_data.split("/");
+                if(token.length != 2){
+                    new AlertDialog.Builder(login.this).setTitle("請再試試看").setMessage("帳號或密碼錯誤!!")
+                            .setNegativeButton("OK",null)
+                            .show();
+                }else{
+                    String db_u_id = token[0];
+                    String db_u_pwd = token[1];
+                    if(db_u_pwd.equals(userpwd)){
+
+                        SharedPreferences pref  = getApplication().getSharedPreferences(KEY, Context.MODE_PRIVATE);
+                        pref.edit().clear();
+                        pref.edit().putString("u_id",db_u_id).putString("u_pwd",db_u_pwd).commit();
+
+                        Intent intent = new Intent(login.this, mainpage.class);
+                        startActivity(intent);
+                    }else{
+                        new AlertDialog.Builder(login.this).setTitle("請再試試看").setMessage("帳號或密碼錯誤!!")
+                                .setNegativeButton("OK",null)
+                                .show();
+                    }
+                }
+            }
+        });
 
 
     }

@@ -48,6 +48,11 @@ public class normal_alarm extends Activity {
         setContentView(R.layout.normal_alarm);
         TextView normal_edit_title = findViewById(R.id.normal_edit_title);
 
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO)
+                != PackageManager.PERMISSION_GRANTED) {
+
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.RECORD_AUDIO}, mainpage.BuildDev.RECORD_AUDIO);
+        }
         int permission = ActivityCompat.checkSelfPermission(this,
                 Manifest.permission.READ_EXTERNAL_STORAGE);
         if (permission != PackageManager.PERMISSION_GRANTED){

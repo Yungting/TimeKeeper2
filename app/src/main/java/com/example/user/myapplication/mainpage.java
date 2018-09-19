@@ -77,6 +77,13 @@ public class mainpage extends Activity implements RecyclerTouchListener.Recycler
         counter_layout = findViewById(R.id.counter_layout);
         crossView = findViewById(R.id.cross_view);
 
+        final String user = getSharedPreferences(KEY,MODE_PRIVATE).getString("u_id",null);
+        final String pwd = getSharedPreferences(KEY,MODE_PRIVATE).getString("u_pwd",null);
+        if(user == null || pwd == null){
+            Intent intent = new Intent(this, login.class);
+            startActivity(intent);
+        }
+
         //Permission
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO)
                 != PackageManager.PERMISSION_GRANTED) {

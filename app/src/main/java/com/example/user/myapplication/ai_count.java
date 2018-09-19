@@ -233,7 +233,7 @@ public class ai_count extends AppCompatActivity{
                     calendar2.setTimeInMillis(System.currentTimeMillis());
                     stopuse = calendar2.getTimeInMillis();
                     usagetime(stopuse);
-                    dbUsage.insert(u_id,(int)totaltime,(int)time);
+                    dbUsage.insert(u_id,(int)time,(int)totaltime);
                     Log.d("紀錄", "結束");
                     Log.d("TAG", "螢幕使用狀態上傳");
                 }

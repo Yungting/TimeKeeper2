@@ -87,7 +87,7 @@ public class normal_alarmalert extends AppCompatActivity {
                 Intent intent1 = new Intent(normal_alarmalert.this, ai_count.class);
                 Log.d("alert", "time"+time);
                 intent1.putExtra("time", time);
-                startActivity(intent1);
+                normal_alarmalert.this.startActivity(intent1);
                 finish();
             }
         });
