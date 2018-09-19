@@ -35,7 +35,7 @@ import java.util.List;
 import cdflynn.android.library.crossview.CrossView;
 
 public class mainpage extends Activity implements RecyclerTouchListener.RecyclerTouchListenerHelper{
-
+    public static final String KEY = "com.example.user.myapplication.app";
     ImageButton add_btn, normal_btn, ai_btn, counter_btn;
     LinearLayout normal_layout, ai_layout, counter_layout;
     CrossView crossView;
@@ -246,7 +246,7 @@ public class mainpage extends Activity implements RecyclerTouchListener.Recycler
             notifyDataSetChanged();
             DB_normal_alarm db = new DB_normal_alarm(mainpage.this);
             AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
-            Intent intent = new Intent(mainpage.this, ai_alarmalert.class);
+            Intent intent = new Intent(mainpage.this, normal_alarmalert.class);
             PendingIntent pi = PendingIntent.getActivity(mainpage.this, requestcode[position], intent, PendingIntent.FLAG_UPDATE_CURRENT);
             alarmManager.cancel(pi);
             db.delete(requestcode[position]);
@@ -289,7 +289,7 @@ public class mainpage extends Activity implements RecyclerTouchListener.Recycler
                                     alarm.setBackground(getResources().getDrawable(R.drawable.mainpage_alarm_background_close));
                                     state = 0;
                                     AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
-                                    Intent intent = new Intent(mainpage.this, ai_alarmalert.class);
+                                    Intent intent = new Intent(mainpage.this, normal_alarmalert.class);
                                     PendingIntent pi = PendingIntent.getActivity(mainpage.this, requestcode, intent, PendingIntent.FLAG_UPDATE_CURRENT);
                                     alarmManager.cancel(pi);
                                     break;
@@ -299,7 +299,7 @@ public class mainpage extends Activity implements RecyclerTouchListener.Recycler
                                     alarm.setBackground(getResources().getDrawable(R.drawable.mainpage_alarm_background));
                                     state = 1;
                                     AlarmManager alarm = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
-                                    Intent intent1 = new Intent(mainpage.this, ai_alarmalert.class);
+                                    Intent intent1 = new Intent(mainpage.this, normal_alarmalert.class);
                                     PendingIntent pi1 = PendingIntent.getActivity(mainpage.this, requestcode, intent1, PendingIntent.FLAG_UPDATE_CURRENT);
 
                                     break;
@@ -311,7 +311,7 @@ public class mainpage extends Activity implements RecyclerTouchListener.Recycler
                                     state = 0;
                                     db.updatestate(requestcode, state);
                                     AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
-                                    Intent intent = new Intent(mainpage.this, ai_alarmalert.class);
+                                    Intent intent = new Intent(mainpage.this, normal_alarmalert.class);
                                     PendingIntent pi = PendingIntent.getActivity(mainpage.this, requestcode, intent, PendingIntent.FLAG_UPDATE_CURRENT);
                                     alarmManager.cancel(pi);
                                     break;
@@ -324,7 +324,7 @@ public class mainpage extends Activity implements RecyclerTouchListener.Recycler
                                     if (cursor != null && cursor.moveToFirst()){
                                         Boolean ifrepeat = Boolean.parseBoolean(cursor.getString(4));
                                         AlarmManager alarm = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
-                                        Intent intent1 = new Intent(mainpage.this, ai_alarmalert.class);
+                                        Intent intent1 = new Intent(mainpage.this, normal_alarmalert.class);
                                         intent1.putExtra("requestcode", requestcode);
                                         PendingIntent pi1 = PendingIntent.getActivity(mainpage.this, requestcode, intent1, PendingIntent.FLAG_UPDATE_CURRENT);
                                         if (ifrepeat){

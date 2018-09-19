@@ -8,14 +8,11 @@ import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.IBinder;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.Window;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -24,12 +21,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.TimePicker;
 
-import com.example.user.myapplication.R;
-import com.example.user.myapplication.ai_alarmalert;
-import com.example.user.myapplication.normal_alarm_music;
-
 import java.util.Calendar;
-import java.util.List;
 
 public class normal_alarm extends Activity {
     AlarmManager am2;
@@ -220,7 +212,7 @@ public class normal_alarm extends Activity {
         TextView normal_edit_title = findViewById(R.id.normal_edit_title);
         String edit_text = normal_edit_title.getText().toString();
 
-        Intent intent = new Intent(this, ai_alarmalert.class);
+        Intent intent = new Intent(this, normal_alarmalert.class);
         intent.putExtra("requestcode", requestcode);
         if (repeat_checkbox.isChecked() && !repeat_text.equals("")){
             PendingIntent pi = PendingIntent.getActivity(this, requestcode, intent, PendingIntent.FLAG_UPDATE_CURRENT);
@@ -260,7 +252,7 @@ public class normal_alarm extends Activity {
         detectday();
         TextView normal_edit_title = findViewById(R.id.normal_edit_title);
         String edit_text = normal_edit_title.getText().toString();
-        Intent intent = new Intent(this, ai_alarmalert.class);
+        Intent intent = new Intent(this, normal_alarmalert.class);
         intent.putExtra("requestcode", requestcode);
         if (repeat_checkbox.isChecked() && !repeat_text.equals("")){
             PendingIntent pi = PendingIntent.getActivity(this, requestcode, intent, PendingIntent.FLAG_UPDATE_CURRENT);

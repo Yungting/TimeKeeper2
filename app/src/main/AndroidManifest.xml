@@ -24,7 +24,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".ai_alarmalert"
+            android:name=".normal_alarmalert"
             android:label="ai_alarmalert" />
         <activity android:name=".normal_alarm" />
         <activity android:name=".normal_alarm_music" />
@@ -37,6 +37,7 @@
         <activity android:name=".setting_friend_search" />
         <activity android:name=".login" />
         <activity android:name=".sign_up" />
+        <activity android:name=".ai_count"/>
     </application>
 
 </manifest>

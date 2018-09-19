@@ -22,7 +22,6 @@ import android.widget.TimePicker;
 import com.example.user.myapplication.ai_alarm_manage.ai_alarm_manage;
 
 import java.util.Calendar;
-import java.util.List;
 
 public class ai_alarm extends Activity {
     TextView group, ai_manage, alarm_number;
@@ -154,7 +153,7 @@ public class ai_alarm extends Activity {
         Boolean ifrepeat;
         String ai_edit_title = findViewById(R.id.ai_edit_title).toString();
 
-        Intent intent = new Intent(this, ai_alarmalert.class);
+        Intent intent = new Intent(this, normal_alarmalert.class);
 
         if (repeat_checkbox.isChecked()){
             PendingIntent pi = PendingIntent.getActivity(this, requestcode, intent, PendingIntent.FLAG_UPDATE_CURRENT);
