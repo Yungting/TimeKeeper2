@@ -1,12 +1,17 @@
 package com.example.user.myapplication;
 
+import android.Manifest;
 import android.app.Activity;
 import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
+import android.os.Build;
 import android.os.Bundle;
+import android.provider.Settings;
+import android.support.v4.app.ActivityCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -34,11 +39,17 @@ import java.util.List;
 
 import cdflynn.android.library.crossview.CrossView;
 
+import static android.Manifest.permission.READ_EXTERNAL_STORAGE;
+
 public class mainpage extends Activity implements RecyclerTouchListener.RecyclerTouchListenerHelper{
     public static final String KEY = "com.example.user.myapplication.app";
+    private static final int REQUEST_EXTERNAL_STORAGE = 1;
     ImageButton add_btn, normal_btn, ai_btn, counter_btn;
     LinearLayout normal_layout, ai_layout, counter_layout;
     CrossView crossView;
+    public class BuildDev{
+        public static final int RECORD_AUDIO = 0;
+    }
 
     //recyclerview
     RecyclerView mRecyclerView;
@@ -65,6 +76,19 @@ public class mainpage extends Activity implements RecyclerTouchListener.Recycler
         counter_btn = findViewById(R.id.counter_btn);
         counter_layout = findViewById(R.id.counter_layout);
         crossView = findViewById(R.id.cross_view);
+
+        //Permission
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO)
+                != PackageManager.PERMISSION_GRANTED) {
+
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.RECORD_AUDIO},BuildDev.RECORD_AUDIO);
+        }
+        int permission = ActivityCompat.checkSelfPermission(this,
+                Manifest.permission.READ_EXTERNAL_STORAGE);
+        if (permission != PackageManager.PERMISSION_GRANTED){
+            ActivityCompat.requestPermissions(this, new String[] {READ_EXTERNAL_STORAGE}, REQUEST_EXTERNAL_STORAGE );
+        }
+
 
         //設定增加的子按鈕顯示或隱藏
         add_btn.setOnClickListener(new View.OnClickListener() {

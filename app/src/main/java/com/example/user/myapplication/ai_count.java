@@ -10,6 +10,7 @@ import android.database.Cursor;
 import android.hardware.SensorManager;
 import android.os.Bundle;
 import android.os.PowerManager;
+import android.provider.Settings;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 
@@ -122,20 +123,28 @@ public class ai_count extends AppCompatActivity{
 
         final List<UsageStats> stats = usm.queryUsageStats(UsageStatsManager.INTERVAL_BEST, calendar1.getTimeInMillis(),
                 calendar2.getTimeInMillis());
+        if (stats.size() == 0){
+            try {
+                startActivity(new Intent(Settings.ACTION_USAGE_ACCESS_SETTINGS));
+            } catch (Exception e){
+
+            }
+        }
         if (stats == null || stats.isEmpty()){
 
         }else {
             SortedMap<Long, UsageStats> mySortedMap = new TreeMap<Long, UsageStats>();
             for (UsageStats usageStats : stats){
-                usetime = usageStats.getTotalTimeInForeground();
-                totaltime = totaltime + usetime;
+                if (usageStats.getLastTimeStamp() > calendar1.getTimeInMillis()){
+                    usetime = usageStats.getLastTimeStamp() - calendar1.getTimeInMillis();
+                    totaltime = totaltime + usetime;
+                }
                 min = (int) ((totaltime)/(1000*60)%60);
-                sec = (int) (totaltime/1000)%60;
                 hr = (int)((totaltime/(1000*60*60))%24);
-
             }
+            sec = (int) (totaltime/1000)%60;
+            Log.d("sec",":"+sec);
         }
-
     }
 
     public void getScreen(){
