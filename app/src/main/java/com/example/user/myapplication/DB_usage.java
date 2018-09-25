@@ -15,7 +15,7 @@ public class DB_usage extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase db){
-        db.execSQL("CREATE TABLE IF NOT EXISTS usage(id INTEGER, date INTEGER PRIMARY KEY, period INTEGER,state BOOLEAN)");
+        db.execSQL("CREATE TABLE IF NOT EXISTS usage(id INTEGER, date TEXT PRIMARY KEY, period INTEGER,state BOOLEAN)");
     }
 
     @Override
@@ -40,7 +40,7 @@ public class DB_usage extends SQLiteOpenHelper {
         values.put("state",1);
         db.update("usage",values,"state=0",null);
     }
-    public long insert(String u_id, int Date, int period) {
+    public long insert(String u_id, String Date, int period) {
         //SQLiteDatabase db = this.getWritableDatabase();
         // 建立準備新增資料的ContentValues物件
         ContentValues cv = new ContentValues();

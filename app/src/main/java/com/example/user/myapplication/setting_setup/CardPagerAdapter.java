@@ -1,5 +1,7 @@
 package com.example.user.myapplication.setting_setup;
 
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.support.v4.view.PagerAdapter;
 import android.support.v7.widget.CardView;
 import android.view.LayoutInflater;
@@ -12,12 +14,20 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.example.user.myapplication.login;
+import com.example.user.myapplication.mainpage;
 import com.example.user.myapplication.setting_setup.CardAdapter;
 import com.example.user.myapplication.setting_setup.CardItem;
 import com.example.user.myapplication.R;
+import com.example.user.myapplication.sign_up;
+
+import static com.example.user.myapplication.mainpage.KEY;
+import static com.example.user.myapplication.mainpage.logon;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import static android.content.Context.MODE_PRIVATE;
 
 public class CardPagerAdapter extends PagerAdapter implements CardAdapter {
 
@@ -98,6 +108,16 @@ public class CardPagerAdapter extends PagerAdapter implements CardAdapter {
         }else if(type == "info"){
             locationlist = view.findViewById(R.id.location_list);
             locationlist.setVisibility(View.GONE);
+            view.findViewById(R.id.button2).setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    SharedPreferences pref  = v.getContext().getSharedPreferences(KEY,MODE_PRIVATE);
+                    pref.edit().clear().commit();
+                    logon = false;
+                    Intent intent = new Intent(v.getContext(), mainpage.class);
+                    v.getContext().startActivity(intent);
+                }
+            });
         }
 
 

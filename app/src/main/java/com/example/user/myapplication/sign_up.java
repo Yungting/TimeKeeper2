@@ -36,48 +36,55 @@ public class sign_up extends AppCompatActivity {
                 EditText user_pwd = (EditText)findViewById(R.id.user_pwd);
                 EditText check_pwd = (EditText)findViewById(R.id.check_pwd);
                 EditText user_name = (EditText)findViewById(R.id.user_name);
-                if(user_pwd.getText().toString().equals(check_pwd.getText().toString())){
-                    final String u_id = user_mail.getText().toString();
-                    String u_pwd = check_pwd.getText().toString();
-                    String u_name = user_name.getText().toString();
-                    Thread get_data = new Thread(new Runnable() {
-                        @Override
-                        public void run() {
-                            db_select.connect("select_sql","SELECT user_id,u_password FROM `user` WHERE user_id ='"+u_id+"'");
-                            Log.d("連線","安安SELECT user_id,u_password FROM `user` WHERE user_id ='"+u_id+"'");
-                        }
-                    });
-                    get_data.start();
-                    //db_select.connect("select_sql","SELECT user_id,u_password FROM `user` WHERE user_id ='"+u_id+"'");
-                    try {
-                        Thread.sleep(400);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                    String db_data =  db_select.get_data;
-                    Log.d("連線","安安"+db_data);
-                    String[] token = db_data.split("/");
-                    String db_u_id = token[0];
-                    ////再來要做字串分割~取得getdata值
-                    if(u_id.equals(db_u_id.toString())){
-                        new AlertDialog.Builder(sign_up.this).setTitle("輸入錯誤").setMessage("已有人註冊此帳號")
-                                .setNegativeButton("OK",null)
-                                .show();
-                    }else {
-                        db_insert.connect("insert_sql","INSERT INTO `user` (`user_id`, `u_name`, `u_password`) VALUES('"+u_id+"', '"+u_name+"', '"+u_pwd+"');");
-                        new AlertDialog.Builder(sign_up.this).setTitle("註冊成功").setMessage("快去登入吧!!")
-                                .setNegativeButton("OK", new DialogInterface.OnClickListener() {
-                                    @Override
-                                    public void onClick(DialogInterface dialog, int which) {
-                                        finish();
-                                    }
-                                })
-                                .show();
-                    }
-                }else {
-                    new AlertDialog.Builder(sign_up.this).setTitle("輸入錯誤").setMessage("兩組密碼不一樣")
+                final String u_id = user_mail.getText().toString();
+                String u_pwd = check_pwd.getText().toString();
+                String u_name = user_name.getText().toString();
+                if(!android.util.Patterns.EMAIL_ADDRESS.matcher(u_id).matches()){
+                    new AlertDialog.Builder(sign_up.this).setTitle("輸入錯誤").setMessage("帳號請填E-mail喔~~")
                             .setNegativeButton("OK",null)
                             .show();
+                }else {
+                    if (user_pwd.getText().toString().equals(check_pwd.getText().toString())) {
+
+                        Thread get_data = new Thread(new Runnable() {
+                            @Override
+                            public void run() {
+                                db_select.connect("select_sql", "SELECT user_id,u_password,,u_name FROM `user` WHERE user_id ='" + u_id + "'");
+                                Log.d("連線", "安安SELECT user_id,u_password,u_name FROM `user` WHERE user_id ='" + u_id + "'");
+                            }
+                        });
+                        get_data.start();
+                        //db_select.connect("select_sql","SELECT user_id,u_password FROM `user` WHERE user_id ='"+u_id+"'");
+                        try {
+                            Thread.sleep(400);
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
+                        String db_data = db_select.get_data;
+                        Log.d("連線", "安安" + db_data);
+                        String[] token = db_data.split("/");
+                        String db_u_id = token[0];
+                        ////再來要做字串分割~取得getdata值
+                        if (u_id.equals(db_u_id.toString())) {
+                            new AlertDialog.Builder(sign_up.this).setTitle("輸入錯誤").setMessage("已有人註冊此帳號")
+                                    .setNegativeButton("OK", null)
+                                    .show();
+                        } else {
+                            db_insert.connect("insert_sql", "INSERT INTO `user` (`user_id`, `u_name`, `u_password`) VALUES('" + u_id + "', '" + u_name + "', '" + u_pwd + "');");
+                            new AlertDialog.Builder(sign_up.this).setTitle("註冊成功").setMessage("快去登入吧!!")
+                                    .setNegativeButton("OK", new DialogInterface.OnClickListener() {
+                                        @Override
+                                        public void onClick(DialogInterface dialog, int which) {
+                                            finish();
+                                        }
+                                    })
+                                    .show();
+                        }
+                    } else {
+                        new AlertDialog.Builder(sign_up.this).setTitle("輸入錯誤").setMessage("兩組密碼不一樣")
+                                .setNegativeButton("OK", null)
+                                .show();
+                    }
                 }
             }
         });

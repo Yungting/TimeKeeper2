@@ -23,9 +23,11 @@ import java.util.List;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
+import static android.content.Context.MODE_PRIVATE;
 import static com.example.user.myapplication.mainpage.KEY;
 
-public class ai_count extends AppCompatActivity{
+//extends AppCompatActivity
+public class ai_count{
     public static long start_time;
     public static long stop_record_time;
     long time, stopuse, usetime, totaltime;
@@ -54,11 +56,14 @@ public class ai_count extends AppCompatActivity{
     ArrayList up_id_u,up_date_time_u,up_period_u;
     String sql,sqltmp,sql_u,sql_u_tmp,u_id;
     Connect_To_Server connecting;
+    Context record ;
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
+    //@Override
+    //protected void onCreate(Bundle savedInstanceState) {
+    public void record(Context context){
+        this.record = context;
+        //super.onCreate(savedInstanceState);
+        sensorManager = (SensorManager)record.getSystemService(Context.SENSOR_SERVICE);
         theFilter = new IntentFilter();
         theFilter.addAction(Intent.ACTION_SCREEN_ON);
         theFilter.addAction(Intent.ACTION_SCREEN_OFF);
@@ -84,8 +89,8 @@ public class ai_count extends AppCompatActivity{
         up_id_u = new ArrayList();
         up_date_time_u = new ArrayList();
         up_period_u = new ArrayList();
-        dbSoundaxis = new DB_soundaxis(ai_count.this);
-        dbUsage = new DB_usage(this);
+        dbSoundaxis = new DB_soundaxis(record);
+        dbUsage = new DB_usage(record);
         sql = new String();
         sqltmp = new String();
         sql_u = new String();
@@ -93,11 +98,12 @@ public class ai_count extends AppCompatActivity{
         u_id = new String();
         connecting = new Connect_To_Server();
 
-        u_id = getSharedPreferences(KEY,MODE_PRIVATE).getString("u_id",null);
+        u_id = record.getSharedPreferences(KEY,MODE_PRIVATE).getString("u_id",null);
 
 
-        Intent intent1 = getIntent();
-        time = intent1.getLongExtra("time", 0);
+        Calendar cd = Calendar.getInstance();
+        cd.setTimeInMillis(System.currentTimeMillis());
+        time = cd.getTimeInMillis();
         Log.d("tag", "get"+time);
 
         getScreen();
@@ -115,7 +121,7 @@ public class ai_count extends AppCompatActivity{
     }
 
     public void usagetime(long stopuse){
-        UsageStatsManager usm = (UsageStatsManager) getSystemService(Context.USAGE_STATS_SERVICE);
+        UsageStatsManager usm = (UsageStatsManager)record.getSystemService(Context.USAGE_STATS_SERVICE);
         Calendar calendar1 = Calendar.getInstance();
         calendar1.setTimeInMillis(time);
         Calendar calendar2 = Calendar.getInstance();
@@ -123,13 +129,6 @@ public class ai_count extends AppCompatActivity{
 
         final List<UsageStats> stats = usm.queryUsageStats(UsageStatsManager.INTERVAL_BEST, calendar1.getTimeInMillis(),
                 calendar2.getTimeInMillis());
-        if (stats.size() == 0){
-            try {
-                startActivity(new Intent(Settings.ACTION_USAGE_ACCESS_SETTINGS));
-            } catch (Exception e){
-
-            }
-        }
         if (stats == null || stats.isEmpty()){
 
         }else {
@@ -148,7 +147,7 @@ public class ai_count extends AppCompatActivity{
     }
 
     public void getScreen(){
-        PowerManager pm = (PowerManager)getBaseContext().getSystemService(Context.POWER_SERVICE);
+        PowerManager pm = (PowerManager)record.getSystemService(Context.POWER_SERVICE);
         boolean isScreenOn = pm.isInteractive();
         if (isScreenOn == true){
             state = "true";
@@ -233,7 +232,8 @@ public class ai_count extends AppCompatActivity{
                     calendar2.setTimeInMillis(System.currentTimeMillis());
                     stopuse = calendar2.getTimeInMillis();
                     usagetime(stopuse);
-                    dbUsage.insert(u_id,(int)time,(int)totaltime);
+                    dbUsage.insert(u_id,String.valueOf(time),(int)totaltime);
+                    Log.d("測試", "帳號:"+u_id);
                     Log.d("紀錄", "結束");
                     Log.d("TAG", "螢幕使用狀態上傳");
                 }
@@ -248,7 +248,7 @@ public class ai_count extends AppCompatActivity{
                 sql_u = "INSERT INTO `screen_record` (`Date`, `User_id`, `Period`) VALUES";
                 for(int i = 0;i<up_id_u.size();i++){
                     String id = up_id_u.get(i).toString();
-                    int time = Integer.parseInt(up_date_time_u.get(i).toString());
+                    String time = up_date_time_u.get(i).toString();
                     int period  = Integer.parseInt(up_period_u.get(i).toString());
                     if(i == up_id_u.size()-1){
                         sql_u_tmp = sql_u_tmp+"('"+time+"','"+id+"', '"+period+"');";
