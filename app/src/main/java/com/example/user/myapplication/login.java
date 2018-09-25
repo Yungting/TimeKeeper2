@@ -1,6 +1,7 @@
 package com.example.user.myapplication;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.IBinder;
@@ -8,6 +9,7 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
@@ -55,8 +57,8 @@ public class login extends AppCompatActivity {
                 Thread get_data = new Thread(new Runnable() {
                     @Override
                     public void run() {
-                        db_select.connect("select_sql","SELECT user_id,u_password FROM `user` WHERE user_id ='"+ finalUsername +"'");
-                        Log.d("連線","安安SELECT user_id,u_password FROM `user` WHERE user_id ='"+ finalUsername +"'");
+                        db_select.connect("select_sql","SELECT user_id,u_password,u_name FROM `user` WHERE user_id ='"+ finalUsername +"'");
+                        Log.d("連線","安安SELECT user_id,u_password,u_name FROM `user` WHERE user_id ='"+ finalUsername +"'");
                     }
                 });
                 get_data.start();
@@ -68,7 +70,7 @@ public class login extends AppCompatActivity {
                 String db_data =  db_select.get_data;
                 Log.d("連線","安安"+db_data);
                 String[] token = db_data.split("/");
-                if(token.length != 2){
+                if(token.length != 3){
                     new AlertDialog.Builder(login.this).setTitle("請再試試看").setMessage("帳號或密碼錯誤!!")
                             .setNegativeButton("OK",null)
                             .show();
@@ -93,6 +95,40 @@ public class login extends AppCompatActivity {
         });
 
 
+    }
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event){
+        if (keyCode == KeyEvent.KEYCODE_BACK) {
+            new AlertDialog.Builder(login.this)
+                    .setTitle("要離開TimeKeeper了嗎?")
+                    .setMessage("只是還未登入而已啦~?")
+                    .setPositiveButton("我要離開了~",
+                            new DialogInterface.OnClickListener() {
+
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    finish();
+                                    Intent startMain = new Intent(Intent.ACTION_MAIN);
+                                    startMain.addCategory(Intent.CATEGORY_HOME);
+                                    startMain.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                                    startActivity(startMain);
+                                    System.exit(0);
+                                    //MainActivity.this.finish();
+
+                                }
+                            })
+                    .setNegativeButton("好啦~我登入一下",
+                            new DialogInterface.OnClickListener() {
+
+                                @Override
+                                public void onClick(DialogInterface dialog,
+                                                    int which) {
+                                    // TODO Auto-generated method stub
+
+                                }
+                            }).show();
+        }
+        return true;
     }
 
 
