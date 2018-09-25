@@ -45,6 +45,7 @@ import static android.Manifest.permission.READ_EXTERNAL_STORAGE;
 
 public class mainpage extends Activity implements RecyclerTouchListener.RecyclerTouchListenerHelper{
     public static final String KEY = "com.example.user.myapplication.app";
+    public static boolean logon = false;
     private static final int REQUEST_EXTERNAL_STORAGE = 1;
     ImageButton add_btn, normal_btn, ai_btn, counter_btn;
     LinearLayout normal_layout, ai_layout, counter_layout;
