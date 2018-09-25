@@ -84,7 +84,8 @@ public class normal_alarmalert extends AppCompatActivity {
                 Calendar cd = Calendar.getInstance();
                 cd.setTimeInMillis(System.currentTimeMillis());
                 long time = cd.getTimeInMillis();
-                Intent intent1 = new Intent(normal_alarmalert.this, ai_count.class);
+                Intent intent1 = new Intent(normal_alarmalert.this, ai_count.class)
+                        .setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 Log.d("alert", "time"+time);
                 intent1.putExtra("time", time);
                 normal_alarmalert.this.startActivity(intent1);
