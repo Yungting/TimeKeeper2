@@ -1,12 +1,19 @@
 package com.example.user.myapplication;
 
+import android.Manifest;
 import android.app.Activity;
 import android.app.AlarmManager;
+import android.app.AppOpsManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.ApplicationInfo;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
+import android.os.Build;
 import android.os.Bundle;
+import android.provider.Settings;
+import android.support.v4.app.ActivityCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -34,11 +41,18 @@ import java.util.List;
 
 import cdflynn.android.library.crossview.CrossView;
 
-public class mainpage extends Activity implements RecyclerTouchListener.RecyclerTouchListenerHelper{
+import static android.Manifest.permission.READ_EXTERNAL_STORAGE;
 
+public class mainpage extends Activity implements RecyclerTouchListener.RecyclerTouchListenerHelper{
+    public static final String KEY = "com.example.user.myapplication.app";
+    public static boolean logon = false;
+    private static final int REQUEST_EXTERNAL_STORAGE = 1;
     ImageButton add_btn, normal_btn, ai_btn, counter_btn;
     LinearLayout normal_layout, ai_layout, counter_layout;
     CrossView crossView;
+    public class BuildDev{
+        public static final int RECORD_AUDIO = 0;
+    }
 
     //recyclerview
     RecyclerView mRecyclerView;
@@ -65,6 +79,35 @@ public class mainpage extends Activity implements RecyclerTouchListener.Recycler
         counter_btn = findViewById(R.id.counter_btn);
         counter_layout = findViewById(R.id.counter_layout);
         crossView = findViewById(R.id.cross_view);
+
+        final String user = getSharedPreferences(KEY,MODE_PRIVATE).getString("u_id",null);
+        final String pwd = getSharedPreferences(KEY,MODE_PRIVATE).getString("u_pwd",null);
+        if(user == null || pwd == null){
+            Intent intent = new Intent(this, login.class);
+            startActivity(intent);
+        }
+
+        //Permission
+        if (!isAccessGranted()) {
+            startActivity(new Intent(Settings.ACTION_USAGE_ACCESS_SETTINGS));
+        }
+//        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.PACKAGE_USAGE_STATS)
+//                != PackageManager.PERMISSION_GRANTED) {
+//
+//            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.PACKAGE_USAGE_STATS},BuildDev.RECORD_AUDIO);
+//        }
+
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO)
+                != PackageManager.PERMISSION_GRANTED) {
+
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.RECORD_AUDIO},BuildDev.RECORD_AUDIO);
+        }
+        int permission = ActivityCompat.checkSelfPermission(this,
+                Manifest.permission.READ_EXTERNAL_STORAGE);
+        if (permission != PackageManager.PERMISSION_GRANTED){
+            ActivityCompat.requestPermissions(this, new String[] {READ_EXTERNAL_STORAGE}, REQUEST_EXTERNAL_STORAGE );
+        }
+
 
         //設定增加的子按鈕顯示或隱藏
         add_btn.setOnClickListener(new View.OnClickListener() {
@@ -246,7 +289,7 @@ public class mainpage extends Activity implements RecyclerTouchListener.Recycler
             notifyDataSetChanged();
             DB_normal_alarm db = new DB_normal_alarm(mainpage.this);
             AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
-            Intent intent = new Intent(mainpage.this, ai_alarmalert.class);
+            Intent intent = new Intent(mainpage.this, normal_alarmalert.class);
             PendingIntent pi = PendingIntent.getActivity(mainpage.this, requestcode[position], intent, PendingIntent.FLAG_UPDATE_CURRENT);
             alarmManager.cancel(pi);
             db.delete(requestcode[position]);
@@ -289,7 +332,7 @@ public class mainpage extends Activity implements RecyclerTouchListener.Recycler
                                     alarm.setBackground(getResources().getDrawable(R.drawable.mainpage_alarm_background_close));
                                     state = 0;
                                     AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
-                                    Intent intent = new Intent(mainpage.this, ai_alarmalert.class);
+                                    Intent intent = new Intent(mainpage.this, normal_alarmalert.class);
                                     PendingIntent pi = PendingIntent.getActivity(mainpage.this, requestcode, intent, PendingIntent.FLAG_UPDATE_CURRENT);
                                     alarmManager.cancel(pi);
                                     break;
@@ -299,7 +342,7 @@ public class mainpage extends Activity implements RecyclerTouchListener.Recycler
                                     alarm.setBackground(getResources().getDrawable(R.drawable.mainpage_alarm_background));
                                     state = 1;
                                     AlarmManager alarm = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
-                                    Intent intent1 = new Intent(mainpage.this, ai_alarmalert.class);
+                                    Intent intent1 = new Intent(mainpage.this, normal_alarmalert.class);
                                     PendingIntent pi1 = PendingIntent.getActivity(mainpage.this, requestcode, intent1, PendingIntent.FLAG_UPDATE_CURRENT);
 
                                     break;
@@ -311,7 +354,7 @@ public class mainpage extends Activity implements RecyclerTouchListener.Recycler
                                     state = 0;
                                     db.updatestate(requestcode, state);
                                     AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
-                                    Intent intent = new Intent(mainpage.this, ai_alarmalert.class);
+                                    Intent intent = new Intent(mainpage.this, normal_alarmalert.class);
                                     PendingIntent pi = PendingIntent.getActivity(mainpage.this, requestcode, intent, PendingIntent.FLAG_UPDATE_CURRENT);
                                     alarmManager.cancel(pi);
                                     break;
@@ -324,7 +367,7 @@ public class mainpage extends Activity implements RecyclerTouchListener.Recycler
                                     if (cursor != null && cursor.moveToFirst()){
                                         Boolean ifrepeat = Boolean.parseBoolean(cursor.getString(4));
                                         AlarmManager alarm = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
-                                        Intent intent1 = new Intent(mainpage.this, ai_alarmalert.class);
+                                        Intent intent1 = new Intent(mainpage.this, normal_alarmalert.class);
                                         intent1.putExtra("requestcode", requestcode);
                                         PendingIntent pi1 = PendingIntent.getActivity(mainpage.this, requestcode, intent1, PendingIntent.FLAG_UPDATE_CURRENT);
                                         if (ifrepeat){
@@ -394,5 +437,21 @@ public class mainpage extends Activity implements RecyclerTouchListener.Recycler
                 return false;
             }
         });
+    }
+    private boolean isAccessGranted() {
+        try {
+            PackageManager packageManager = getPackageManager();
+            ApplicationInfo applicationInfo = packageManager.getApplicationInfo(getPackageName(), 0);
+            AppOpsManager appOpsManager = (AppOpsManager) getSystemService(Context.APP_OPS_SERVICE);
+            int mode = 0;
+            if (android.os.Build.VERSION.SDK_INT > android.os.Build.VERSION_CODES.KITKAT) {
+                mode = appOpsManager.checkOpNoThrow(AppOpsManager.OPSTR_GET_USAGE_STATS,
+                        applicationInfo.uid, applicationInfo.packageName);
+            }
+            return (mode == AppOpsManager.MODE_ALLOWED);
+
+        } catch (PackageManager.NameNotFoundException e) {
+            return false;
+        }
     }
 }

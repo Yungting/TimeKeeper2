@@ -1,21 +1,21 @@
 package com.example.user.myapplication;
 
+import android.Manifest;
 import android.app.Activity;
 import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.app.TimePickerDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.os.IBinder;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v4.app.ActivityCompat;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.Window;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -24,14 +24,12 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.TimePicker;
 
-import com.example.user.myapplication.R;
-import com.example.user.myapplication.ai_alarmalert;
-import com.example.user.myapplication.normal_alarm_music;
-
 import java.util.Calendar;
-import java.util.List;
+
+import static android.Manifest.permission.READ_EXTERNAL_STORAGE;
 
 public class normal_alarm extends Activity {
+    private static final int REQUEST_EXTERNAL_STORAGE = 0;
     AlarmManager am2;
     TextView alarm_number;
     Calendar calendar2 = Calendar.getInstance();
@@ -50,6 +48,17 @@ public class normal_alarm extends Activity {
         setContentView(R.layout.normal_alarm);
         TextView normal_edit_title = findViewById(R.id.normal_edit_title);
 
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO)
+                != PackageManager.PERMISSION_GRANTED) {
+
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.RECORD_AUDIO}, mainpage.BuildDev.RECORD_AUDIO);
+        }
+        int permission = ActivityCompat.checkSelfPermission(this,
+                Manifest.permission.READ_EXTERNAL_STORAGE);
+        if (permission != PackageManager.PERMISSION_GRANTED){
+            ActivityCompat.requestPermissions(this, new String[] {READ_EXTERNAL_STORAGE}, REQUEST_EXTERNAL_STORAGE );
+        }
+        
         Intent intentcode = getIntent();
         if (intentcode!= null){
             rcode1 = intentcode.getIntExtra("requestcode", 0);
@@ -99,10 +108,10 @@ public class normal_alarm extends Activity {
             public void onClick(View view) {
                 if(repeat_day.getVisibility() == View.VISIBLE){
                     repeat_day.setVisibility(View.GONE);
-                    pickday();
+                    detectday();
                 }else{
                     repeat_day.setVisibility(View.VISIBLE);
-                    pickday();
+                    detectday();
                 }
             }
         });
@@ -180,6 +189,19 @@ public class normal_alarm extends Activity {
             }
             repeat_show.setText(rday);
         }
+    }
+
+    public void detectday(){
+        TextView repeat_show = findViewById(R.id.repeat_show);
+        day_Su = (CheckBox) findViewById(R.id.su);
+        day_M = (CheckBox) findViewById(R.id.m);
+        day_T = (CheckBox) findViewById(R.id.T);
+        day_W = (CheckBox) findViewById(R.id.W);
+        day_Th = (CheckBox) findViewById(R.id.Th);
+        day_F = (CheckBox) findViewById(R.id.F);
+        day_S = (CheckBox) findViewById(R.id.S);
+        repeat_checkbox = findViewById(R.id.repeat_checkbox);
+
         repeat_text="";
         i = 0;
 
@@ -203,15 +225,21 @@ public class normal_alarm extends Activity {
         repeat_checkbox = (CheckBox)findViewById(R.id.repeat_checkbox);
         requestcode = (int)System.currentTimeMillis();
         Boolean ifrepeat;
-        pickday();
+        detectday();
         TextView normal_edit_title = findViewById(R.id.normal_edit_title);
         String edit_text = normal_edit_title.getText().toString();
 
-        Intent intent = new Intent(this, ai_alarmalert.class);
+        Intent intent = new Intent(this, normal_alarmalert.class);
         intent.putExtra("requestcode", requestcode);
         if (repeat_checkbox.isChecked() && !repeat_text.equals("")){
             PendingIntent pi = PendingIntent.getActivity(this, requestcode, intent, PendingIntent.FLAG_UPDATE_CURRENT);
-            am2.setRepeating(AlarmManager.RTC_WAKEUP, calendar2.getTimeInMillis(), 24*60*60*1000, pi);
+            if (System.currentTimeMillis() > calendar2.getTimeInMillis()){
+                Log.d("case",":settmr");
+                am2.setRepeating(AlarmManager.RTC_WAKEUP, calendar2.getTimeInMillis()+24*60*60*1000, 24*60*60*1000, pi);
+            }else{
+                Log.d("case",":settoday");
+                am2.setRepeating(AlarmManager.RTC_WAKEUP, calendar2.getTimeInMillis(), 24*60*60*1000, pi);
+            }
             Log.d("sest",":set");
             ifrepeat = true;
         }else {
@@ -238,10 +266,10 @@ public class normal_alarm extends Activity {
     public void updateAlarm(int requestcode){
         repeat_checkbox = (CheckBox)findViewById(R.id.repeat_checkbox);
         Boolean ifrepeat;
-        pickday();
+        detectday();
         TextView normal_edit_title = findViewById(R.id.normal_edit_title);
         String edit_text = normal_edit_title.getText().toString();
-        Intent intent = new Intent(this, ai_alarmalert.class);
+        Intent intent = new Intent(this, normal_alarmalert.class);
         intent.putExtra("requestcode", requestcode);
         if (repeat_checkbox.isChecked() && !repeat_text.equals("")){
             PendingIntent pi = PendingIntent.getActivity(this, requestcode, intent, PendingIntent.FLAG_UPDATE_CURRENT);
