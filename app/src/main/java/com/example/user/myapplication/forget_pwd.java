@@ -1,6 +1,7 @@
 package com.example.user.myapplication;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.IBinder;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -9,13 +10,33 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
+import android.widget.TextView;
 
-public class sign_up extends AppCompatActivity {
+public class forget_pwd extends AppCompatActivity {
+    TextView signup, login;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.sign_up);
+        setContentView(R.layout.forget_pwd);
+
+        signup = findViewById(R.id.signup_text);
+        signup.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(forget_pwd.this, sign_up.class);
+                startActivity(intent);
+            }
+        });
+
+        login = findViewById(R.id.login_text);
+        login.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent1 = new Intent(forget_pwd.this, login.class);
+                startActivity(intent1);
+            }
+        });
     }
 
     //點擊空白處隱藏鍵盤
@@ -34,7 +55,7 @@ public class sign_up extends AppCompatActivity {
 
     private boolean isShouldHideInput(View v, MotionEvent event) {
         if (v != null && (v instanceof EditText)) {
-            int[] l = { 0, 0 };
+            int[] l = {0, 0};
             v.getLocationInWindow(l);
             int left = l[0], top = l[1], bottom = top + v.getHeight(), right = left
                     + v.getWidth();
