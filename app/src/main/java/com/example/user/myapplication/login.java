@@ -8,6 +8,7 @@ import android.os.IBinder;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
@@ -18,7 +19,10 @@ import android.widget.TextView;
 
 import static com.example.user.myapplication.mainpage.KEY;
 
-    TextView signup,forget;
+
+public class login extends AppCompatActivity {
+    Connect_To_Server db_select;
+    TextView signup, forget;
     EditText user_mail, user_pwd;
 
     @Override
@@ -26,13 +30,13 @@ import static com.example.user.myapplication.mainpage.KEY;
         super.onCreate(savedInstanceState);
         setContentView(R.layout.login);
 
-        Button login = (Button)findViewById(R.id.login_btn);
-        user_mail = (EditText)findViewById(R.id.user_mail);
-        user_pwd = (EditText)findViewById(R.id.user_pwd);
+        Button login = (Button) findViewById(R.id.login_btn);
+        user_mail = (EditText) findViewById(R.id.user_mail);
+        user_pwd = (EditText) findViewById(R.id.user_pwd);
         db_select = new Connect_To_Server();
 
-        user_mail.setText(getSharedPreferences(KEY,MODE_PRIVATE).getString("u_id",null));
-        user_pwd.setText(getSharedPreferences(KEY,MODE_PRIVATE).getString("u_pwd",null));
+        user_mail.setText(getSharedPreferences(KEY, MODE_PRIVATE).getString("u_id", null));
+        user_pwd.setText(getSharedPreferences(KEY, MODE_PRIVATE).getString("u_pwd", null));
 
         signup = findViewById(R.id.signup_text);
         signup.setOnClickListener(new View.OnClickListener() {
@@ -63,8 +67,8 @@ import static com.example.user.myapplication.mainpage.KEY;
                 Thread get_data = new Thread(new Runnable() {
                     @Override
                     public void run() {
-                        db_select.connect("select_sql","SELECT user_id,u_password,u_name FROM `user` WHERE user_id ='"+ finalUsername +"'");
-                        Log.d("連線","安安SELECT user_id,u_password,u_name FROM `user` WHERE user_id ='"+ finalUsername +"'");
+                        db_select.connect("select_sql", "SELECT user_id,u_password,u_name FROM `user` WHERE user_id ='" + finalUsername + "'");
+                        Log.d("連線", "安安SELECT user_id,u_password,u_name FROM `user` WHERE user_id ='" + finalUsername + "'");
                     }
                 });
                 get_data.start();
@@ -73,27 +77,27 @@ import static com.example.user.myapplication.mainpage.KEY;
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
-                String db_data =  db_select.get_data;
-                Log.d("連線","安安"+db_data);
+                String db_data = db_select.get_data;
+                Log.d("連線", "安安" + db_data);
                 String[] token = db_data.split("/");
-                if(token.length != 3){
+                if (token.length != 3) {
                     new AlertDialog.Builder(login.this).setTitle("請再試試看").setMessage("帳號或密碼錯誤!!")
-                            .setNegativeButton("OK",null)
+                            .setNegativeButton("OK", null)
                             .show();
-                }else{
+                } else {
                     String db_u_id = token[0];
                     String db_u_pwd = token[1];
-                    if(db_u_pwd.equals(userpwd)){
+                    if (db_u_pwd.equals(userpwd)) {
 
-                        SharedPreferences pref  = getApplication().getSharedPreferences(KEY, Context.MODE_PRIVATE);
+                        SharedPreferences pref = getApplication().getSharedPreferences(KEY, Context.MODE_PRIVATE);
                         pref.edit().clear();
-                        pref.edit().putString("u_id",db_u_id).putString("u_pwd",db_u_pwd).commit();
+                        pref.edit().putString("u_id", db_u_id).putString("u_pwd", db_u_pwd).commit();
 
                         Intent intent = new Intent(login.this, mainpage.class);
                         startActivity(intent);
-                    }else{
+                    } else {
                         new AlertDialog.Builder(login.this).setTitle("請再試試看").setMessage("帳號或密碼錯誤!!")
-                                .setNegativeButton("OK",null)
+                                .setNegativeButton("OK", null)
                                 .show();
                     }
                 }
@@ -102,8 +106,9 @@ import static com.example.user.myapplication.mainpage.KEY;
 
 
     }
+
     @Override
-    public boolean onKeyDown(int keyCode, KeyEvent event){
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
         if (keyCode == KeyEvent.KEYCODE_BACK) {
             new AlertDialog.Builder(login.this)
                     .setTitle("要離開TimeKeeper了嗎?")
@@ -154,7 +159,7 @@ import static com.example.user.myapplication.mainpage.KEY;
 
     private boolean isShouldHideInput(View v, MotionEvent event) {
         if (v != null && (v instanceof EditText)) {
-            int[] l = { 0, 0 };
+            int[] l = {0, 0};
             v.getLocationInWindow(l);
             int left = l[0], top = l[1], bottom = top + v.getHeight(), right = left
                     + v.getWidth();
@@ -177,12 +182,4 @@ import static com.example.user.myapplication.mainpage.KEY;
         }
     }
 
-    // 按返回鍵取消delete狀態
-    @Override
-    public boolean onKeyDown(int keyCode, KeyEvent event) {
-        if (keyCode == KeyEvent.KEYCODE_BACK) {
-            finish();
-        }
-        return false;
-    }
 }
