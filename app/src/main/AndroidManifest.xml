@@ -18,7 +18,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".mainpage"></activity>
+        <activity android:name=".mainpage" />
         <activity
             android:name=".normal_alarmalert"
             android:label="ai_alarmalert" />
@@ -31,7 +31,7 @@
         <activity android:name=".setting_setup.setting_setup" />
         <activity android:name=".setting_friend" />
         <activity android:name=".setting_friend_search" />
-        <activity android:name=".login" >
+        <activity android:name=".login">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -39,8 +39,9 @@
             </intent-filter>
         </activity>
         <activity android:name=".sign_up" />
-        <activity android:name=".forget_pwd"></activity>
-        <activity android:name=".ai_count"/>
+        <activity android:name=".forget_pwd" />
+        <activity android:name=".ai_count" />
+        <activity android:name=".check"></activity>
     </application>
 
 </manifest>
