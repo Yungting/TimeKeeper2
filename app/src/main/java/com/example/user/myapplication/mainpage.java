@@ -302,7 +302,6 @@ public class mainpage extends Activity implements RecyclerTouchListener.Recycler
             modelList.remove(position);
             //删除动画
             notifyItemRemoved(position);
-            notifyDataSetChanged();
             DB_normal_alarm db = new DB_normal_alarm(mainpage.this);
             AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
             Intent intent = new Intent(mainpage.this, normal_alarmalert.class);
@@ -359,7 +358,6 @@ public class mainpage extends Activity implements RecyclerTouchListener.Recycler
                                     AlarmManager alarm = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
                                     Intent intent1 = new Intent(mainpage.this, normal_alarmalert.class);
                                     PendingIntent pi1 = PendingIntent.getActivity(mainpage.this, requestcode, intent1, PendingIntent.FLAG_UPDATE_CURRENT);
-
                                     break;
                             }
                         } else {
@@ -368,6 +366,7 @@ public class mainpage extends Activity implements RecyclerTouchListener.Recycler
                                     alarm.setBackground(getResources().getDrawable(R.drawable.mainpage_alarm_background_close));
                                     state = 0;
                                     db.updatestate(requestcode, state);
+
                                     AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
                                     Intent intent = new Intent(mainpage.this, normal_alarmalert.class);
                                     PendingIntent pi = PendingIntent.getActivity(mainpage.this, requestcode, intent, PendingIntent.FLAG_UPDATE_CURRENT);
