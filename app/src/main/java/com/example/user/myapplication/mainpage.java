@@ -293,7 +293,6 @@ public class mainpage extends Activity implements RecyclerTouchListener.Recycler
             PendingIntent pi = PendingIntent.getActivity(mainpage.this, requestcode[position], intent, PendingIntent.FLAG_UPDATE_CURRENT);
             alarmManager.cancel(pi);
             db.delete(requestcode[position]);
-            db.close();
         }
 
         @Override
