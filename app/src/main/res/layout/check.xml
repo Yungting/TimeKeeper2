@@ -18,7 +18,7 @@
         android:layout_height="124dp"
         android:background="@drawable/timekeeper_titlebar"/>
 
-    <ListView
+    <android.support.v7.widget.RecyclerView
         android:id="@+id/list"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
