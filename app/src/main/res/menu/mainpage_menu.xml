@@ -3,6 +3,12 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item
+        android:id="@+id/menu_setting_userIcon"
+        android:title="123"
+        android:icon="@drawable/ai_open"
+        app:showAsAction="never" />
+
+    <item
         android:id="@+id/action_setup"
         android:title="SET UP"
         app:showAsAction="never"/>

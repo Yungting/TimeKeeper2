@@ -14,6 +14,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.support.v4.app.ActivityCompat;
+import android.support.v7.view.menu.MenuPopupHelper;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -35,6 +36,7 @@ import com.example.user.myapplication.setting_setup.setting_setup;
 import com.nikhilpanju.recyclerviewenhanced.OnActivityTouchListener;
 import com.nikhilpanju.recyclerviewenhanced.RecyclerTouchListener;
 
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
@@ -43,14 +45,16 @@ import cdflynn.android.library.crossview.CrossView;
 
 import static android.Manifest.permission.READ_EXTERNAL_STORAGE;
 
-public class mainpage extends Activity implements RecyclerTouchListener.RecyclerTouchListenerHelper{
+public class mainpage extends Activity implements RecyclerTouchListener.RecyclerTouchListenerHelper {
     public static final String KEY = "com.example.user.myapplication.app";
     public static boolean logon = false;
     private static final int REQUEST_EXTERNAL_STORAGE = 1;
     ImageButton add_btn, normal_btn, ai_btn, counter_btn;
     LinearLayout normal_layout, ai_layout, counter_layout;
     CrossView crossView;
-    public class BuildDev{
+    Button menu;
+
+    public class BuildDev {
         public static final int RECORD_AUDIO = 0;
     }
 
@@ -80,9 +84,17 @@ public class mainpage extends Activity implements RecyclerTouchListener.Recycler
         counter_layout = findViewById(R.id.counter_layout);
         crossView = findViewById(R.id.cross_view);
 
-        final String user = getSharedPreferences(KEY,MODE_PRIVATE).getString("u_id",null);
-        final String pwd = getSharedPreferences(KEY,MODE_PRIVATE).getString("u_pwd",null);
-        if(user == null || pwd == null){
+//        menu = findViewById(R.id.menu);
+//        menu.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                showPopupMenu(PopupMenuActivity.this, v);
+//            }
+//        });
+
+        final String user = getSharedPreferences(KEY, MODE_PRIVATE).getString("u_id", null);
+        final String pwd = getSharedPreferences(KEY, MODE_PRIVATE).getString("u_pwd", null);
+        if (user == null || pwd == null) {
             Intent intent = new Intent(this, login.class);
             startActivity(intent);
         }
@@ -100,12 +112,12 @@ public class mainpage extends Activity implements RecyclerTouchListener.Recycler
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO)
                 != PackageManager.PERMISSION_GRANTED) {
 
-            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.RECORD_AUDIO},BuildDev.RECORD_AUDIO);
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.RECORD_AUDIO}, BuildDev.RECORD_AUDIO);
         }
         int permission = ActivityCompat.checkSelfPermission(this,
                 Manifest.permission.READ_EXTERNAL_STORAGE);
-        if (permission != PackageManager.PERMISSION_GRANTED){
-            ActivityCompat.requestPermissions(this, new String[] {READ_EXTERNAL_STORAGE}, REQUEST_EXTERNAL_STORAGE );
+        if (permission != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, new String[]{READ_EXTERNAL_STORAGE}, REQUEST_EXTERNAL_STORAGE);
         }
 
 
@@ -163,9 +175,11 @@ public class mainpage extends Activity implements RecyclerTouchListener.Recycler
                     @Override
                     public void onRowClicked(int position) {
                         Intent intent;
-                        if (alarmtype[position].equals("normal")){
+                        if (alarmtype[position].equals("normal")) {
                             intent = new Intent(mainpage.this, normal_alarm.class);
-                        }else {intent = new Intent(mainpage.this, ai_alarm.class);}
+                        } else {
+                            intent = new Intent(mainpage.this, ai_alarm.class);
+                        }
                         intent.putExtra("requestcode", requestcode[position]);
                         startActivity(intent);
                     }
@@ -211,26 +225,28 @@ public class mainpage extends Activity implements RecyclerTouchListener.Recycler
         DB_normal_alarm db = new DB_normal_alarm(this);
 
         //cursor
-        if (db!= null){
+        if (db != null) {
             Cursor cursor = db.select();
-            if (cursor.getCount()>0){
+            if (cursor.getCount() > 0) {
                 int i = 0;
-                for (cursor.moveToFirst(); !cursor.isAfterLast(); cursor.moveToNext()){
+                for (cursor.moveToFirst(); !cursor.isAfterLast(); cursor.moveToNext()) {
                     Calendar cal = Calendar.getInstance();
                     Long t = Long.parseLong(cursor.getString(6));
                     cal.setTimeInMillis(t);
                     int hour = cal.get(Calendar.HOUR_OF_DAY);
                     int min = cal.get(Calendar.MINUTE);
                     String time = "";
-                    if (hour < 10 && min < 10){
-                        time = "0"+hour+":0"+min;
-                    }else if (hour < 10 && min>=10){
-                        time = "0"+hour+":"+min;
-                    }else if (hour >= 10 && min<10){
-                        time = hour+":0"+min;
-                    }else if (hour >= 10 && min >= 10){time = hour+":"+min;}
+                    if (hour < 10 && min < 10) {
+                        time = "0" + hour + ":0" + min;
+                    } else if (hour < 10 && min >= 10) {
+                        time = "0" + hour + ":" + min;
+                    } else if (hour >= 10 && min < 10) {
+                        time = hour + ":0" + min;
+                    } else if (hour >= 10 && min >= 10) {
+                        time = hour + ":" + min;
+                    }
                     list.add(new mainpage_RowModel(cursor.getString(0), cursor.getString(1), cursor.getString(2), cursor.getInt(3), Boolean.parseBoolean(cursor.getString(4))
-                            ,cursor.getString(5), time, cursor.getString(7), cursor.getInt(8)));
+                            , cursor.getString(5), time, cursor.getString(7), cursor.getInt(8)));
                     requestcode[i] = cursor.getInt(3);
                     alarmtype[i] = cursor.getString(7);
                     i++;
@@ -324,7 +340,7 @@ public class mainpage extends Activity implements RecyclerTouchListener.Recycler
                     @Override
                     public void onClick(View view) {
                         DB_normal_alarm db = new DB_normal_alarm(mainpage.this);
-                        if( type.equals("ai")){
+                        if (type.equals("ai")) {
                             switch (state) {
                                 case 1:
                                     alarm_btn.setBackground(getResources().getDrawable(R.drawable.ai_close));
@@ -346,7 +362,7 @@ public class mainpage extends Activity implements RecyclerTouchListener.Recycler
 
                                     break;
                             }
-                        }else {
+                        } else {
                             switch (state) {
                                 case 1:
                                     alarm.setBackground(getResources().getDrawable(R.drawable.mainpage_alarm_background_close));
@@ -363,21 +379,21 @@ public class mainpage extends Activity implements RecyclerTouchListener.Recycler
                                     state = 1;
                                     db.updatestate(requestcode, state);
                                     Cursor cursor = db.selectbycode(requestcode);
-                                    if (cursor != null && cursor.moveToFirst()){
+                                    if (cursor != null && cursor.moveToFirst()) {
                                         Boolean ifrepeat = Boolean.parseBoolean(cursor.getString(4));
                                         AlarmManager alarm = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
                                         Intent intent1 = new Intent(mainpage.this, normal_alarmalert.class);
                                         intent1.putExtra("requestcode", requestcode);
                                         PendingIntent pi1 = PendingIntent.getActivity(mainpage.this, requestcode, intent1, PendingIntent.FLAG_UPDATE_CURRENT);
-                                        if (ifrepeat){
-                                            Log.d("case",":repear");
-                                            alarm.setRepeating(AlarmManager.RTC_WAKEUP, Long.parseLong(cursor.getString(6)), 24*60*60*1000, pi1);
-                                        }else {
-                                            if (System.currentTimeMillis() > Long.parseLong(cursor.getString(6))){
-                                                Log.d("case",":settmr");
-                                                alarm.set(AlarmManager.RTC_WAKEUP, Long.parseLong(cursor.getString(6))+24*60*60*1000, pi1);
-                                            }else{
-                                                Log.d("case",":settoday");
+                                        if (ifrepeat) {
+                                            Log.d("case", ":repear");
+                                            alarm.setRepeating(AlarmManager.RTC_WAKEUP, Long.parseLong(cursor.getString(6)), 24 * 60 * 60 * 1000, pi1);
+                                        } else {
+                                            if (System.currentTimeMillis() > Long.parseLong(cursor.getString(6))) {
+                                                Log.d("case", ":settmr");
+                                                alarm.set(AlarmManager.RTC_WAKEUP, Long.parseLong(cursor.getString(6)) + 24 * 60 * 60 * 1000, pi1);
+                                            } else {
+                                                Log.d("case", ":settoday");
                                                 alarm.set(AlarmManager.RTC_WAKEUP, Long.parseLong(cursor.getString(6)), pi1);
                                             }
                                         }
@@ -397,14 +413,14 @@ public class mainpage extends Activity implements RecyclerTouchListener.Recycler
                 state = rowModel.getState();
                 requestcode = rowModel.getRequestcode();
 
-                if (type.equals("normal")){
+                if (type.equals("normal")) {
                     alarm_btn.setBackground(getResources().getDrawable(R.drawable.normal));
                 } else if (type.equals("ai")) {
                     alarm_btn.setBackground(getResources().getDrawable(R.drawable.ai_open));
                 }
-                if (state == 0){
+                if (state == 0) {
                     alarm.setBackground(getResources().getDrawable(R.drawable.mainpage_alarm_background_close));
-                }else{
+                } else {
                     alarm.setBackground(getResources().getDrawable(R.drawable.mainpage_alarm_background));
                 }
             }
@@ -418,25 +434,76 @@ public class mainpage extends Activity implements RecyclerTouchListener.Recycler
         inflater.inflate(R.menu.mainpage_menu, popup.getMenu());
         popup.show();
 
+
         //點擊選單選項，然後換頁
         popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(MenuItem menuItem) {
-                switch (menuItem.getItemId()){
-                    case R.id.action_setup :
+
+                switch (menuItem.getItemId()) {
+                    case R.id.action_setup:
                         Intent intent3 = new Intent(mainpage.this, setting_setup.class);
                         startActivity(intent3);
                         return true;
 
-                    case R.id.action_friends :
+                    case R.id.action_friends:
                         Intent intent4 = new Intent(mainpage.this, setting_friend.class);
                         startActivity(intent4);
+                        return true;
+
+                    case R.id.action_check:
+                        Intent intent5 = new Intent(mainpage.this, check.class);
+                        startActivity(intent5);
                         return true;
                 }
                 return false;
             }
         });
     }
+
+//    private void showPopupMenu(final Context context, View ancher) {
+//        PopupMenu popupMenu = new PopupMenu(context, ancher);
+//        //引入菜单资源
+//        popupMenu.inflate(R.menu.mainpage_menu);
+//        //设置选中
+//        popupMenu.getMenu().findItem(checkedItemId).setChecked(true);
+//        //菜单项的监听
+//        popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+//            @Override
+//            public boolean onMenuItemClick(MenuItem menuItem) {
+//                switch (menuItem.getItemId()) {
+//                    case R.id.menu_setting_wifi:
+//                        checkedItemId = R.id.menu_setting_wifi;
+//                        break;
+//
+//                    case R.id.menu_setting_wifi:
+//                        checkedItemId = R.id.menu_setting_wifi;
+//                        break;
+//
+//                    case R.id.menu_setting_wifi:
+//                        checkedItemId = R.id.menu_setting_wifi;
+//                        break;
+//                }
+//                return true;
+//            }
+//        });
+//
+//        //使用反射，强制显示菜单图标
+//        try {
+//            Field field = popupMenu.getClass().getDeclaredField("mPopup");
+//            field.setAccessible(true);
+//            MenuPopupHelper mHelper = (MenuPopupHelper) field.get(popupMenu);
+//            mHelper.setForceShowIcon(true);
+//        } catch (IllegalAccessException | NoSuchFieldException e) {
+//            e.printStackTrace();
+//        }
+//        //显示PopupMenu
+//        popupMenu.show();
+//    }
+
+
+
+
     private boolean isAccessGranted() {
         try {
             PackageManager packageManager = getPackageManager();
