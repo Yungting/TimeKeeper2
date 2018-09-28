@@ -15,7 +15,7 @@ public class DB_usage extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase db){
-        db.execSQL("CREATE TABLE IF NOT EXISTS usage(id INTEGER, date TEXT PRIMARY KEY, period INTEGER,state BOOLEAN)");
+        db.execSQL("CREATE TABLE IF NOT EXISTS usage(id INTEGER, date TEXT PRIMARY KEY, period INTEGER, ifawake BOOLEAN, state BOOLEAN)");
     }
 
     @Override
@@ -57,5 +57,11 @@ public class DB_usage extends SQLiteOpenHelper {
         // 第三個參數是包裝新增資料的ContentValues物件
         long row = db.insert("usage", null, cv);
         return  row;
+    }
+
+    public void ifawake(String u_id, String Date, boolean wake){
+        ContentValues cv = new ContentValues();
+        cv.put("ifawake", wake);
+        db.update("usage",cv,"id="+u_id+" AND date="+Date,null);
     }
 }
