@@ -5,6 +5,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.util.Log;
 
 public class DB_usage extends SQLiteOpenHelper {
     private SQLiteDatabase db;
@@ -60,8 +61,11 @@ public class DB_usage extends SQLiteOpenHelper {
     }
 
     public void ifawake(String u_id, String Date, boolean wake){
+        Log.d("u_id",":"+u_id);
+        Log.d("date",":"+Date);
         ContentValues cv = new ContentValues();
         cv.put("ifawake", wake);
-        db.update("usage",cv,"id="+u_id+" AND date="+Date,null);
+        String sql = "UPDATE usage SET ifawake = ? WHERE id = ? AND date = ?";
+        db.execSQL(sql, new Object[]{wake, u_id, Date});
     }
 }
