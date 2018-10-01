@@ -4,14 +4,21 @@ import android.content.Intent;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.LayoutInflater;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.FrameLayout;
+import android.widget.ImageButton;
 import android.widget.PopupMenu;
+import android.widget.PopupWindow;
+import android.widget.TextView;
 
 
 import com.example.user.myapplication.R;
+import com.example.user.myapplication.check;
 import com.example.user.myapplication.mainpage;
 import com.example.user.myapplication.setting_friend;
 
@@ -25,6 +32,13 @@ public class setting_setup extends AppCompatActivity {
     private ViewPager mViewPager;
     private CardPagerAdapter mCardAdapter;
     private ShadowTransformer mCardShadowTransformer;
+
+    // hamburger
+    Button menu;
+    ImageButton menu_open;
+    PopupWindow popupWindow;
+    TextView set_up, friend, check;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -50,33 +64,69 @@ public class setting_setup extends AppCompatActivity {
                 startActivity(intent2);
             }
         });
+
+        // 選單彈跳
+        menu = findViewById(R.id.menu);
+        menu.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(popupWindow==null){
+                    showPopupWindow();
+                }else if(popupWindow.isShowing()){
+                    popupWindow.dismiss();
+                }
+                else{
+                    popupWindow.showAsDropDown(menu,-200,-155);
+                }
+            }
+        });
+
     }
 
     //跳出選單
-    public void showPopup(View v) {
-        PopupMenu popup = new PopupMenu(this, v);
-        MenuInflater inflater = popup.getMenuInflater();
-        inflater.inflate(mainpage_menu, popup.getMenu());
-        popup.show();
+    //跳出選單
+    private void showPopupWindow() {
+        View view = LayoutInflater.from(this).inflate(R.layout.menu_window,null);//获取popupWindow子布局对象
+        popupWindow = new PopupWindow(view, ViewGroup.LayoutParams.WRAP_CONTENT,ViewGroup.LayoutParams.WRAP_CONTENT,false);//初始化
+        popupWindow.showAsDropDown(menu,-300,-155);//在ImageView控件下方弹出
 
-        //點擊選單選項，然後換頁
-        popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+        menu_open = view.findViewById(R.id.menu_btn_open);
+        menu_open.setOnClickListener(new View.OnClickListener() {
             @Override
-            public boolean onMenuItemClick(MenuItem menuItem) {
-                switch (menuItem.getItemId()){
-                    case R.id.action_setup :
-                        Intent intent3 = new Intent(setting_setup.this, setting_setup.class);
-                        startActivity(intent3);
-                        return true;
-
-                    case R.id.action_friends :
-                        Intent intent4 = new Intent(setting_setup.this, setting_friend.class);
-                        startActivity(intent4);
-                        return true;
-                }
-                return false;
+            public void onClick(View v) {
+                popupWindow.dismiss();
             }
         });
+
+        set_up = view.findViewById(R.id.set_up);
+        friend = view.findViewById(R.id.friend);
+        check = view.findViewById(R.id.check);
+
+        set_up.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent2 = new Intent(setting_setup.this, setting_setup.class);
+                startActivity(intent2);
+            }
+        });
+
+        friend.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent3 = new Intent(setting_setup.this, setting_friend.class);
+                startActivity(intent3);
+            }
+        });
+
+        check.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent2 = new Intent(setting_setup.this, com.example.user.myapplication.check.class);
+                startActivity(intent2);
+            }
+        });
+
+//        popupWindow.setAnimationStyle(R.style.popupAnim);//设置动画
     }
 
 }
