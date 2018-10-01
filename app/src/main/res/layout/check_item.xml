@@ -11,8 +11,8 @@
         android:layout_marginTop="10dp">
 
         <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_width="87dp"
+            android:layout_height="51dp"
             android:layout_weight="1"
             android:orientation="vertical">
 
@@ -31,21 +31,27 @@
 
             <TextView
                 android:id="@+id/time"
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="TextView" />
 
+            <TextView
+                android:id="@+id/showtext"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="wake" />
+
         </LinearLayout>
 
         <Button
-            android:id="@+id/sleep"
+            android:id="@+id/btn_sleep"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="睡著" />
 
         <Button
-            android:id="@+id/wake"
+            android:id="@+id/btn_wake"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="醒著" />
