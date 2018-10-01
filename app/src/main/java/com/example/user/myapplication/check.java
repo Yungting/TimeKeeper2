@@ -21,7 +21,7 @@ import java.util.List;
 
 public class check extends AppCompatActivity {
     Button sleep, wake;
-    private MyAdapter mAdapter;
+    private MyAdapter mAdapter,mAdapter2;
     private RecyclerView mRecyclerView;
 
     @Override
