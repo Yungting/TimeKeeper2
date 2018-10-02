@@ -52,7 +52,7 @@ public class ai_count{
     public static ArrayList y_axis;
     public static ArrayList z_axis;
     public static ArrayList sound_db;
-    ArrayList up_id,up_name,up_date_time,up_x_axis,up_y_axis,up_z_axis,up_sound_db;
+    ArrayList up_id,up_date_alarm,up_date_time,up_x_axis,up_y_axis,up_z_axis,up_sound_db;
     ArrayList up_id_u,up_date_time_u,up_period_u;
     String sql,sqltmp,sql_u,sql_u_tmp,u_id;
     Connect_To_Server connecting;
@@ -80,7 +80,6 @@ public class ai_count{
         z_axis = new ArrayList();
         sound_db = new ArrayList();
         up_id = new ArrayList();
-        up_name = new ArrayList();
         up_date_time = new ArrayList();
         up_x_axis = new ArrayList();
         up_y_axis = new ArrayList();
@@ -171,9 +170,11 @@ public class ai_count{
                     if(System.currentTimeMillis() == stop_record_time){
                         axis_recorder.start_record(sensorManager,false);//九軸停止紀錄(但現在我註解掉了)
                         sound_recorder.stopRecord();//停止錄音
-                        for(int i = 0;i<name.size();i++){
-                            dbSoundaxis.insert(id.get(i).toString(),(String) name.get(i), (Timestamp) date_time.get(i),Double.parseDouble(x_axis.get(i).toString()),Double.parseDouble(y_axis.get(i).toString()),Double.parseDouble(z_axis.get(i).toString()),Double.parseDouble(sound_db.get(i).toString()));
-                            Log.d("資料庫",id.get(i).toString()+"/"+(String) name.get(i)+"/"+(Timestamp) date_time.get(i)+"/"+Double.parseDouble(x_axis.get(i).toString())+"/"+Double.parseDouble(y_axis.get(i).toString())+"/"+Double.parseDouble(z_axis.get(i).toString())+"/"+Double.parseDouble(sound_db.get(i).toString()));
+                        for(int i = 0;i<up_id.size();i++){
+                            dbSoundaxis.insert(id.get(i).toString(), (Timestamp) date_time.get(i), Double.parseDouble(x_axis.get(i).toString()),
+                                    Double.parseDouble(y_axis.get(i).toString()),Double.parseDouble(z_axis.get(i).toString()),
+                                    Double.parseDouble(sound_db.get(i).toString()), String.valueOf(time));
+                            Log.d("資料庫",id.get(i).toString()+"/"+(Timestamp) date_time.get(i)+"/"+Double.parseDouble(x_axis.get(i).toString())+"/"+Double.parseDouble(y_axis.get(i).toString())+"/"+Double.parseDouble(z_axis.get(i).toString())+"/"+Double.parseDouble(sound_db.get(i).toString()));
                         }
                         Log.d("紀錄", "結束");
                         Log.d("TAG", "九軸&分貝資料上傳");
@@ -183,26 +184,26 @@ public class ai_count{
                 for(int i = 0; i<update_cursor.getCount();i++){
                     update_cursor.moveToPosition(i);
                     up_id.add(update_cursor.getString(update_cursor.getColumnIndex("_id")));
-                    up_name.add(update_cursor.getString(update_cursor.getColumnIndex("name")));
+                    up_date_alarm.add(update_cursor.getString(update_cursor.getColumnIndex("date_alarm")));
                     up_date_time.add((update_cursor.getString(update_cursor.getColumnIndex("date_time"))));
                     up_x_axis.add((update_cursor.getString(update_cursor.getColumnIndex("x_axis"))));
                     up_y_axis.add((update_cursor.getString(update_cursor.getColumnIndex("y_axis"))));
                     up_z_axis.add((update_cursor.getString(update_cursor.getColumnIndex("z_axis"))));
                     up_sound_db.add((update_cursor.getString(update_cursor.getColumnIndex("sound_db"))));
                 }
-                sql = "INSERT INTO `sound_axis_record` (`User_id`, `Name`, `Date_time`, `X_axis`, `Y_axis`, `Z_axis`, `Sound_db`) VALUES";
-                for(int i = 0;i<up_name.size();i++){
+                sql = "INSERT INTO `sound_axis_record` (`User_id`, `Date_alarm`, `Date_time`, `X_axis`, `Y_axis`, `Z_axis`, `Sound_db`) VALUES";
+                for(int i = 0;i<up_id.size();i++){
                     String id = up_id.get(i).toString();
-                    String name = (String) up_name.get(i);
+                    String date_alarm = (String) up_date_alarm.get(i);
                     Timestamp time = Timestamp.valueOf(up_date_time.get(i).toString());
                     double x_axis = Double.parseDouble(up_x_axis.get(i).toString());
                     double y_axis = Double.parseDouble(up_y_axis.get(i).toString());
                     double z_axis = Double.parseDouble(up_z_axis.get(i).toString());
                     double sound_db = Double.parseDouble(up_sound_db.get(i).toString());
-                    if(i == up_name.size()-1){
-                        sqltmp = sqltmp+"('"+id+"','"+name+"', '"+time+"', '"+x_axis+"', '"+y_axis+"', '"+z_axis+"', '"+sound_db+"');";
+                    if(i == up_id.size()-1){
+                        sqltmp = sqltmp+"('"+id+"','"+date_alarm+"', '"+time+"', '"+x_axis+"', '"+y_axis+"', '"+z_axis+"', '"+sound_db+"');";
                     }else {
-                        sqltmp = sqltmp+"('"+id+"','"+name+"', '"+time+"', '"+x_axis+"', '"+y_axis+"', '"+z_axis+"', '"+sound_db+"'),";
+                        sqltmp = sqltmp+"('"+id+"','"+date_alarm+"', '"+time+"', '"+x_axis+"', '"+y_axis+"', '"+z_axis+"', '"+sound_db+"'),";
                     }
                 }
                 sql = sql+sqltmp;
@@ -233,7 +234,7 @@ public class ai_count{
                     calendar2.setTimeInMillis(System.currentTimeMillis());
                     stopuse = calendar2.getTimeInMillis();
                     usagetime(stopuse);
-                    dbUsage.insert(u_id,String.valueOf(time),(int)totaltime);
+                    dbUsage.insert(u_id,String.valueOf(time),(int)sec);
                     Log.d("測試", "帳號:"+u_id);
                     Log.d("紀錄", "結束");
                     Log.d("TAG", "螢幕使用狀態上傳");
