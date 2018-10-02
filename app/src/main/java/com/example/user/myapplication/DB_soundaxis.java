@@ -14,12 +14,12 @@ public class DB_soundaxis extends SQLiteOpenHelper {
     public static final String KEY_ID = "_id";
 
     public static final String DATETIME = "date_time";
-    public static final String NAME = "name";
     public static final String X_AXIS = "x_axis";
     public static final String Y_AXIS = "y_axis";
     public static final String Z_AXIS = "z_axis";
     public static final String SOUND_DB = "sound_db";
     public static final String STATE = "state";
+    public static final String DATEALARM = "date_alarm";
 
 
     private SQLiteDatabase db;
@@ -35,12 +35,12 @@ public class DB_soundaxis extends SQLiteOpenHelper {
         String CREATE_TABLE =
                 "CREATE TABLE IF NOT EXISTS " + TABLE_NAME + " (" +
                         KEY_ID + " INTEGER," +
-                        NAME + " TEXT," +
                         DATETIME +" TIMESTAMP PRIMARY KEY," +
                         X_AXIS + " REAL , " +
                         Y_AXIS + " REAL , " +
                         Z_AXIS + " REAL , " +
                         SOUND_DB + " REAL," +
+                        DATEALARM + " TEXT , "+
                         STATE+" BOOLEAN );";
         db.execSQL(CREATE_TABLE);
     }
@@ -65,19 +65,19 @@ public class DB_soundaxis extends SQLiteOpenHelper {
         values.put(STATE,1);
         db.update("record",values,STATE+"=0",null);
     }
-    public long insert(String u_id , String Name, Timestamp Datetime, double x_axis, double y_axis, double z_axis, double sound_db) {
+    public long insert(String u_id, Timestamp Datetime, double x_axis, double y_axis, double z_axis, double sound_db, String date_alarm) {
         //SQLiteDatabase db = this.getWritableDatabase();
         // 建立準備新增資料的ContentValues物件
         ContentValues cv = new ContentValues();
         // 加入ContentValues物件包裝的新增資料
         // 第一個參數是欄位名稱， 第二個參數是欄位的資料
         cv.put(KEY_ID,u_id);
-        cv.put(NAME, Name);
         cv.put(DATETIME, String.valueOf(Datetime));
         cv.put(X_AXIS, x_axis);
         cv.put(Y_AXIS, y_axis);
         cv.put(Z_AXIS, z_axis);
         cv.put(SOUND_DB, sound_db);
+        cv.put(DATEALARM, date_alarm);
         cv.put(STATE, false);
 
         // 新增一筆資料並取得編號

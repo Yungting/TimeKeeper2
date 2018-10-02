@@ -154,11 +154,14 @@ public class normal_alarmalert extends AppCompatActivity {
             }
             for (int j = 0; j<7; j++){
                 if (d[j] == calendar.get(Calendar.DAY_OF_WEEK)){
+                    Log.d("ring","for if");
+                    Log.d("day",":"+d[j]);
                     ring(musicpath);
                     break;
                 }
             }
         }else {
+            Log.d("ring","else");
             ring(musicpath);
         }
     }

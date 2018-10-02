@@ -97,7 +97,30 @@ public class normal_alarm extends Activity {
             }
         });
 
-
+        final CheckBox repeat_btn = findViewById(R.id.repeat_checkbox);
+        repeat_btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (!repeat_btn.isChecked()){
+                    day_Su = (CheckBox) findViewById(R.id.su);
+                    day_M = (CheckBox) findViewById(R.id.m);
+                    day_T = (CheckBox) findViewById(R.id.T);
+                    day_W = (CheckBox) findViewById(R.id.W);
+                    day_Th = (CheckBox) findViewById(R.id.Th);
+                    day_F = (CheckBox) findViewById(R.id.F);
+                    day_S = (CheckBox) findViewById(R.id.S);
+                    day_Su.setChecked(false);
+                    day_M.setChecked(false);
+                    day_T.setChecked(false);
+                    day_W.setChecked(false);
+                    day_Th.setChecked(false);
+                    day_F.setChecked(false);
+                    day_S.setChecked(false);
+                    rday = "";
+                    pickday();
+                }
+            }
+        });
 
         //展開
         repeat_layout = findViewById(R.id.repeat_layout);
@@ -175,7 +198,7 @@ public class normal_alarm extends Activity {
         day_S = (CheckBox) findViewById(R.id.S);
         repeat_checkbox = findViewById(R.id.repeat_checkbox);
 
-        if (rday != null){
+        if (rday != null && !rday.equals("")){
             repeat_checkbox.setChecked(true);
             String[] arrays = rday.trim().split("\\s+");
             for(String s : arrays){
@@ -188,6 +211,9 @@ public class normal_alarm extends Activity {
                 if (s.equals("S")){ day_S.setChecked(true);}
             }
             repeat_show.setText(rday);
+        }else {
+            repeat_show.setText(rday);
+            repeat_checkbox.setChecked(false);
         }
     }
 
@@ -258,9 +284,9 @@ public class normal_alarm extends Activity {
         String millis = String.valueOf(calendar2.getTimeInMillis());
         db.insert(repeat_text, audioFilePath, index, requestcode, ifrepeat, edit_text, millis,"normal",1);
         db.close();
-        Intent intent_set = new Intent();
-        intent_set.setClass(this, mainpage.class);
-        startActivity(intent_set);
+        Intent mIntent = new Intent(this, mainpage.class);
+        mIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        startActivity(mIntent);
     }
     //修改鬧鐘
     public void updateAlarm(int requestcode){
@@ -273,7 +299,14 @@ public class normal_alarm extends Activity {
         intent.putExtra("requestcode", requestcode);
         if (repeat_checkbox.isChecked() && !repeat_text.equals("")){
             PendingIntent pi = PendingIntent.getActivity(this, requestcode, intent, PendingIntent.FLAG_UPDATE_CURRENT);
-            am2.setRepeating(AlarmManager.RTC_WAKEUP, calendar2.getTimeInMillis(), 24*60*60*1000, pi);
+            if (System.currentTimeMillis() > calendar2.getTimeInMillis()){
+                Log.d("case",":settmr");
+                am2.setRepeating(AlarmManager.RTC_WAKEUP, calendar2.getTimeInMillis()+24*60*60*1000, 24*60*60*1000, pi);
+            }else{
+                Log.d("case",":settoday");
+                am2.setRepeating(AlarmManager.RTC_WAKEUP, calendar2.getTimeInMillis(), 24*60*60*1000, pi);
+            }
+            Log.d("sest",":set");
             ifrepeat = true;
         }else {
             PendingIntent pi = PendingIntent.getActivity(this, requestcode, intent, PendingIntent.FLAG_UPDATE_CURRENT);
@@ -291,10 +324,9 @@ public class normal_alarm extends Activity {
         String millis = String.valueOf(calendar2.getTimeInMillis());
         db.updateall(requestcode, repeat_text, audioFilePath, index, ifrepeat, edit_text, millis,"normal",1);
         db.close();
-        Intent intent_set = new Intent();
-        intent_set.setClass(this, mainpage.class);
-        startActivity(intent_set);
-
+        Intent mIntent = new Intent(this, mainpage.class);
+        mIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        startActivity(mIntent);
     }
 
     @Override
