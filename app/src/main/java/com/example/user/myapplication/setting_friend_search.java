@@ -25,6 +25,8 @@ import android.widget.TextView;
 
 import com.example.user.myapplication.setting_setup.setting_setup;
 
+import static com.example.user.myapplication.mainpage.KEY;
+
 public class setting_friend_search extends AppCompatActivity {
 
     ImageButton search_btn;
@@ -71,9 +73,10 @@ public class setting_friend_search extends AppCompatActivity {
                             .setNegativeButton("OK",null)
                             .show();
                 }else {
-                    String db_u_id = token[0];
-                    String db_u_pwd = token[1];
-                    String db_u_name = token[2];
+                    String u_id = getSharedPreferences(KEY, MODE_PRIVATE).getString("u_id", null);
+                    String friend_id = token[0];
+                    Boolean status = false;
+                    find_friend.connect("insert_sql","INSERT INTO `user_friend_invitation` (`user_id`, `friend_id`, `status`) VALUES('" + u_id + "', '" + friend_id + "', '" + status + "'");
                 }
             }
         });
@@ -88,8 +91,7 @@ public class setting_friend_search extends AppCompatActivity {
             }
         });
 
-<<<<<<< HEAD
-=======
+
         // 選單彈跳
         menu = findViewById(R.id.menu);
         menu.setOnClickListener(new View.OnClickListener() {
@@ -105,7 +107,7 @@ public class setting_friend_search extends AppCompatActivity {
                 }
             }
         });
->>>>>>> f02d9542c174d10dabb2110e11be0e278f5287fa
+
 
     }
 
