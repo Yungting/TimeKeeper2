@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.drawable.GradientDrawable;
 import android.os.IBinder;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.MenuInflater;
@@ -24,19 +25,43 @@ public class setting_friend_search extends AppCompatActivity {
     ImageButton search_btn;
     LinearLayout friend_show;
     View timekeeper_logo;
+    EditText search_friend;
+    Connect_To_Server find_friend;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.setting_friend_search);
         friend_show = findViewById(R.id.friend_show);
-
+        search_friend = (EditText)findViewById(R.id.search_friend);
         search_btn = findViewById(R.id.search_btn);
         search_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 if(friend_show.getVisibility() != View.VISIBLE){
                     friend_show.setVisibility(View.VISIBLE);
+                }
+                Thread search_account = new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        find_friend.connect("select_sql","SELECT user_id,u_password,u_name FROM `user` WHERE user_id = '"+search_friend.getText()+"'");
+                    }
+                });
+                search_account.start();
+                try {
+                    Thread.sleep(400);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                String[] token = find_friend.get_data.split("/");
+                if(token.length != 3){
+                    new AlertDialog.Builder(setting_friend_search.this).setTitle("在試試看一次~").setMessage("沒有這位使用者喔~")
+                            .setNegativeButton("OK",null)
+                            .show();
+                }else {
+                    String db_u_id = token[0];
+                    String db_u_pwd = token[1];
+                    String db_u_name = token[2];
                 }
             }
         });
@@ -51,7 +76,9 @@ public class setting_friend_search extends AppCompatActivity {
             }
         });
 
+
     }
+
 
     //跳出選單
     public void showPopup(View v) {
