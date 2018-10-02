@@ -509,4 +509,5 @@ public class mainpage extends Activity implements RecyclerTouchListener.Recycler
             return false;
         }
     }
+
 }
