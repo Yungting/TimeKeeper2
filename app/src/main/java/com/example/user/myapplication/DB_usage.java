@@ -68,4 +68,9 @@ public class DB_usage extends SQLiteOpenHelper {
         String sql = "UPDATE usage SET ifawake = ? WHERE id = ? AND date = ?";
         db.execSQL(sql, new Object[]{wake, u_id, Date});
     }
+    public void deleteAll()
+    {
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.execSQL("DELETE FROM " + "usage" );
+    }
 }

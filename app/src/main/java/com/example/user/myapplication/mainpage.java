@@ -113,8 +113,9 @@ public class mainpage extends Activity implements RecyclerTouchListener.Recycler
         });
 
 
-        final String user = getSharedPreferences(KEY, MODE_PRIVATE).getString("u_id", null);
-        final String pwd = getSharedPreferences(KEY, MODE_PRIVATE).getString("u_pwd", null);
+        String user = getSharedPreferences(KEY, MODE_PRIVATE).getString("u_id", null);
+        String pwd = getSharedPreferences(KEY, MODE_PRIVATE).getString("u_pwd", null);
+        Log.d("測試","暫存"+user+"/"+pwd);
         if (user == null || pwd == null) {
             Intent intent = new Intent(this, login.class);
             startActivity(intent);

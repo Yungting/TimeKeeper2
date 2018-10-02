@@ -209,6 +209,7 @@ public class ai_count{
                 Log.d("sql語法",sql);
                 connecting.connect("insert_sql",sql);
                 dbSoundaxis.update_state_change();
+                dbSoundaxis.deleteAll();
             }
         });
         thread_check_time.start();
