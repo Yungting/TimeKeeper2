@@ -107,10 +107,6 @@ public class setting_friend_search extends AppCompatActivity {
                 }
             }
         });
-<<<<<<< HEAD
-
-=======
->>>>>>> 8b9884237a03b075919b100850960a2b7c011d71
 
     }
 
