@@ -88,8 +88,7 @@ public class setting_friend_search extends AppCompatActivity {
             }
         });
 
-<<<<<<< HEAD
-=======
+
         // 選單彈跳
         menu = findViewById(R.id.menu);
         menu.setOnClickListener(new View.OnClickListener() {
@@ -105,7 +104,6 @@ public class setting_friend_search extends AppCompatActivity {
                 }
             }
         });
->>>>>>> f02d9542c174d10dabb2110e11be0e278f5287fa
 
     }
 
