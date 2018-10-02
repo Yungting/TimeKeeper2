@@ -25,10 +25,15 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
+import android.view.animation.Animation;
+import android.view.animation.RotateAnimation;
 import android.widget.Button;
+import android.widget.FrameLayout;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.PopupMenu;
+import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -52,7 +57,14 @@ public class mainpage extends Activity implements RecyclerTouchListener.Recycler
     ImageButton add_btn, normal_btn, ai_btn, counter_btn;
     LinearLayout normal_layout, ai_layout, counter_layout;
     CrossView crossView;
+
+    // hamburger
     Button menu;
+    ImageButton menu_open;
+    PopupWindow popupWindow;
+    FrameLayout menu_window;
+    TextView set_up, friend, check;
+
 
     public class BuildDev {
         public static final int RECORD_AUDIO = 0;
@@ -84,13 +96,22 @@ public class mainpage extends Activity implements RecyclerTouchListener.Recycler
         counter_layout = findViewById(R.id.counter_layout);
         crossView = findViewById(R.id.cross_view);
 
-//        menu = findViewById(R.id.menu);
-//        menu.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                showPopupMenu(PopupMenuActivity.this, v);
-//            }
-//        });
+        // 選單彈跳
+        menu = findViewById(R.id.menu);
+        menu.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(popupWindow==null){
+                    showPopupWindow();
+                }else if(popupWindow.isShowing()){
+                    popupWindow.dismiss();
+                }
+                else{
+                    popupWindow.showAsDropDown(menu,-200,-155);
+                }
+            }
+        });
+
 
         String user = getSharedPreferences(KEY, MODE_PRIVATE).getString("u_id", null);
         String pwd = getSharedPreferences(KEY, MODE_PRIVATE).getString("u_pwd", null);
@@ -427,83 +448,50 @@ public class mainpage extends Activity implements RecyclerTouchListener.Recycler
         }
     }
 
-    //跳出選單
-    public void showPopup(View v) {
-//        View view = LayoutInflater.from(this).inflate(R.layout.popupwindow_layout,null);//PopupWindow对象
-//        popupWindow=new PopupWindow(this);//初始化PopupWindow对象
-//        popupWindow.setContentView(view);//设置PopupWindow布局文件
-//        popupWindow.setWidth(ViewGroup.LayoutParams.MATCH_PARENT);//设置PopupWindow宽
-//        popupWindow.setHeight(ViewGroup.LayoutParams.WRAP_CONTENT);//设置PopupWindow高
-//        rootView =LayoutInflater.from(this).inflate(R.layout.activity_main, null);//父布局
-//        popupWindow.showAtLocation(rootView, Gravity.BOTTOM,0,0);
-//        popupWindow.setOutsideTouchable(true);
-//        tvSet=(TextView)view.findViewById(R.id.tv_set);
-//        tvCancel=(TextView)view.findViewById(R.id.tv_cancel);
-//        tvExit=(TextView)view.findViewById(R.id.tv_exit);//在view对象中通过findViewById找到TextView控件
-//        tvSet.setOnClickListener(this);//注册点击监听
-//        tvCancel.setOnClickListener(this);//注册点击监听
-//        tvExit.setOnClickListener(this);//注册点击监听
-//        popupWindow.setOnDismissListener(new PopupWindow.OnDismissListener() {
-//            @Override
-//            public void onDismiss() {
-//                Toast.makeText(MainActivity.this,"PupWindow消失了！",Toast.LENGTH_SHORT).show();
-//            }
-//        });
-//    }
-//    @Override
-//    public void onClick(View v) {
-//        switch (v.getId()){
-//            case R.id.tv_cancel:
-//                popupWindow.dismiss();//关闭PopupWindow
-//                break;
-//            case R.id.tv_exit:
-//                finish();//调用Activity的finish方法退出应用程序
-//                break;
-//            case R.id.tv_set:
-//                Toast.makeText(this,"设置",Toast.LENGTH_SHORT).show();
-//                popupWindow.dismiss();
-//                break;
-//        }
-//    }
-//    public void test(View view){
-//        if(popupWindow==null) {
-//            showPopup();
-//        }else{
-//            popupWindow.showAtLocation(rootView, Gravity.BOTTOM,0,0);//设置PopupWindow的弹出位置。
-//        }
-//    }
+    private void showPopupWindow() {
+        View view = LayoutInflater.from(this).inflate(R.layout.menu_window,null);//获取popupWindow子布局对象
+        popupWindow = new PopupWindow(view, ViewGroup.LayoutParams.WRAP_CONTENT,ViewGroup.LayoutParams.WRAP_CONTENT,false);//初始化
+        popupWindow.showAsDropDown(menu,-300,-155);//在ImageView控件下方弹出
 
+        menu_open = view.findViewById(R.id.menu_btn_open);
+        menu_open.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                popupWindow.dismiss();
+            }
+        });
 
-//        PopupMenu popup = new PopupMenu(this, v);
-//        MenuInflater inflater = popup.getMenuInflater();
-//        inflater.inflate(R.menu.mainpage_menu, popup.getMenu());
-//        popup.show();
-//
-//        //點擊選單選項，然後換頁
-//        popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
-//            @Override
-//            public boolean onMenuItemClick(MenuItem menuItem) {
-//
-//                switch (menuItem.getItemId()) {
-//                    case R.id.action_setup:
-//                        Intent intent3 = new Intent(mainpage.this, setting_setup.class);
-//                        startActivity(intent3);
-//                        return true;
-//
-//                    case R.id.action_friends:
-//                        Intent intent4 = new Intent(mainpage.this, setting_friend.class);
-//                        startActivity(intent4);
-//                        return true;
-//
-//                    case R.id.action_check:
-//                        Intent intent5 = new Intent(mainpage.this, check.class);
-//                        startActivity(intent5);
-//                        return true;
-//                }
-//                return false;
-//            }
-//        });
+        set_up = view.findViewById(R.id.set_up);
+        friend = view.findViewById(R.id.friend);
+        check = view.findViewById(R.id.check);
+
+        set_up.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent2 = new Intent(mainpage.this, setting_setup.class);
+                startActivity(intent2);
+            }
+        });
+
+        friend.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent3 = new Intent(mainpage.this, setting_friend.class);
+                startActivity(intent3);
+            }
+        });
+
+        check.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent2 = new Intent(mainpage.this, check.class);
+                startActivity(intent2);
+            }
+        });
+
+//        popupWindow.setAnimationStyle(R.style.popupAnim);//设置动画
     }
+
 
 
     private boolean isAccessGranted() {
