@@ -36,25 +36,25 @@ public class setting_friend_search extends AppCompatActivity {
     Connect_To_Server find_friend;
 
     // hamburger
-    Button menu;
+    Button menu,friend_add;
     ImageButton menu_open;
     PopupWindow popupWindow;
     FrameLayout menu_window;
-    TextView set_up, friend, check;
+    TextView set_up, friend, check,friend_name;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.setting_friend_search);
         friend_show = findViewById(R.id.friend_show);
+        friend_add = findViewById(R.id.friend_add_btn);
         search_friend = (EditText)findViewById(R.id.search_friend);
         search_btn = findViewById(R.id.search_btn);
+        friend_name = findViewById(R.id.friend_name);
+        find_friend = new Connect_To_Server();
         search_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(friend_show.getVisibility() != View.VISIBLE){
-                    friend_show.setVisibility(View.VISIBLE);
-                }
                 Thread search_account = new Thread(new Runnable() {
                     @Override
                     public void run() {
@@ -67,16 +67,42 @@ public class setting_friend_search extends AppCompatActivity {
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
-                String[] token = find_friend.get_data.split("/");
+                final String[] token = find_friend.get_data.split("/");
                 if(token.length != 3){
                     new AlertDialog.Builder(setting_friend_search.this).setTitle("在試試看一次~").setMessage("沒有這位使用者喔~")
                             .setNegativeButton("OK",null)
                             .show();
                 }else {
-                    String u_id = getSharedPreferences(KEY, MODE_PRIVATE).getString("u_id", null);
-                    String friend_id = token[0];
-                    Boolean status = false;
-                    find_friend.connect("insert_sql","INSERT INTO `user_friend_invitation` (`user_id`, `friend_id`, `status`) VALUES('" + u_id + "', '" + friend_id + "', '" + status + "'");
+                    friend_name.setText(token[2]);
+                    if(friend_show.getVisibility() != View.VISIBLE){
+                        friend_show.setVisibility(View.VISIBLE);
+                    }
+                    friend_add.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            final String u_id = getSharedPreferences(KEY, MODE_PRIVATE).getString("u_id", null);
+                            String friend_id = token[0];
+                            //查詢是否已送過交友邀請
+//                            Thread search_friend_invitation = new Thread(new Runnable() {
+//                                @Override
+//                                public void run() {
+//                                    find_friend.connect("select_sql","SELECT friend_id FROM `user_friends_invitation` WHERE user_id = '"+u_id+"'");
+//                                }
+//                            });
+//                            search_friend_invitation.start();
+//                            try {
+//                                Thread.sleep(400);
+//                            } catch (InterruptedException e) {
+//                                e.printStackTrace();
+//                            }
+                            int status = 0;
+                            find_friend.connect("insert_sql","INSERT INTO `user_friends_invitation` (`user_id`, `friend_id`, `status`) VALUES('" + u_id + "', '" + friend_id + "', '" + status + "')");
+                            new AlertDialog.Builder(setting_friend_search.this).setTitle("好友邀請已送出").setMessage("對方接受邀請後你們就是朋友囉")
+                                    .setNegativeButton("OK",null)
+                                    .show();
+                        }
+                    });
+                    ;
                 }
             }
         });
