@@ -451,14 +451,14 @@ public class mainpage extends Activity implements RecyclerTouchListener.Recycler
     private void showPopupWindow() {
         View view = LayoutInflater.from(this).inflate(R.layout.menu_window,null);//获取popupWindow子布局对象
         popupWindow = new PopupWindow(view, ViewGroup.LayoutParams.WRAP_CONTENT,ViewGroup.LayoutParams.WRAP_CONTENT,true);//初始化
-        if (android.os.Build.VERSION.SDK_INT >=24) {
-            int[] a = new int[2]; //getLocationInWindow required array of size 2
-            anchorView.getLocationInWindow(a);
-            popupWindow.showAtLocation(((Activity) mContext).getWindow().getDecorView(), Gravity.NO_GRAVITY, 0 , a[1]+anchorView.getHeight());
-        } else{
-            popupWindow.showAsDropDown(anchorView);
-        }
-//        popupWindow.showAsDropDown(menu,0,-155);//在ImageView控件下方弹出
+//        if (android.os.Build.VERSION.SDK_INT >=24) {
+//            int[] a = new int[2]; //getLocationInWindow required array of size 2
+//            anchorView.getLocationInWindow(a);
+//            popupWindow.showAtLocation(((Activity) mContext).getWindow().getDecorView(), Gravity.NO_GRAVITY, 0 , a[1]+anchorView.getHeight());
+//        } else{
+//            popupWindow.showAsDropDown(anchorView);
+//        }
+        popupWindow.showAsDropDown(menu,0,-155);//在ImageView控件下方弹出
 
         menu_open = view.findViewById(R.id.menu_btn_open);
         menu_open.setOnClickListener(new View.OnClickListener() {

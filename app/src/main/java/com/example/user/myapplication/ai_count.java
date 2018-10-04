@@ -81,6 +81,7 @@ public class ai_count{
         sound_db = new ArrayList();
         up_id = new ArrayList();
         up_date_time = new ArrayList();
+        up_date_alarm = new ArrayList();
         up_x_axis = new ArrayList();
         up_y_axis = new ArrayList();
         up_z_axis = new ArrayList();
@@ -170,7 +171,7 @@ public class ai_count{
                     if(System.currentTimeMillis() == stop_record_time){
                         axis_recorder.start_record(sensorManager,false);//九軸停止紀錄(但現在我註解掉了)
                         sound_recorder.stopRecord();//停止錄音
-                        for(int i = 0;i<up_id.size();i++){
+                        for(int i = 0;i<id.size();i++){
                             dbSoundaxis.insert(id.get(i).toString(), (Timestamp) date_time.get(i), Double.parseDouble(x_axis.get(i).toString()),
                                     Double.parseDouble(y_axis.get(i).toString()),Double.parseDouble(z_axis.get(i).toString()),
                                     Double.parseDouble(sound_db.get(i).toString()), String.valueOf(time));
@@ -184,7 +185,7 @@ public class ai_count{
                 for(int i = 0; i<update_cursor.getCount();i++){
                     update_cursor.moveToPosition(i);
                     up_id.add(update_cursor.getString(update_cursor.getColumnIndex("_id")));
-                    up_date_alarm.add(update_cursor.getString(update_cursor.getColumnIndex("date_alarm")));
+                    up_date_alarm.add(String.valueOf(time));
                     up_date_time.add((update_cursor.getString(update_cursor.getColumnIndex("date_time"))));
                     up_x_axis.add((update_cursor.getString(update_cursor.getColumnIndex("x_axis"))));
                     up_y_axis.add((update_cursor.getString(update_cursor.getColumnIndex("y_axis"))));
