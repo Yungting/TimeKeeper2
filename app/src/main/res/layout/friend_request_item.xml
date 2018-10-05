@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:gravity="center_vertical"
+    android:orientation="horizontal"
+    android:padding="12dp">
+
+
+    <ImageView
+        android:id="@+id/friend_photo"
+        android:layout_width="35dp"
+        android:layout_height="35dp"
+        android:layout_marginLeft="5dp"
+        android:background="@drawable/ai_open" />
+
+
+    <TextView
+        android:id="@+id/friend_name"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_marginLeft="17dp"
+        android:layout_marginRight="17dp"
+        android:layout_weight="1"
+        android:gravity="center_vertical"
+        android:text="NAME" />
+
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:gravity="right"
+        android:orientation="horizontal">
+
+        <ImageButton
+            android:id="@+id/request_yes"
+            android:layout_width="35dp"
+            android:layout_height="35dp"
+            android:layout_marginRight="13dp"
+            android:background="@drawable/friend_req_yes_btn"
+            android:src="@drawable/ic_check"
+            android:elevation="1dp" />
+
+        <ImageButton
+            android:id="@+id/request_no"
+            android:layout_width="35dp"
+            android:layout_height="35dp"
+            android:background="@drawable/friend_req_no_btn"
+            android:src="@drawable/ic_cross"
+            android:elevation="1dp" />
+    </LinearLayout>
+
+</LinearLayout>
