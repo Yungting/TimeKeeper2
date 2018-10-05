@@ -17,6 +17,10 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import static com.example.user.myapplication.mainpage.KEY;
 
 
@@ -24,6 +28,7 @@ public class login extends AppCompatActivity {
     Connect_To_Server db_select;
     TextView signup, forget;
     EditText user_mail, user_pwd;
+    JSONArray get_result;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -77,16 +82,28 @@ public class login extends AppCompatActivity {
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
-                String db_data = db_select.get_data;
-                Log.d("連線", "安安" + db_data);
-                String[] token = db_data.split("/");
-                if (token.length != 3) {
+                String u_id = null,u_pwd = null,u_name =null;
+                try{
+                    get_result = new JSONArray(db_select.get_data);
+                    int lenght = get_result.length();
+                    for(int i = 0;i < lenght;i++){
+                        JSONObject jsonObject = get_result.getJSONObject(i);
+                        u_id = jsonObject.getString("user_id");
+                        u_pwd = jsonObject.getString("u_password");
+                    }
+                }
+                catch(JSONException e) {
+                    e.printStackTrace();
+                }
+
+
+                if (u_id==null) {
                     new AlertDialog.Builder(login.this).setTitle("請再試試看").setMessage("帳號或密碼錯誤!!")
                             .setNegativeButton("OK", null)
                             .show();
                 } else {
-                    String db_u_id = token[0];
-                    String db_u_pwd = token[1];
+                    String db_u_id = u_id;
+                    String db_u_pwd = u_pwd;
                     if (db_u_pwd.equals(userpwd)) {
 
                         SharedPreferences pref = getApplication().getSharedPreferences(KEY, Context.MODE_PRIVATE);
