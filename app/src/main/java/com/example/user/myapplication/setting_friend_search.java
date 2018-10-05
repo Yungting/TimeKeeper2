@@ -30,14 +30,11 @@ import android.widget.Toast;
 
 import com.example.user.myapplication.setting_setup.setting_setup;
 
-<<<<<<< HEAD
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-=======
 import java.util.ArrayList;
 import java.util.List;
->>>>>>> 8cea11afc9f3e83d304d295b7255cb06baf58e96
 
 import static com.example.user.myapplication.mainpage.KEY;
 
@@ -59,12 +56,9 @@ public class setting_friend_search extends AppCompatActivity {
     ImageButton menu_open;
     PopupWindow popupWindow;
     FrameLayout menu_window;
-<<<<<<< HEAD
+
     TextView set_up, friend, check,friend_name;
     JSONArray get_result,get_fresult;
-=======
-    TextView set_up, friend, check, friend_name;
->>>>>>> 8cea11afc9f3e83d304d295b7255cb06baf58e96
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -91,7 +85,6 @@ public class setting_friend_search extends AppCompatActivity {
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
-<<<<<<< HEAD
 
                 String f_id = null,f_pwd = null,f_name =null;
                 try{
@@ -110,23 +103,14 @@ public class setting_friend_search extends AppCompatActivity {
                 //final String[] token = find_friend.get_data.split("/");
                 if(f_id == null){
                 //if(token.length != 3){
-=======
-                final String[] token = find_friend.get_data.split("/");
-                if (token.length != 3) {
->>>>>>> 8cea11afc9f3e83d304d295b7255cb06baf58e96
+
                     new AlertDialog.Builder(setting_friend_search.this).setTitle("在試試看一次~").setMessage("沒有這位使用者喔~")
                             .setNegativeButton("OK", null)
                             .show();
-<<<<<<< HEAD
                 }else {
                     friend_name.setText(f_name);
                     //friend_name.setText(token[2]);
                     if(friend_show.getVisibility() != View.VISIBLE){
-=======
-                } else {
-                    friend_name.setText(token[2]);
-                    if (friend_show.getVisibility() != View.VISIBLE) {
->>>>>>> 8cea11afc9f3e83d304d295b7255cb06baf58e96
                         friend_show.setVisibility(View.VISIBLE);
                     }
                     final String finalF_id = f_id;
@@ -136,7 +120,6 @@ public class setting_friend_search extends AppCompatActivity {
                             final String u_id = getSharedPreferences(KEY, MODE_PRIVATE).getString("u_id", null);
                             String friend_id = finalF_id;
                             //查詢是否已送過交友邀請
-<<<<<<< HEAD
                             Thread search_friend_invitation = new Thread(new Runnable() {
                                 @Override
                                 public void run() {
@@ -177,25 +160,6 @@ public class setting_friend_search extends AppCompatActivity {
                                         .setNegativeButton("OK",null)
                                         .show();
                             }
-=======
-//                            Thread search_friend_invitation = new Thread(new Runnable() {
-//                                @Override
-//                                public void run() {
-//                                    find_friend.connect("select_sql","SELECT friend_id FROM `user_friends_invitation` WHERE user_id = '"+u_id+"'");
-//                                }
-//                            });
-//                            search_friend_invitation.start();
-//                            try {
-//                                Thread.sleep(400);
-//                            } catch (InterruptedException e) {
-//                                e.printStackTrace();
-//                            }
-                            int status = 0;
-                            find_friend.connect("insert_sql", "INSERT INTO `user_friends_invitation` (`user_id`, `friend_id`, `status`) VALUES('" + u_id + "', '" + friend_id + "', '" + status + "')");
-                            new AlertDialog.Builder(setting_friend_search.this).setTitle("好友邀請已送出").setMessage("對方接受邀請後你們就是朋友囉")
-                                    .setNegativeButton("OK", null)
-                                    .show();
->>>>>>> 8cea11afc9f3e83d304d295b7255cb06baf58e96
                         }
                     });
                     ;
