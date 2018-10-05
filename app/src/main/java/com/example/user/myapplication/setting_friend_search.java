@@ -1,6 +1,7 @@
 package com.example.user.myapplication;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.drawable.GradientDrawable;
 import android.os.IBinder;
@@ -53,7 +54,7 @@ public class setting_friend_search extends AppCompatActivity {
 
 
     // hamburger
-    Button menu, friend_add;
+    Button menu, friend_add,cancel;
     ImageButton menu_open;
     PopupWindow popupWindow;
     FrameLayout menu_window;
@@ -69,6 +70,7 @@ public class setting_friend_search extends AppCompatActivity {
         friend_req = findViewById(R.id.friend_request);
         friend_text = findViewById(R.id.friend_text);
         friend_add = findViewById(R.id.friend_add_btn);
+        cancel = findViewById(R.id.cancel);
         search_friend = (EditText) findViewById(R.id.search_friend);
         search_btn = findViewById(R.id.search_btn);
         friend_name = findViewById(R.id.friend_name);
@@ -147,7 +149,14 @@ public class setting_friend_search extends AppCompatActivity {
                                     flist_u_id = jsonObject.getString("friend_id");
                                     if(flist_u_id.equals(friend_id)){
                                         new AlertDialog.Builder(setting_friend_search.this).setTitle("等待對方回覆邀請中").setMessage("已送過交友邀請")
-                                                .setNegativeButton("OK",null)
+                                                .setNegativeButton("OK", new DialogInterface.OnClickListener() {
+                                                    @Override
+                                                    public void onClick(DialogInterface dialog, int which) {
+                                                        friend_show.setVisibility(View.GONE);
+                                                        friend_req.setVisibility(View.VISIBLE);
+                                                        friend_text.setText(R.string.friend_req);
+                                                    }
+                                                })
                                                 .show();
                                         exist = 1;
                                         break;
@@ -167,7 +176,14 @@ public class setting_friend_search extends AppCompatActivity {
                             }
                         }
                     });
-                    ;
+                    cancel.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            friend_show.setVisibility(View.GONE);
+                            friend_req.setVisibility(View.VISIBLE);
+                            friend_text.setText(R.string.friend_req);
+                        }
+                    });
                 }
             }
         });
