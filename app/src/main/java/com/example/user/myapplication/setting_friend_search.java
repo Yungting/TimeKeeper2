@@ -41,9 +41,10 @@ import static com.example.user.myapplication.mainpage.KEY;
 public class setting_friend_search extends AppCompatActivity {
 
     ImageButton search_btn;
-    LinearLayout friend_show;
+    LinearLayout friend_show,friend_req;
     View timekeeper_logo;
     EditText search_friend;
+    TextView friend_text;
     Connect_To_Server find_friend;
 
     // list
@@ -65,6 +66,8 @@ public class setting_friend_search extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.setting_friend_search);
         friend_show = findViewById(R.id.friend_show);
+        friend_req = findViewById(R.id.friend_request);
+        friend_text = findViewById(R.id.friend_text);
         friend_add = findViewById(R.id.friend_add_btn);
         search_friend = (EditText) findViewById(R.id.search_friend);
         search_btn = findViewById(R.id.search_btn);
@@ -112,6 +115,8 @@ public class setting_friend_search extends AppCompatActivity {
                     //friend_name.setText(token[2]);
                     if(friend_show.getVisibility() != View.VISIBLE){
                         friend_show.setVisibility(View.VISIBLE);
+                        friend_req.setVisibility(View.GONE);
+                        friend_text.setText(R.string.friend_ser);
                     }
                     final String finalF_id = f_id;
                     friend_add.setOnClickListener(new View.OnClickListener() {
