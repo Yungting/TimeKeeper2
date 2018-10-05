@@ -7,6 +7,8 @@ import android.os.IBinder;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -14,16 +16,22 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
+import android.widget.ListView;
 import android.widget.PopupMenu;
 import android.widget.PopupWindow;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.user.myapplication.setting_setup.setting_setup;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import static com.example.user.myapplication.mainpage.KEY;
 
@@ -35,12 +43,17 @@ public class setting_friend_search extends AppCompatActivity {
     EditText search_friend;
     Connect_To_Server find_friend;
 
+    // list
+    RecyclerView req_list;
+    MyAdapter mAdapter;
+
+
     // hamburger
-    Button menu,friend_add;
+    Button menu, friend_add;
     ImageButton menu_open;
     PopupWindow popupWindow;
     FrameLayout menu_window;
-    TextView set_up, friend, check,friend_name;
+    TextView set_up, friend, check, friend_name;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,7 +61,7 @@ public class setting_friend_search extends AppCompatActivity {
         setContentView(R.layout.setting_friend_search);
         friend_show = findViewById(R.id.friend_show);
         friend_add = findViewById(R.id.friend_add_btn);
-        search_friend = (EditText)findViewById(R.id.search_friend);
+        search_friend = (EditText) findViewById(R.id.search_friend);
         search_btn = findViewById(R.id.search_btn);
         friend_name = findViewById(R.id.friend_name);
         find_friend = new Connect_To_Server();
@@ -58,7 +71,7 @@ public class setting_friend_search extends AppCompatActivity {
                 Thread search_account = new Thread(new Runnable() {
                     @Override
                     public void run() {
-                        find_friend.connect("select_sql","SELECT user_id,u_password,u_name FROM `user` WHERE user_id = '"+search_friend.getText()+"'");
+                        find_friend.connect("select_sql", "SELECT user_id,u_password,u_name FROM `user` WHERE user_id = '" + search_friend.getText() + "'");
                     }
                 });
                 search_account.start();
@@ -68,13 +81,13 @@ public class setting_friend_search extends AppCompatActivity {
                     e.printStackTrace();
                 }
                 final String[] token = find_friend.get_data.split("/");
-                if(token.length != 3){
+                if (token.length != 3) {
                     new AlertDialog.Builder(setting_friend_search.this).setTitle("在試試看一次~").setMessage("沒有這位使用者喔~")
-                            .setNegativeButton("OK",null)
+                            .setNegativeButton("OK", null)
                             .show();
-                }else {
+                } else {
                     friend_name.setText(token[2]);
-                    if(friend_show.getVisibility() != View.VISIBLE){
+                    if (friend_show.getVisibility() != View.VISIBLE) {
                         friend_show.setVisibility(View.VISIBLE);
                     }
                     friend_add.setOnClickListener(new View.OnClickListener() {
@@ -96,9 +109,9 @@ public class setting_friend_search extends AppCompatActivity {
 //                                e.printStackTrace();
 //                            }
                             int status = 0;
-                            find_friend.connect("insert_sql","INSERT INTO `user_friends_invitation` (`user_id`, `friend_id`, `status`) VALUES('" + u_id + "', '" + friend_id + "', '" + status + "')");
+                            find_friend.connect("insert_sql", "INSERT INTO `user_friends_invitation` (`user_id`, `friend_id`, `status`) VALUES('" + u_id + "', '" + friend_id + "', '" + status + "')");
                             new AlertDialog.Builder(setting_friend_search.this).setTitle("好友邀請已送出").setMessage("對方接受邀請後你們就是朋友囉")
-                                    .setNegativeButton("OK",null)
+                                    .setNegativeButton("OK", null)
                                     .show();
                         }
                     });
@@ -123,25 +136,36 @@ public class setting_friend_search extends AppCompatActivity {
         menu.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(popupWindow==null){
+                if (popupWindow == null) {
                     showPopupWindow();
-                }else if(popupWindow.isShowing()){
+                } else if (popupWindow.isShowing()) {
                     popupWindow.dismiss();
-                }
-                else{
-                    popupWindow.showAsDropDown(menu,-200,-155);
+                } else {
+                    popupWindow.showAsDropDown(menu, -200, -155);
                 }
             }
         });
+
+        // recyclerview
+        req_list = findViewById(R.id.req_list);
+        ArrayList<String> myDataset = new ArrayList<>();
+        for(int i = 0; i < 10; i++){
+            myDataset.add("HIIIII");
+        }
+        mAdapter = new MyAdapter(myDataset);
+        final LinearLayoutManager layoutManager = new LinearLayoutManager(this);
+        layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
+        req_list.setLayoutManager(layoutManager);
+        req_list.setAdapter(mAdapter);
 
     }
 
 
     //跳出選單
     private void showPopupWindow() {
-        View view = LayoutInflater.from(this).inflate(R.layout.menu_window,null);//获取popupWindow子布局对象
-        popupWindow = new PopupWindow(view, ViewGroup.LayoutParams.WRAP_CONTENT,ViewGroup.LayoutParams.WRAP_CONTENT,false);//初始化
-        popupWindow.showAsDropDown(menu,-300,-155);//在ImageView控件下方弹出
+        View view = LayoutInflater.from(this).inflate(R.layout.menu_window, null);//获取popupWindow子布局对象
+        popupWindow = new PopupWindow(view, ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT, false);//初始化
+        popupWindow.showAsDropDown(menu, -300, -155);//在ImageView控件下方弹出
 
         menu_open = view.findViewById(R.id.menu_btn_open);
         menu_open.setOnClickListener(new View.OnClickListener() {
@@ -198,7 +222,7 @@ public class setting_friend_search extends AppCompatActivity {
 
     private boolean isShouldHideInput(View v, MotionEvent event) {
         if (v != null && (v instanceof EditText)) {
-            int[] l = { 0, 0 };
+            int[] l = {0, 0};
             v.getLocationInWindow(l);
             int left = l[0], top = l[1], bottom = top + v.getHeight(), right = left
                     + v.getWidth();
@@ -221,5 +245,53 @@ public class setting_friend_search extends AppCompatActivity {
         }
     }
 
+
+    // RecyclerView
+    public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
+        private List<String> mData;
+
+        public class ViewHolder extends RecyclerView.ViewHolder {
+            public TextView mTextView;
+            public ViewHolder(View v) {
+                super(v);
+                mTextView = v.findViewById(R.id.friend_name);
+            }
+        }
+
+        public MyAdapter(List<String> data) {
+            mData = data;
+        }
+
+        @Override
+        public MyAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+            View v = LayoutInflater.from(parent.getContext())
+                    .inflate(R.layout.friend_request_item, parent, false);
+            ViewHolder vh = new ViewHolder(v);
+            return vh;
+        }
+
+        @Override
+        public void onBindViewHolder(ViewHolder holder, final int position) {
+            holder.mTextView.setText(mData.get(position));
+            holder.itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Toast.makeText(setting_friend_search.this, "Item " + position + " is clicked.", Toast.LENGTH_SHORT).show();
+                }
+            });
+            holder.itemView.setOnLongClickListener(new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View v) {
+                    Toast.makeText(setting_friend_search.this, "Item " + position + " is long clicked.", Toast.LENGTH_SHORT).show();
+                    return true;
+                }
+            });
+        }
+
+        @Override
+        public int getItemCount() {
+            return mData.size();
+        }
+    }
 
 }

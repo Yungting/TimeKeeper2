@@ -19,11 +19,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity android:name=".mainpage" >
-        <intent-filter>
-            <action android:name="android.intent.action.MAIN" />
 
-            <category android:name="android.intent.category.LAUNCHER" />
-        </intent-filter>
         </activity>>
         <activity
             android:name=".normal_alarmalert"
@@ -36,7 +32,13 @@
         <activity android:name=".ai_alarm_manage.ai_alarm_manage" />
         <activity android:name=".setting_setup.setting_setup" />
         <activity android:name=".setting_friend" />
-        <activity android:name=".setting_friend_search" />
+        <activity android:name=".setting_friend_search" >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
         <activity android:name=".login"/>
         <activity android:name=".sign_up" />
         <activity android:name=".forget_pwd" />
