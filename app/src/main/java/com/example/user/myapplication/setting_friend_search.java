@@ -60,7 +60,7 @@ public class setting_friend_search extends AppCompatActivity {
     FrameLayout menu_window;
 
     TextView set_up, friend, check,friend_name;
-    JSONArray get_result,get_fresult;
+    JSONArray get_result,get_fresult,get_iresult;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -75,6 +75,7 @@ public class setting_friend_search extends AppCompatActivity {
         search_btn = findViewById(R.id.search_btn);
         friend_name = findViewById(R.id.friend_name);
         find_friend = new Connect_To_Server();
+        final String u_id = getSharedPreferences(KEY, MODE_PRIVATE).getString("u_id", null);
         search_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -105,16 +106,13 @@ public class setting_friend_search extends AppCompatActivity {
                     e.printStackTrace();
                 }
 
-                //final String[] token = find_friend.get_data.split("/");
                 if(f_id == null){
-                //if(token.length != 3){
 
                     new AlertDialog.Builder(setting_friend_search.this).setTitle("在試試看一次~").setMessage("沒有這位使用者喔~")
                             .setNegativeButton("OK", null)
                             .show();
                 }else {
                     friend_name.setText(f_name);
-                    //friend_name.setText(token[2]);
                     if(friend_show.getVisibility() != View.VISIBLE){
                         friend_show.setVisibility(View.VISIBLE);
                         friend_req.setVisibility(View.GONE);
@@ -124,7 +122,6 @@ public class setting_friend_search extends AppCompatActivity {
                     friend_add.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            final String u_id = getSharedPreferences(KEY, MODE_PRIVATE).getString("u_id", null);
                             String friend_id = finalF_id;
                             //查詢是否已送過交友邀請
                             Thread search_friend_invitation = new Thread(new Runnable() {
@@ -214,13 +211,39 @@ public class setting_friend_search extends AppCompatActivity {
             }
         });
 
+        Thread search_friend_invitations = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                find_friend.connect("select_sql", "SELECT user.u_name FROM `user` WHERE user.user_id = (SELECT user_friends_invitation.user_id FROM `user_friends_invitation` WHERE user_friends_invitation.user_id =  '" + u_id + "')");
+            }
+        });
+        search_friend_invitations.start();
+        try {
+            Thread.sleep(400);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        ArrayList<String> invitation = new ArrayList<>();
+        try{
+            get_iresult = new JSONArray(find_friend.get_data);
+            int lenght = get_iresult.length();
+            for(int i = 0;i < lenght;i++){
+                JSONObject jsonObject = get_iresult.getJSONObject(i);
+                invitation.add(jsonObject.getString("u_name")) ;
+            }
+        }
+        catch(JSONException e) {
+            e.printStackTrace();
+        }
+
+
         // recyclerview
         req_list = findViewById(R.id.req_list);
-        ArrayList<String> myDataset = new ArrayList<>();
-        for(int i = 0; i < 10; i++){
-            myDataset.add("HIIIII");
-        }
-        mAdapter = new MyAdapter(myDataset);
+//        ArrayList<String> myDataset = new ArrayList<>();
+//        for(int i = 0; i < invitation.size(); i++){
+//            myDataset.add("HIIIII");
+//        }
+        mAdapter = new MyAdapter(invitation);
         final LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         req_list.setLayoutManager(layoutManager);
