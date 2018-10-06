@@ -220,7 +220,7 @@ public class setting_friend_search extends AppCompatActivity {
         Thread search_friend_invitations = new Thread(new Runnable() {
             @Override
             public void run() {
-                find_friend.connect("select_sql", "SELECT user.u_name,user.user_id FROM `user` WHERE user.user_id = (SELECT user_friends_invitation.friend_id FROM `user_friends_invitation` WHERE user_friends_invitation.user_id =  '" + u_id + "')");
+                find_friend.connect("select_sql", "SELECT user.u_name,user.user_id FROM `user` WHERE user.user_id = any(SELECT user_friends_invitation.user_id FROM `user_friends_invitation` WHERE user_friends_invitation.friend_id =  '" + u_id + "')");
             }
         });
         search_friend_invitations.start();
@@ -383,7 +383,8 @@ public class setting_friend_search extends AppCompatActivity {
                         public void run() {
                             String data = mData2.get(position);
                             check_friend.connect("insert_sql", "INSERT INTO `user_friends` (`user_id`, `friend_id`) VALUES ('"+Y_u_id+"', '"+data+"')");
-                            check_friend.connect("insert_sql","DELETE FROM `user_friends_invitation` WHERE `user_friends_invitation`.`user_id` = '"+Y_u_id+"' AND `user_friends_invitation`.`friend_id` = '"+data+"'");
+                            check_friend.connect("insert_sql", "INSERT INTO `user_friends` (`user_id`, `friend_id`) VALUES ('"+data+"', '"+Y_u_id+"')");
+                            check_friend.connect("insert_sql","DELETE FROM `user_friends_invitation` WHERE `user_friends_invitation`.`user_id` = '"+data+"' AND `user_friends_invitation`.`friend_id` = '"+Y_u_id+"'");
                         }
                     });
                     res_friend_invitations.start();
@@ -401,7 +402,7 @@ public class setting_friend_search extends AppCompatActivity {
                     Thread res_friend_invitations = new Thread(new Runnable() {
                         @Override
                         public void run() {
-                            check_friend.connect("insert_sql","DELETE FROM `user_friends_invitation` WHERE `user_friends_invitation`.`user_id` = '"+N_u_id+"' AND `user_friends_invitation`.`friend_id` = '"+mData2.get(position)+"'");
+                            check_friend.connect("insert_sql","DELETE FROM `user_friends_invitation` WHERE `user_friends_invitation`.`user_id` = '"+mData2.get(position)+"' AND `user_friends_invitation`.`friend_id` = '"+N_u_id+"'");
                         }
                     });
                     res_friend_invitations.start();

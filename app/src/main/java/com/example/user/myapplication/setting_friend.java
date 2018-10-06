@@ -69,7 +69,7 @@ public class setting_friend extends AppCompatActivity {
         Thread search_friend = new Thread(new Runnable() {
             @Override
             public void run() {
-                find_friends.connect("select_sql","SELECT user.u_name,user.user_id FROM `user` WHERE user.user_id = (SELECT user_friends.friend_id FROM `user_friends` WHERE user_friends.user_id =  '"+u_id +"')");
+                find_friends.connect("select_sql","SELECT user.u_name,user.user_id FROM `user` WHERE user.user_id = any(SELECT user_friends.friend_id FROM `user_friends` WHERE user_friends.user_id =  '"+u_id +"')");
             }
         });
         search_friend.start();
@@ -298,11 +298,13 @@ public class setting_friend extends AppCompatActivity {
                 @Override
                 public void onClick(View v) {
                     final String my_id = getSharedPreferences(KEY, MODE_PRIVATE).getString("u_id", null);
+                    final String f_id = areaEneity.get(position).getId();
                     delete_friend = new Connect_To_Server();
                     Thread res_friend_invitations = new Thread(new Runnable() {
                         @Override
                         public void run() {
-                            delete_friend.connect("insert_sql","DELETE FROM `user_friends` WHERE `user_friends`.`user_id` = '"+my_id+"' AND `user_friends`.`friend_id` = '"+areaEneity.get(position).getId()+"'");
+                            delete_friend.connect("insert_sql","DELETE FROM `user_friends` WHERE `user_friends`.`user_id` = '"+my_id+"' AND `user_friends`.`friend_id` = '"+f_id+"'");
+                            delete_friend.connect("insert_sql","DELETE FROM `user_friends` WHERE `user_friends`.`user_id` = '"+f_id+"' AND `user_friends`.`friend_id` = '"+my_id+"'");
                         }
                     });
                     res_friend_invitations.start();
