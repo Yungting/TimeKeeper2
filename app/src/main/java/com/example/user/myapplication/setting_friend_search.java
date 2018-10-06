@@ -46,7 +46,7 @@ public class setting_friend_search extends AppCompatActivity {
     View timekeeper_logo;
     EditText search_friend;
     TextView friend_text;
-    Connect_To_Server find_friend;
+    Connect_To_Server find_friend,check_friend;
 
     // list
     RecyclerView req_list;
@@ -61,7 +61,6 @@ public class setting_friend_search extends AppCompatActivity {
 
     TextView set_up, friend, check,friend_name;
     JSONArray get_result,get_fresult,get_iresult;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -168,7 +167,14 @@ public class setting_friend_search extends AppCompatActivity {
                                 int status = 0;
                                 find_friend.connect("insert_sql","INSERT INTO `user_friends_invitation` (`user_id`, `friend_id`, `status`) VALUES('" + u_id + "', '" + friend_id + "', '" + status + "')");
                                 new AlertDialog.Builder(setting_friend_search.this).setTitle("好友邀請已送出").setMessage("對方接受邀請後你們就是朋友囉")
-                                        .setNegativeButton("OK",null)
+                                        .setNegativeButton("OK", new DialogInterface.OnClickListener() {
+                                            @Override
+                                            public void onClick(DialogInterface dialog, int which) {
+                                                friend_show.setVisibility(View.GONE);
+                                                friend_req.setVisibility(View.VISIBLE);
+                                                friend_text.setText(R.string.friend_req);
+                                            }
+                                        })
                                         .show();
                             }
                         }
@@ -214,7 +220,7 @@ public class setting_friend_search extends AppCompatActivity {
         Thread search_friend_invitations = new Thread(new Runnable() {
             @Override
             public void run() {
-                find_friend.connect("select_sql", "SELECT user.u_name FROM `user` WHERE user.user_id = (SELECT user_friends_invitation.user_id FROM `user_friends_invitation` WHERE user_friends_invitation.user_id =  '" + u_id + "')");
+                find_friend.connect("select_sql", "SELECT user.u_name,user.user_id FROM `user` WHERE user.user_id = (SELECT user_friends_invitation.friend_id FROM `user_friends_invitation` WHERE user_friends_invitation.user_id =  '" + u_id + "')");
             }
         });
         search_friend_invitations.start();
@@ -224,12 +230,14 @@ public class setting_friend_search extends AppCompatActivity {
             e.printStackTrace();
         }
         ArrayList<String> invitation = new ArrayList<>();
+        ArrayList<String> invit_id = new ArrayList<>();
         try{
             get_iresult = new JSONArray(find_friend.get_data);
             int lenght = get_iresult.length();
             for(int i = 0;i < lenght;i++){
                 JSONObject jsonObject = get_iresult.getJSONObject(i);
-                invitation.add(jsonObject.getString("u_name")) ;
+                invitation.add(jsonObject.getString("u_name"));
+                invit_id.add(jsonObject.getString("user_id"));
             }
         }
         catch(JSONException e) {
@@ -239,11 +247,7 @@ public class setting_friend_search extends AppCompatActivity {
 
         // recyclerview
         req_list = findViewById(R.id.req_list);
-//        ArrayList<String> myDataset = new ArrayList<>();
-//        for(int i = 0; i < invitation.size(); i++){
-//            myDataset.add("HIIIII");
-//        }
-        mAdapter = new MyAdapter(invitation);
+        mAdapter = new MyAdapter(invitation,invit_id);
         final LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         req_list.setLayoutManager(layoutManager);
@@ -339,18 +343,23 @@ public class setting_friend_search extends AppCompatActivity {
 
     // RecyclerView
     public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
-        private List<String> mData;
+        private List<String> mData1;
+        private List<String> mData2;
 
         public class ViewHolder extends RecyclerView.ViewHolder {
             public TextView mTextView;
+            public ImageButton Y_response,N_response;/////
             public ViewHolder(View v) {
                 super(v);
                 mTextView = v.findViewById(R.id.friend_name);
+                Y_response = v.findViewById(R.id.request_yes);////
+                N_response = v.findViewById(R.id.request_no);////
             }
         }
 
-        public MyAdapter(List<String> data) {
-            mData = data;
+        public MyAdapter(List<String> data1,List<String> data2) {
+            mData1 = data1;
+            mData2 = data2;
         }
 
         @Override
@@ -362,8 +371,46 @@ public class setting_friend_search extends AppCompatActivity {
         }
 
         @Override
-        public void onBindViewHolder(ViewHolder holder, final int position) {
-            holder.mTextView.setText(mData.get(position));
+        public void onBindViewHolder(final ViewHolder holder, final int position) {
+            holder.mTextView.setText(mData1.get(position));
+            holder.Y_response.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    final String Y_u_id = getSharedPreferences(KEY, MODE_PRIVATE).getString("u_id", null);
+                    check_friend = new Connect_To_Server();
+                    Thread res_friend_invitations = new Thread(new Runnable() {
+                        @Override
+                        public void run() {
+                            String data = mData2.get(position);
+                            check_friend.connect("insert_sql", "INSERT INTO `user_friends` (`user_id`, `friend_id`) VALUES ('"+Y_u_id+"', '"+data+"')");
+                            check_friend.connect("insert_sql","DELETE FROM `user_friends_invitation` WHERE `user_friends_invitation`.`user_id` = '"+Y_u_id+"' AND `user_friends_invitation`.`friend_id` = '"+data+"'");
+                        }
+                    });
+                    res_friend_invitations.start();
+                    Toast.makeText(setting_friend_search.this, "你與 " + mData1.get(position) + "已經是好朋友囉!", Toast.LENGTH_SHORT).show();
+                    mData1.remove(position);
+                    mData2.remove(position);
+                    notifyItemRemoved(position);
+                }
+            });
+            holder.N_response.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    final String N_u_id = getSharedPreferences(KEY, MODE_PRIVATE).getString("u_id", null);
+                    check_friend = new Connect_To_Server();
+                    Thread res_friend_invitations = new Thread(new Runnable() {
+                        @Override
+                        public void run() {
+                            check_friend.connect("insert_sql","DELETE FROM `user_friends_invitation` WHERE `user_friends_invitation`.`user_id` = '"+N_u_id+"' AND `user_friends_invitation`.`friend_id` = '"+mData2.get(position)+"'");
+                        }
+                    });
+                    res_friend_invitations.start();
+                    Toast.makeText(setting_friend_search.this, "已刪除 " + mData1.get(position) + "的好友邀請", Toast.LENGTH_SHORT).show();
+                    mData1.remove(position);
+                    mData2.remove(position);
+                    notifyItemRemoved(position);
+                }
+            });
             holder.itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -381,7 +428,7 @@ public class setting_friend_search extends AppCompatActivity {
 
         @Override
         public int getItemCount() {
-            return mData.size();
+            return mData1.size();
         }
     }
 
