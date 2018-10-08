@@ -14,6 +14,10 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.Properties;
 
 import javax.mail.Authenticator;
@@ -30,6 +34,7 @@ public class forget_pwd extends AppCompatActivity {
     EditText get_account,get_name;
     Button send;
     Connect_To_Server db_select;
+    JSONArray get_result;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,16 +63,31 @@ public class forget_pwd extends AppCompatActivity {
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
-                String db_data =  db_select.get_data;
-                String[] token = db_data.split("/");
-                if(token.length != 3){
+
+                String u_id = null,u_pwd = null,u_name =null;
+                try{
+                    get_result = new JSONArray(db_select.get_data);
+                    int lenght = get_result.length();
+                    for(int i = 0;i < lenght;i++){
+                        JSONObject jsonObject = get_result.getJSONObject(i);
+                        u_id = jsonObject.getString("user_id");
+                        u_pwd = jsonObject.getString("u_password");
+                        u_name = jsonObject.getString("u_name");
+                    }
+                }
+                catch(JSONException e) {
+                    e.printStackTrace();
+                }
+
+
+                if(u_id == null){
                     new AlertDialog.Builder(forget_pwd.this).setTitle("在試試看一次喔~").setMessage("信箱或姓名錯誤!!")
                             .setNegativeButton("OK",null)
                             .show();
                 }else {
-                    String db_u_id = token[0];
-                    String db_u_pwd = token[1];
-                    String db_u_name = token[2];
+                    String db_u_id = u_id;
+                    String db_u_pwd = u_pwd;
+                    String db_u_name = u_name;
                     if(db_u_name.equals(name)){
                         main(db_u_id,db_u_name,db_u_pwd);
                     }else{

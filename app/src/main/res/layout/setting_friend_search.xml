@@ -128,11 +128,11 @@
                 android:textSize="14sp" />
 
             <Button
-                android:id="@+id/button"
+                android:id="@+id/cancel"
                 android:layout_width="80dp"
                 android:layout_height="35dp"
-                android:layout_weight="1"
                 android:layout_marginStart="10dp"
+                android:layout_weight="1"
                 android:background="@drawable/friend_cancel_btn"
                 android:elevation="2dp"
                 android:text="@string/cancel"

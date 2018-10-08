@@ -27,11 +27,18 @@ import android.widget.ImageView;
 import android.widget.PopupMenu;
 import android.widget.PopupWindow;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.user.myapplication.setting_setup.setting_setup;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
 import java.util.List;
+
+import static com.example.user.myapplication.mainpage.KEY;
 
 public class setting_friend extends AppCompatActivity {
     Button add_friend_btn, friend_delete;
@@ -50,36 +57,60 @@ public class setting_friend extends AppCompatActivity {
     PopupWindow popupWindow;
     FrameLayout menu_window;
     TextView set_up, friend, check;
-
+    Connect_To_Server find_friends,delete_friend;
+    JSONArray get_fresult;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.setting_friend);
-
-        //增加好友
-        gridView = findViewById(R.id.friend_list);
-        for (int i = 0; i < 10; i++) {
-            AreaEntity areaEntity = new AreaEntity(i + "", R.drawable.ai_open, "" + i);
-            areaEneities.add(areaEntity);
-        }
-
-        //好友長按事件
-        mGridAdapter = new GridViewAdapter(areaEneities, setting_friend.this);
-        gridView.setAdapter(mGridAdapter);
-        gridView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+        find_friends = new Connect_To_Server();
+        final String u_id = getSharedPreferences(KEY, MODE_PRIVATE).getString("u_id", null);
+        Thread search_friend = new Thread(new Runnable() {
             @Override
-            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
-                if (isShowDelete) {
-                    isShowDelete = false;
-                } else {
-                    isShowDelete = true;
-                }
-                mGridAdapter.setIsShowDelete(isShowDelete);
-                view.performHapticFeedback(HapticFeedbackConstants.LONG_PRESS);
-                return true;
+            public void run() {
+                find_friends.connect("select_sql","SELECT user.u_name,user.user_id FROM `user` WHERE user.user_id = any(SELECT user_friends.friend_id FROM `user_friends` WHERE user_friends.user_id =  '"+u_id +"')");
             }
         });
+        search_friend.start();
+        try {
+            Thread.sleep(400);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        try{
+            get_fresult = new JSONArray(find_friends.get_data);
+            int lenght = get_fresult.length();
+            //增加好友
+            gridView = findViewById(R.id.friend_list);
+            for(int i = 0;i < lenght;i++){
+                JSONObject jsonObject = get_fresult.getJSONObject(i);
+                AreaEntity areaEntity = new AreaEntity(jsonObject.getString("user_id")+ "", R.drawable.ai_open, "" +jsonObject.getString("u_name"));
+                areaEneities.add(areaEntity);
+
+                //好友長按事件
+                mGridAdapter = new GridViewAdapter(areaEneities, setting_friend.this);
+                gridView.setAdapter(mGridAdapter);
+                gridView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+                    @Override
+                    public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+                        if (isShowDelete) {
+                            isShowDelete = false;
+                        } else {
+                            isShowDelete = true;
+                        }
+                        mGridAdapter.setIsShowDelete(isShowDelete);
+                        view.performHapticFeedback(HapticFeedbackConstants.LONG_PRESS);
+                        return true;
+                    }
+                });
+            }
+        }
+        catch(JSONException e) {
+            e.printStackTrace();
+        }
+
+
 
         //點選 ADD FRIEND 按鈕
         add_friend_btn = findViewById(R.id.add_friend_btn);
@@ -266,6 +297,18 @@ public class setting_friend extends AppCompatActivity {
             holder.delete_btn.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    final String my_id = getSharedPreferences(KEY, MODE_PRIVATE).getString("u_id", null);
+                    final String f_id = areaEneity.get(position).getId();
+                    delete_friend = new Connect_To_Server();
+                    Thread res_friend_invitations = new Thread(new Runnable() {
+                        @Override
+                        public void run() {
+                            delete_friend.connect("insert_sql","DELETE FROM `user_friends` WHERE `user_friends`.`user_id` = '"+my_id+"' AND `user_friends`.`friend_id` = '"+f_id+"'");
+                            delete_friend.connect("insert_sql","DELETE FROM `user_friends` WHERE `user_friends`.`user_id` = '"+f_id+"' AND `user_friends`.`friend_id` = '"+my_id+"'");
+                        }
+                    });
+                    res_friend_invitations.start();
+                    Toast.makeText(setting_friend.this, "已刪除 " +areaEneity.get(position).getArea()+ "好友", Toast.LENGTH_SHORT).show();
                     areaEneity.remove(areaEneity.get(position));
                     notifyDataSetChanged();
                 }

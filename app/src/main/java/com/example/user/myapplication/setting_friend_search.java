@@ -1,6 +1,7 @@
 package com.example.user.myapplication;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.drawable.GradientDrawable;
 import android.os.IBinder;
@@ -30,6 +31,9 @@ import android.widget.Toast;
 
 import com.example.user.myapplication.setting_setup.setting_setup;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -38,10 +42,11 @@ import static com.example.user.myapplication.mainpage.KEY;
 public class setting_friend_search extends AppCompatActivity {
 
     ImageButton search_btn;
-    LinearLayout friend_show;
+    LinearLayout friend_show,friend_req;
     View timekeeper_logo;
     EditText search_friend;
-    Connect_To_Server find_friend;
+    TextView friend_text;
+    Connect_To_Server find_friend,check_friend;
 
     // list
     RecyclerView req_list;
@@ -49,22 +54,27 @@ public class setting_friend_search extends AppCompatActivity {
 
 
     // hamburger
-    Button menu, friend_add;
+    Button menu, friend_add,cancel;
     ImageButton menu_open;
     PopupWindow popupWindow;
     FrameLayout menu_window;
-    TextView set_up, friend, check, friend_name;
 
+    TextView set_up, friend, check,friend_name;
+    JSONArray get_result,get_fresult,get_iresult;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.setting_friend_search);
         friend_show = findViewById(R.id.friend_show);
+        friend_req = findViewById(R.id.friend_request);
+        friend_text = findViewById(R.id.friend_text);
         friend_add = findViewById(R.id.friend_add_btn);
+        cancel = findViewById(R.id.cancel);
         search_friend = (EditText) findViewById(R.id.search_friend);
         search_btn = findViewById(R.id.search_btn);
         friend_name = findViewById(R.id.friend_name);
         find_friend = new Connect_To_Server();
+        final String u_id = getSharedPreferences(KEY, MODE_PRIVATE).getString("u_id", null);
         search_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -80,42 +90,103 @@ public class setting_friend_search extends AppCompatActivity {
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
-                final String[] token = find_friend.get_data.split("/");
-                if (token.length != 3) {
+
+                String f_id = null,f_pwd = null,f_name =null;
+                try{
+                    get_result = new JSONArray(find_friend.get_data);
+                    int lenght = get_result.length();
+                    for(int i = 0;i < lenght;i++){
+                        JSONObject jsonObject = get_result.getJSONObject(i);
+                        f_id = jsonObject.getString("user_id");
+                        f_name = jsonObject.getString("u_name");
+                    }
+                }
+                catch(JSONException e) {
+                    e.printStackTrace();
+                }
+
+                if(f_id == null){
+
                     new AlertDialog.Builder(setting_friend_search.this).setTitle("在試試看一次~").setMessage("沒有這位使用者喔~")
                             .setNegativeButton("OK", null)
                             .show();
-                } else {
-                    friend_name.setText(token[2]);
-                    if (friend_show.getVisibility() != View.VISIBLE) {
+                }else {
+                    friend_name.setText(f_name);
+                    if(friend_show.getVisibility() != View.VISIBLE){
                         friend_show.setVisibility(View.VISIBLE);
+                        friend_req.setVisibility(View.GONE);
+                        friend_text.setText(R.string.friend_ser);
                     }
+                    final String finalF_id = f_id;
                     friend_add.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            final String u_id = getSharedPreferences(KEY, MODE_PRIVATE).getString("u_id", null);
-                            String friend_id = token[0];
+                            String friend_id = finalF_id;
                             //查詢是否已送過交友邀請
-//                            Thread search_friend_invitation = new Thread(new Runnable() {
-//                                @Override
-//                                public void run() {
-//                                    find_friend.connect("select_sql","SELECT friend_id FROM `user_friends_invitation` WHERE user_id = '"+u_id+"'");
-//                                }
-//                            });
-//                            search_friend_invitation.start();
-//                            try {
-//                                Thread.sleep(400);
-//                            } catch (InterruptedException e) {
-//                                e.printStackTrace();
-//                            }
-                            int status = 0;
-                            find_friend.connect("insert_sql", "INSERT INTO `user_friends_invitation` (`user_id`, `friend_id`, `status`) VALUES('" + u_id + "', '" + friend_id + "', '" + status + "')");
-                            new AlertDialog.Builder(setting_friend_search.this).setTitle("好友邀請已送出").setMessage("對方接受邀請後你們就是朋友囉")
-                                    .setNegativeButton("OK", null)
-                                    .show();
+                            Thread search_friend_invitation = new Thread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    find_friend.connect("select_sql","SELECT friend_id FROM `user_friends_invitation` WHERE user_id = '"+u_id+"'");
+                                }
+                            });
+                            search_friend_invitation.start();
+                            try {
+                                Thread.sleep(400);
+                            } catch (InterruptedException e) {
+                                e.printStackTrace();
+                            }
+                            int exist = 0;
+                            String flist_u_id = null;
+                            try{
+                                get_fresult = new JSONArray(find_friend.get_data);
+                                int lenght = get_fresult.length();
+                                for(int i = 0;i < lenght;i++){
+                                    JSONObject jsonObject = get_fresult.getJSONObject(i);
+                                    flist_u_id = jsonObject.getString("friend_id");
+                                    if(flist_u_id.equals(friend_id)){
+                                        new AlertDialog.Builder(setting_friend_search.this).setTitle("等待對方回覆邀請中").setMessage("已送過交友邀請")
+                                                .setNegativeButton("OK", new DialogInterface.OnClickListener() {
+                                                    @Override
+                                                    public void onClick(DialogInterface dialog, int which) {
+                                                        friend_show.setVisibility(View.GONE);
+                                                        friend_req.setVisibility(View.VISIBLE);
+                                                        friend_text.setText(R.string.friend_req);
+                                                    }
+                                                })
+                                                .show();
+                                        exist = 1;
+                                        break;
+                                    }
+                                }
+                            }
+                            catch(JSONException e) {
+                                e.printStackTrace();
+                            }
+
+                            if(exist == 0){
+                                int status = 0;
+                                find_friend.connect("insert_sql","INSERT INTO `user_friends_invitation` (`user_id`, `friend_id`, `status`) VALUES('" + u_id + "', '" + friend_id + "', '" + status + "')");
+                                new AlertDialog.Builder(setting_friend_search.this).setTitle("好友邀請已送出").setMessage("對方接受邀請後你們就是朋友囉")
+                                        .setNegativeButton("OK", new DialogInterface.OnClickListener() {
+                                            @Override
+                                            public void onClick(DialogInterface dialog, int which) {
+                                                friend_show.setVisibility(View.GONE);
+                                                friend_req.setVisibility(View.VISIBLE);
+                                                friend_text.setText(R.string.friend_req);
+                                            }
+                                        })
+                                        .show();
+                            }
                         }
                     });
-                    ;
+                    cancel.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            friend_show.setVisibility(View.GONE);
+                            friend_req.setVisibility(View.VISIBLE);
+                            friend_text.setText(R.string.friend_req);
+                        }
+                    });
                 }
             }
         });
@@ -146,13 +217,37 @@ public class setting_friend_search extends AppCompatActivity {
             }
         });
 
+        Thread search_friend_invitations = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                find_friend.connect("select_sql", "SELECT user.u_name,user.user_id FROM `user` WHERE user.user_id = any(SELECT user_friends_invitation.user_id FROM `user_friends_invitation` WHERE user_friends_invitation.friend_id =  '" + u_id + "')");
+            }
+        });
+        search_friend_invitations.start();
+        try {
+            Thread.sleep(400);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        ArrayList<String> invitation = new ArrayList<>();
+        ArrayList<String> invit_id = new ArrayList<>();
+        try{
+            get_iresult = new JSONArray(find_friend.get_data);
+            int lenght = get_iresult.length();
+            for(int i = 0;i < lenght;i++){
+                JSONObject jsonObject = get_iresult.getJSONObject(i);
+                invitation.add(jsonObject.getString("u_name"));
+                invit_id.add(jsonObject.getString("user_id"));
+            }
+        }
+        catch(JSONException e) {
+            e.printStackTrace();
+        }
+
+
         // recyclerview
         req_list = findViewById(R.id.req_list);
-        ArrayList<String> myDataset = new ArrayList<>();
-        for(int i = 0; i < 10; i++){
-            myDataset.add("HIIIII");
-        }
-        mAdapter = new MyAdapter(myDataset);
+        mAdapter = new MyAdapter(invitation,invit_id);
         final LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         req_list.setLayoutManager(layoutManager);
@@ -248,18 +343,23 @@ public class setting_friend_search extends AppCompatActivity {
 
     // RecyclerView
     public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
-        private List<String> mData;
+        private List<String> mData1;
+        private List<String> mData2;
 
         public class ViewHolder extends RecyclerView.ViewHolder {
             public TextView mTextView;
+            public ImageButton Y_response,N_response;/////
             public ViewHolder(View v) {
                 super(v);
                 mTextView = v.findViewById(R.id.friend_name);
+                Y_response = v.findViewById(R.id.request_yes);////
+                N_response = v.findViewById(R.id.request_no);////
             }
         }
 
-        public MyAdapter(List<String> data) {
-            mData = data;
+        public MyAdapter(List<String> data1,List<String> data2) {
+            mData1 = data1;
+            mData2 = data2;
         }
 
         @Override
@@ -271,8 +371,47 @@ public class setting_friend_search extends AppCompatActivity {
         }
 
         @Override
-        public void onBindViewHolder(ViewHolder holder, final int position) {
-            holder.mTextView.setText(mData.get(position));
+        public void onBindViewHolder(final ViewHolder holder, final int position) {
+            holder.mTextView.setText(mData1.get(position));
+            holder.Y_response.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    final String Y_u_id = getSharedPreferences(KEY, MODE_PRIVATE).getString("u_id", null);
+                    check_friend = new Connect_To_Server();
+                    Thread res_friend_invitations = new Thread(new Runnable() {
+                        @Override
+                        public void run() {
+                            String data = mData2.get(position);
+                            check_friend.connect("insert_sql", "INSERT INTO `user_friends` (`user_id`, `friend_id`) VALUES ('"+Y_u_id+"', '"+data+"')");
+                            check_friend.connect("insert_sql", "INSERT INTO `user_friends` (`user_id`, `friend_id`) VALUES ('"+data+"', '"+Y_u_id+"')");
+                            check_friend.connect("insert_sql","DELETE FROM `user_friends_invitation` WHERE `user_friends_invitation`.`user_id` = '"+data+"' AND `user_friends_invitation`.`friend_id` = '"+Y_u_id+"'");
+                        }
+                    });
+                    res_friend_invitations.start();
+                    Toast.makeText(setting_friend_search.this, "你與 " + mData1.get(position) + "已經是好朋友囉!", Toast.LENGTH_SHORT).show();
+                    mData1.remove(position);
+                    mData2.remove(position);
+                    notifyItemRemoved(position);
+                }
+            });
+            holder.N_response.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    final String N_u_id = getSharedPreferences(KEY, MODE_PRIVATE).getString("u_id", null);
+                    check_friend = new Connect_To_Server();
+                    Thread res_friend_invitations = new Thread(new Runnable() {
+                        @Override
+                        public void run() {
+                            check_friend.connect("insert_sql","DELETE FROM `user_friends_invitation` WHERE `user_friends_invitation`.`user_id` = '"+mData2.get(position)+"' AND `user_friends_invitation`.`friend_id` = '"+N_u_id+"'");
+                        }
+                    });
+                    res_friend_invitations.start();
+                    Toast.makeText(setting_friend_search.this, "已刪除 " + mData1.get(position) + "的好友邀請", Toast.LENGTH_SHORT).show();
+                    mData1.remove(position);
+                    mData2.remove(position);
+                    notifyItemRemoved(position);
+                }
+            });
             holder.itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -290,7 +429,7 @@ public class setting_friend_search extends AppCompatActivity {
 
         @Override
         public int getItemCount() {
-            return mData.size();
+            return mData1.size();
         }
     }
 
