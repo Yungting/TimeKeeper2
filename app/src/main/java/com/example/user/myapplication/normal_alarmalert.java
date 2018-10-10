@@ -73,7 +73,7 @@ public class normal_alarmalert extends AppCompatActivity {
             public void onClick(DialogInterface dialog, int which) {
                 alarm();
                 h.removeCallbacksAndMessages(null);
-                finish();
+                System.exit(0);
             }
         });
         builder.setNegativeButton("CLOSED", new DialogInterface.OnClickListener() {
@@ -90,7 +90,7 @@ public class normal_alarmalert extends AppCompatActivity {
                 data_record.record(normal_alarmalert.this);
                 //intent1.putExtra("time", time);
                 //normal_alarmalert.this.startActivity(intent1);
-                finish();
+                System.exit(0);
             }
         });
         builder.setOnKeyListener(new DialogInterface.OnKeyListener() {
@@ -114,7 +114,7 @@ public class normal_alarmalert extends AppCompatActivity {
         intent.putExtra("requestcode", requestcode);
         PendingIntent op = PendingIntent.getActivity(this, requestcode, intent ,PendingIntent.FLAG_UPDATE_CURRENT);
 
-        am.set(AlarmManager.RTC, triggertime,op);
+        am.setExact(AlarmManager.RTC, triggertime,op);
     }
 
     public void oneminute(){
