@@ -65,6 +65,11 @@ public class normal_alarmalert extends AppCompatActivity {
 
     }
 
+    public void send(){
+        Intent intent3 = new Intent(this, AlertService.class);
+        this.startService(intent3);
+    }
+
     public void alarmDialog(){
         final AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setMessage("WAKE UP NOW!!");
@@ -73,7 +78,7 @@ public class normal_alarmalert extends AppCompatActivity {
             public void onClick(DialogInterface dialog, int which) {
                 alarm();
                 h.removeCallbacksAndMessages(null);
-                System.exit(0);
+                finish();
             }
         });
         builder.setNegativeButton("CLOSED", new DialogInterface.OnClickListener() {
@@ -86,11 +91,8 @@ public class normal_alarmalert extends AppCompatActivity {
                 long time = cd.getTimeInMillis();
                 //Intent intent1 = new Intent(normal_alarmalert.this, ai_count.class);
                 Log.d("alert", "time"+time);
-                ai_count data_record = new ai_count();
-                data_record.record(normal_alarmalert.this);
-                //intent1.putExtra("time", time);
-                //normal_alarmalert.this.startActivity(intent1);
-                System.exit(0);
+                send();
+                finish();
             }
         });
         builder.setOnKeyListener(new DialogInterface.OnKeyListener() {
