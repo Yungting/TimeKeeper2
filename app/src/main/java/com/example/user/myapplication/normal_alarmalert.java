@@ -65,6 +65,11 @@ public class normal_alarmalert extends AppCompatActivity {
 
     }
 
+    public void send(){
+        Intent intent3 = new Intent(this, AlertService.class);
+        this.startService(intent3);
+    }
+
     public void alarmDialog(){
         final AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setMessage("WAKE UP NOW!!");
@@ -86,10 +91,7 @@ public class normal_alarmalert extends AppCompatActivity {
                 long time = cd.getTimeInMillis();
                 //Intent intent1 = new Intent(normal_alarmalert.this, ai_count.class);
                 Log.d("alert", "time"+time);
-                ai_count data_record = new ai_count();
-                data_record.record(normal_alarmalert.this);
-                //intent1.putExtra("time", time);
-                //normal_alarmalert.this.startActivity(intent1);
+                send();
                 finish();
             }
         });
@@ -114,7 +116,7 @@ public class normal_alarmalert extends AppCompatActivity {
         intent.putExtra("requestcode", requestcode);
         PendingIntent op = PendingIntent.getActivity(this, requestcode, intent ,PendingIntent.FLAG_UPDATE_CURRENT);
 
-        am.set(AlarmManager.RTC, triggertime,op);
+        am.setExact(AlarmManager.RTC, triggertime,op);
     }
 
     public void oneminute(){

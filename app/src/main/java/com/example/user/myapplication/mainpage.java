@@ -58,6 +58,7 @@ public class mainpage extends Activity implements RecyclerTouchListener.Recycler
     ImageButton add_btn, normal_btn, ai_btn, counter_btn;
     LinearLayout normal_layout, ai_layout, counter_layout;
     CrossView crossView;
+    int[] itemlist = new int[50];
 
     // hamburger
     Button menu;
@@ -274,6 +275,7 @@ public class mainpage extends Activity implements RecyclerTouchListener.Recycler
                             , cursor.getString(5), time, cursor.getString(7), cursor.getInt(8)));
                     requestcode[i] = cursor.getInt(3);
                     alarmtype[i] = cursor.getString(7);
+                    itemlist[i] = i;
                     i++;
                 }
             }
@@ -315,7 +317,7 @@ public class mainpage extends Activity implements RecyclerTouchListener.Recycler
             holder.delete.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    removeData(position);
+                    removeData(itemlist[position]);
                 }
             });
 
@@ -333,6 +335,9 @@ public class mainpage extends Activity implements RecyclerTouchListener.Recycler
             PendingIntent pi = PendingIntent.getActivity(mainpage.this, requestcode[position], intent, PendingIntent.FLAG_UPDATE_CURRENT);
             alarmManager.cancel(pi);
             db.delete(requestcode[position]);
+            for (int a = position; itemlist.length >= a; a++){
+                itemlist[position] = position - 1;
+            }
         }
 
         @Override
