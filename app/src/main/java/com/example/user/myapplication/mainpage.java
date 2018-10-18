@@ -175,7 +175,10 @@ public class mainpage extends Activity implements RecyclerTouchListener.Recycler
                 startActivity(intent1);
             }
         });
-
+        Intent service = new Intent(this, Friend_Invite_Service.class);
+        service.putExtra("my_id", user);
+        startService(service);
+        Log.d("背景","測試");
         //recyclerview
         unclickableRows = new ArrayList<>();
         unswipeableRows = new ArrayList<>();
