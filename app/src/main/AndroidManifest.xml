@@ -44,18 +44,15 @@
         <activity android:name=".sign_up" />
         <activity android:name=".forget_pwd" />
         <activity android:name=".check"></activity>
-<<<<<<< HEAD
+
         <service
             android:name=".Friend_Invite_Service"
             android:enabled="true"
             android:exported="true"/>
-=======
-
         <service
             android:name=".AlertService"
             android:enabled="true"
             android:exported="true"></service>
->>>>>>> b24fccb2063d7f5adbc8f3e220b23330fdb09912
     </application>
 
 </manifest>
