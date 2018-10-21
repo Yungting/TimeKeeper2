@@ -208,7 +208,9 @@ public class setting_friend_search extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 if (popupWindow == null) {
-                    showPopupWindow();
+                    showPopupWindow show = new showPopupWindow(setting_friend_search.this);
+                    show.showPopupWindow(menu);
+                    //showPopupWindow();
                 } else if (popupWindow.isShowing()) {
                     popupWindow.dismiss();
                 } else {
@@ -256,50 +258,7 @@ public class setting_friend_search extends AppCompatActivity {
     }
 
 
-    //跳出選單
-    private void showPopupWindow() {
-        View view = LayoutInflater.from(this).inflate(R.layout.menu_window, null);//获取popupWindow子布局对象
-        popupWindow = new PopupWindow(view, ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT, false);//初始化
-        popupWindow.showAsDropDown(menu, -300, -155);//在ImageView控件下方弹出
 
-        menu_open = view.findViewById(R.id.menu_btn_open);
-        menu_open.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                popupWindow.dismiss();
-            }
-        });
-
-        set_up = view.findViewById(R.id.set_up);
-        friend = view.findViewById(R.id.friend);
-        check = view.findViewById(R.id.check);
-
-        set_up.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent2 = new Intent(setting_friend_search.this, setting_setup.class);
-                startActivity(intent2);
-            }
-        });
-
-        friend.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent3 = new Intent(setting_friend_search.this, setting_friend.class);
-                startActivity(intent3);
-            }
-        });
-
-        check.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent2 = new Intent(setting_friend_search.this, check.class);
-                startActivity(intent2);
-            }
-        });
-
-//        popupWindow.setAnimationStyle(R.style.popupAnim);//设置动画
-    }
 
     //點擊空白處隱藏鍵盤
     public boolean dispatchTouchEvent(MotionEvent ev) {
