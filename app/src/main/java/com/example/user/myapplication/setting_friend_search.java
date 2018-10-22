@@ -208,8 +208,12 @@ public class setting_friend_search extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 if (popupWindow == null) {
-                    showPopupWindow show = new showPopupWindow(setting_friend_search.this);
-                    show.showPopupWindow(menu);
+                    showPopupWindow show = new showPopupWindow(setting_friend_search.this,getSharedPreferences(KEY, MODE_PRIVATE).getString("u_id", null));
+                    try {
+                        show.showPopupWindow(menu);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
                     //showPopupWindow();
                 } else if (popupWindow.isShowing()) {
                     popupWindow.dismiss();

@@ -25,6 +25,7 @@ import com.example.user.myapplication.setting_friend_search;
 import com.example.user.myapplication.showPopupWindow;
 
 import static com.example.user.myapplication.R.menu.mainpage_menu;
+import static com.example.user.myapplication.mainpage.KEY;
 
 public class setting_setup extends AppCompatActivity {
 
@@ -73,8 +74,12 @@ public class setting_setup extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 if(popupWindow==null){
-                    showPopupWindow show = new showPopupWindow(setting_setup.this);
-                    show.showPopupWindow(menu);
+                    showPopupWindow show = new showPopupWindow(setting_setup.this,getSharedPreferences(KEY, MODE_PRIVATE).getString("u_id", null));
+                    try {
+                        show.showPopupWindow(menu);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
                     //showPopupWindow();
                 }else if(popupWindow.isShowing()){
                     popupWindow.dismiss();

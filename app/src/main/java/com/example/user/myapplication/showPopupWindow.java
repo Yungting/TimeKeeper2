@@ -23,6 +23,7 @@ import com.example.user.myapplication.setting_setup.setting_setup;
 import java.io.FileNotFoundException;
 
 import static android.app.Activity.RESULT_OK;
+import static com.example.user.myapplication.mainpage.KEY;
 
 public class showPopupWindow extends Activity{
     Context context;
@@ -32,20 +33,33 @@ public class showPopupWindow extends Activity{
     FrameLayout menu_window;
     TextView set_up, friend, check;
     Bitmap img;
-    public showPopupWindow(Context context){
+    String user_id;
+    public showPopupWindow(Context context,String user_id){
         this.context = context;
-    }
-    public showPopupWindow(Context context,Bitmap img){
-        this.context = context;
-        this.img = img;
+        this.user_id = user_id;
     }
 
-    public void showPopupWindow(Button menu) {
+    public void showPopupWindow(Button menu) throws InterruptedException {
         View view = LayoutInflater.from(context).inflate(R.layout.menu_window,null);//获取popupWindow子布局对象
         popupWindow = new PopupWindow(view, ViewGroup.LayoutParams.WRAP_CONTENT,ViewGroup.LayoutParams.WRAP_CONTENT,false);//初始化
         popupWindow.showAsDropDown(menu,-300,-155);//在ImageView控件下方弹出
 
         photo_sticker = view.findViewById(R.id.photo_sticker);
+
+        Thread get_photo = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                get_u_sticker get_img = new get_u_sticker();
+                img = get_img.get_sticker("http://140.127.218.207/uploads/"+user_id+".jpg");
+            }
+        });
+        get_photo.start();
+        try {
+            get_photo.join();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
         if(img != null){
             photo_sticker.setImageBitmap(img);
         }
@@ -57,6 +71,7 @@ public class showPopupWindow extends Activity{
                 intent.setType("image/*");
                 intent.setAction(Intent.ACTION_PICK);
                 ((Activity) context).startActivityForResult(intent,0);
+                popupWindow.dismiss();
             }
         });
 

@@ -71,7 +71,7 @@ public class Friend_Invite_Service extends Service{
                         e.printStackTrace();
                     }
                     try {
-                        Thread.sleep(3000);
+                        Thread.sleep(30000);
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }

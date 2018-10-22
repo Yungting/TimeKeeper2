@@ -5,6 +5,7 @@ import android.app.Activity;
 import android.app.AlarmManager;
 import android.app.AppOpsManager;
 import android.app.PendingIntent;
+import android.app.ProgressDialog;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
@@ -16,6 +17,7 @@ import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.provider.Settings;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.view.menu.MenuPopupHelper;
@@ -46,8 +48,14 @@ import com.example.user.myapplication.setting_setup.setting_setup;
 import com.nikhilpanju.recyclerviewenhanced.OnActivityTouchListener;
 import com.nikhilpanju.recyclerviewenhanced.RecyclerTouchListener;
 
+import java.io.DataOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.lang.reflect.Field;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
@@ -111,8 +119,12 @@ public class mainpage extends Activity implements RecyclerTouchListener.Recycler
             @Override
             public void onClick(View v) {
                 if(popupWindow==null){
-                    showPopupWindow show = new showPopupWindow(mainpage.this);
-                    show.showPopupWindow(menu);
+                    showPopupWindow show = new showPopupWindow(mainpage.this,getSharedPreferences(KEY, MODE_PRIVATE).getString("u_id", null));
+                    try {
+                        show.showPopupWindow(menu);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
                     //showPopupWindow();
                 }else if(popupWindow.isShowing()){
                     popupWindow.dismiss();
@@ -135,11 +147,7 @@ public class mainpage extends Activity implements RecyclerTouchListener.Recycler
         if (!isAccessGranted()) {
             startActivity(new Intent(Settings.ACTION_USAGE_ACCESS_SETTINGS));
         }
-//        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.PACKAGE_USAGE_STATS)
-//                != PackageManager.PERMISSION_GRANTED) {
-//
-//            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.PACKAGE_USAGE_STATS},BuildDev.RECORD_AUDIO);
-//        }
+
 
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO)
                 != PackageManager.PERMISSION_GRANTED) {
@@ -242,28 +250,41 @@ public class mainpage extends Activity implements RecyclerTouchListener.Recycler
                 });
     }
 
+    public String getPath(Uri uri) {
+        String[] projection = { MediaStore.Images.Media.DATA };
+        Cursor cursor = managedQuery(uri, projection, null, null, null);
+        int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
+        cursor.moveToFirst();
+        return cursor.getString(column_index);
+    }
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         View view = LayoutInflater.from(this).inflate(R.layout.menu_window,null);//获取popupWindow子布局对象
-
         //當使用者按下確定後
         if (resultCode == RESULT_OK) {
             //取得圖檔的路徑位置
-            Uri uri = data.getData();
+            final Uri uri = data.getData();
             //寫log
             Log.e("uri", uri.toString());
             //抽象資料的接口
             ContentResolver cr = this.getContentResolver();
             try {
+                final String user_id = getSharedPreferences(KEY, MODE_PRIVATE).getString("u_id", null);
                 //由抽象資料接口轉換圖檔路徑為Bitmap
                 Bitmap bitmap = BitmapFactory.decodeStream(cr.openInputStream(uri));
                 Log.e("uri", bitmap.toString());
-                showPopupWindow change_sticker = new showPopupWindow(mainpage.this,bitmap);
-                change_sticker.showPopupWindow(menu);
+                Thread upload_thread =  new Thread(new Runnable() {
+                    public void run() {
+                        upload_img upload_sticker = new upload_img();
+                        upload_sticker.uploadFile(user_id,getPath(uri));
+                    }
+                });
+                upload_thread.start();
 
             } catch (FileNotFoundException e) {
                 Log.e("Exception", e.getMessage(),e);
             }
+
         }
         super.onActivityResult(requestCode, resultCode, data);
     }
