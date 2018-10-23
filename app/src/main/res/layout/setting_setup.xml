@@ -27,8 +27,7 @@
         android:layout_alignParentTop="true"
         android:layout_marginEnd="29dp"
         android:layout_marginTop="27dp"
-        android:background="@drawable/mainpage_menu"
-        android:onClick="showPopup"/>
+        android:background="@drawable/mainpage_menu" />
 
     <android.support.v4.view.ViewPager
         android:id="@+id/viewPager"
