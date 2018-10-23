@@ -31,10 +31,10 @@ public class setting_setup extends AppCompatActivity {
 
     View timekeeper_logo;
 
-    private Button mButton;
-    private ViewPager mViewPager;
-    private CardPagerAdapter mCardAdapter;
-    private ShadowTransformer mCardShadowTransformer;
+//    private Button mButton;
+//    private ViewPager mViewPager;
+//    private CardPagerAdapter mCardAdapter;
+//    private ShadowTransformer mCardShadowTransformer;
 
     // hamburger
     Button menu;
@@ -47,16 +47,16 @@ public class setting_setup extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.setting_setup);
 
-        mViewPager = findViewById(R.id.viewPager);
-
-        mCardAdapter = new CardPagerAdapter();
-        mCardAdapter.addCardItem(new CardItem("hi@gmail.com","info"));
-        mCardAdapter.addCardItem(new CardItem("Location Setup", "location"));
-
-        mCardShadowTransformer = new ShadowTransformer(mViewPager, mCardAdapter);
-        mViewPager.setAdapter(mCardAdapter);
-        mViewPager.setOffscreenPageLimit(3);
-        mCardShadowTransformer.enableScaling(true);
+//        mViewPager = findViewById(R.id.viewPager);
+//
+//        mCardAdapter = new CardPagerAdapter();
+//        mCardAdapter.addCardItem(new CardItem("hi@gmail.com","info"));
+//        mCardAdapter.addCardItem(new CardItem("Location Setup", "location"));
+//
+//        mCardShadowTransformer = new ShadowTransformer(mViewPager, mCardAdapter);
+//        mViewPager.setAdapter(mCardAdapter);
+//        mViewPager.setOffscreenPageLimit(3);
+//        mCardShadowTransformer.enableScaling(true);
 
         //回首頁
         timekeeper_logo = findViewById(R.id.timekeeper_logo);
@@ -91,9 +91,6 @@ public class setting_setup extends AppCompatActivity {
         });
 
     }
-
-    //跳出選單
-    //跳出選單
 
 }
 
