@@ -127,7 +127,7 @@ public class setting_friend_search extends AppCompatActivity {
                     Thread get_photo = new Thread(new Runnable() {
                         @Override
                         public void run() {
-                            img[0] = get_u_sticker.get_sticker("http://140.127.218.207/uploads/"+finalF_id+".jpg");
+                            img[0] = get_u_sticker.get_sticker("http://140.127.218.207/uploads/"+finalF_id+".png");
                         }
                     });
                     get_photo.start();
@@ -363,7 +363,7 @@ public class setting_friend_search extends AppCompatActivity {
             Thread get_photo = new Thread(new Runnable() {
                 @Override
                 public void run() {
-                    img[0] = get_u_sticker.get_sticker("http://140.127.218.207/uploads/"+data+".jpg");
+                    img[0] = get_u_sticker.get_sticker("http://140.127.218.207/uploads/"+data+".png");
                 }
             });
             get_photo.start();

@@ -263,7 +263,7 @@ public class setting_friend extends AppCompatActivity {
             Thread get_photo = new Thread(new Runnable() {
                 @Override
                 public void run() {
-                    img[0] = get_u_sticker.get_sticker("http://140.127.218.207/uploads/"+f_id+".jpg");
+                    img[0] = get_u_sticker.get_sticker("http://140.127.218.207/uploads/"+f_id+".png");
                 }
             });
             get_photo.start();
