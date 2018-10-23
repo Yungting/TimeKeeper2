@@ -20,8 +20,8 @@ public class get_u_sticker {
                 return mbitmap;
         }catch (IOException e) {
             e.printStackTrace();
+            return  null;
         }
-
-        return  null;
+        //return  null;
     }
 }

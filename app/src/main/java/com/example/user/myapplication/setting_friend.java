@@ -2,6 +2,7 @@ package com.example.user.myapplication;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.os.IBinder;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -74,7 +75,7 @@ public class setting_friend extends AppCompatActivity {
         });
         search_friend.start();
         try {
-            Thread.sleep(400);
+            search_friend.join();
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -109,7 +110,6 @@ public class setting_friend extends AppCompatActivity {
         catch(JSONException e) {
             e.printStackTrace();
         }
-
 
 
         //點選 ADD FRIEND 按鈕
@@ -256,12 +256,29 @@ public class setting_friend extends AppCompatActivity {
             }
             holder.name_tv.setText(areaEneity.get(position).getArea());
             holder.delete_btn.setVisibility(isShowDelete ? View.VISIBLE : View.GONE);
+
+            final String my_id = getSharedPreferences(KEY, MODE_PRIVATE).getString("u_id", null);
+            final String f_id = areaEneity.get(position).getId();
+            final Bitmap[] img = new Bitmap[1];
+            Thread get_photo = new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    img[0] = get_u_sticker.get_sticker("http://140.127.218.207/uploads/"+f_id+".jpg");
+                }
+            });
+            get_photo.start();
+            try {
+                get_photo.join();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            if(img[0] !=null){
+                holder.img.setImageBitmap(img[0]);
+            }
             holder.img.setAlpha(isShowDelete ? 0.5f : 1.0f);
             holder.delete_btn.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    final String my_id = getSharedPreferences(KEY, MODE_PRIVATE).getString("u_id", null);
-                    final String f_id = areaEneity.get(position).getId();
                     delete_friend = new Connect_To_Server();
                     Thread res_friend_invitations = new Thread(new Runnable() {
                         @Override
