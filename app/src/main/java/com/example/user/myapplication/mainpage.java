@@ -5,13 +5,19 @@ import android.app.Activity;
 import android.app.AlarmManager;
 import android.app.AppOpsManager;
 import android.app.PendingIntent;
+import android.app.ProgressDialog;
+import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.provider.Settings;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.view.menu.MenuPopupHelper;
@@ -42,7 +48,14 @@ import com.example.user.myapplication.setting_setup.setting_setup;
 import com.nikhilpanju.recyclerviewenhanced.OnActivityTouchListener;
 import com.nikhilpanju.recyclerviewenhanced.RecyclerTouchListener;
 
+import java.io.DataOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.lang.reflect.Field;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
@@ -58,6 +71,7 @@ public class mainpage extends Activity implements RecyclerTouchListener.Recycler
     ImageButton add_btn, normal_btn, ai_btn, counter_btn;
     LinearLayout normal_layout, ai_layout, counter_layout;
     CrossView crossView;
+    int[] itemlist = new int[50];
 
     // hamburger
     Button menu;
@@ -81,6 +95,7 @@ public class mainpage extends Activity implements RecyclerTouchListener.Recycler
     private OnActivityTouchListener touchListener;
     int[] requestcode = new int[50];
     String[] alarmtype = new String[50];
+    ImageView photo_sticker;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -97,13 +112,20 @@ public class mainpage extends Activity implements RecyclerTouchListener.Recycler
         counter_layout = findViewById(R.id.counter_layout);
         crossView = findViewById(R.id.cross_view);
 
+
         // 選單彈跳
         menu = findViewById(R.id.menu);
         menu.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if(popupWindow==null){
-                    showPopupWindow();
+                    showPopupWindow show = new showPopupWindow(mainpage.this,getSharedPreferences(KEY, MODE_PRIVATE).getString("u_id", null));
+                    try {
+                        show.showPopupWindow(menu);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                    //showPopupWindow();
                 }else if(popupWindow.isShowing()){
                     popupWindow.dismiss();
                 }else{
@@ -125,11 +147,7 @@ public class mainpage extends Activity implements RecyclerTouchListener.Recycler
         if (!isAccessGranted()) {
             startActivity(new Intent(Settings.ACTION_USAGE_ACCESS_SETTINGS));
         }
-//        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.PACKAGE_USAGE_STATS)
-//                != PackageManager.PERMISSION_GRANTED) {
-//
-//            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.PACKAGE_USAGE_STATS},BuildDev.RECORD_AUDIO);
-//        }
+
 
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO)
                 != PackageManager.PERMISSION_GRANTED) {
@@ -175,7 +193,10 @@ public class mainpage extends Activity implements RecyclerTouchListener.Recycler
                 startActivity(intent1);
             }
         });
-
+        Intent service = new Intent(this, Friend_Invite_Service.class);
+        service.putExtra("my_id", user);
+        startService(service);
+        Log.d("背景","測試");
         //recyclerview
         unclickableRows = new ArrayList<>();
         unswipeableRows = new ArrayList<>();
@@ -229,6 +250,47 @@ public class mainpage extends Activity implements RecyclerTouchListener.Recycler
                 });
     }
 
+    public String getPath(Uri uri) {
+        String[] projection = { MediaStore.Images.Media.DATA };
+        Cursor cursor = managedQuery(uri, projection, null, null, null);
+        int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
+        cursor.moveToFirst();
+        return cursor.getString(column_index);
+    }
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        View view = LayoutInflater.from(this).inflate(R.layout.menu_window,null);//获取popupWindow子布局对象
+        //當使用者按下確定後
+        if (resultCode == RESULT_OK) {
+            //取得圖檔的路徑位置
+            final Uri uri = data.getData();
+            //寫log
+            Log.e("uri", uri.toString());
+            //抽象資料的接口
+            ContentResolver cr = this.getContentResolver();
+            try {
+                final String user_id = getSharedPreferences(KEY, MODE_PRIVATE).getString("u_id", null);
+                //由抽象資料接口轉換圖檔路徑為Bitmap
+                Bitmap bitmap = BitmapFactory.decodeStream(cr.openInputStream(uri));
+                Log.e("uri", bitmap.toString());
+                Thread upload_thread =  new Thread(new Runnable() {
+                    public void run() {
+                        upload_img upload_sticker = new upload_img();
+                        upload_sticker.uploadFile(user_id,getPath(uri));
+                    }
+                });
+                upload_thread.start();
+
+            } catch (FileNotFoundException e) {
+                Log.e("Exception", e.getMessage(),e);
+            }
+
+        }
+        super.onActivityResult(requestCode, resultCode, data);
+    }
+
+
+
     //recyclerview
     @Override
     protected void onResume() {
@@ -271,6 +333,7 @@ public class mainpage extends Activity implements RecyclerTouchListener.Recycler
                             , cursor.getString(5), time, cursor.getString(7), cursor.getInt(8)));
                     requestcode[i] = cursor.getInt(3);
                     alarmtype[i] = cursor.getString(7);
+                    itemlist[i] = i;
                     i++;
                 }
             }
@@ -312,7 +375,7 @@ public class mainpage extends Activity implements RecyclerTouchListener.Recycler
             holder.delete.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    removeData(position);
+                    removeData(itemlist[position]);
                 }
             });
 
@@ -330,6 +393,9 @@ public class mainpage extends Activity implements RecyclerTouchListener.Recycler
             PendingIntent pi = PendingIntent.getActivity(mainpage.this, requestcode[position], intent, PendingIntent.FLAG_UPDATE_CURRENT);
             alarmManager.cancel(pi);
             db.delete(requestcode[position]);
+            for (int a = position; itemlist.length >= a; a++){
+                itemlist[position] = position - 1;
+            }
         }
 
         @Override
@@ -448,56 +514,7 @@ public class mainpage extends Activity implements RecyclerTouchListener.Recycler
         }
     }
 
-    private void showPopupWindow() {
-        View view = LayoutInflater.from(this).inflate(R.layout.menu_window,null);//获取popupWindow子布局对象
-        popupWindow = new PopupWindow(view, ViewGroup.LayoutParams.WRAP_CONTENT,ViewGroup.LayoutParams.WRAP_CONTENT,true);//初始化
-//        if (android.os.Build.VERSION.SDK_INT >=24) {
-//            int[] a = new int[2]; //getLocationInWindow required array of size 2
-//            anchorView.getLocationInWindow(a);
-//            popupWindow.showAtLocation(((Activity) mContext).getWindow().getDecorView(), Gravity.NO_GRAVITY, 0 , a[1]+anchorView.getHeight());
-//        } else{
-//            popupWindow.showAsDropDown(anchorView);
-//        }
-        popupWindow.showAsDropDown(menu,0,-155);//在ImageView控件下方弹出
 
-        menu_open = view.findViewById(R.id.menu_btn_open);
-        menu_open.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                popupWindow.dismiss();
-            }
-        });
-
-        set_up = view.findViewById(R.id.set_up);
-        friend = view.findViewById(R.id.friend);
-        check = view.findViewById(R.id.check);
-
-        set_up.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent2 = new Intent(mainpage.this, setting_setup.class);
-                startActivity(intent2);
-            }
-        });
-
-        friend.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent3 = new Intent(mainpage.this, setting_friend.class);
-                startActivity(intent3);
-            }
-        });
-
-        check.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent2 = new Intent(mainpage.this, check.class);
-                startActivity(intent2);
-            }
-        });
-
-//        popupWindow.setAnimationStyle(R.style.popupAnim);//设置动画
-    }
 
 
 

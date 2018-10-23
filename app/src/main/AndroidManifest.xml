@@ -10,6 +10,7 @@
         tools:ignore="ProtectedPermissions" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
+    <uses-permission android:name="android.permission.VIBRATE"/>
 
     <application
         android:allowBackup="true"
@@ -18,7 +19,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".mainpage" >
+        <activity android:name=".mainpage"
+            android:excludeFromRecents="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -27,6 +29,7 @@
         </activity>>
         <activity
             android:name=".normal_alarmalert"
+            android:excludeFromRecents="true"
             android:label="ai_alarmalert" />
         <activity android:name=".normal_alarm" />
         <activity android:name=".normal_alarm_music" />
@@ -40,8 +43,16 @@
         <activity android:name=".login"/>
         <activity android:name=".sign_up" />
         <activity android:name=".forget_pwd" />
-        <activity android:name=".ai_count" />
         <activity android:name=".check"></activity>
+
+        <service
+            android:name=".Friend_Invite_Service"
+            android:enabled="true"
+            android:exported="true"/>
+        <service
+            android:name=".AlertService"
+            android:enabled="true"
+            android:exported="true"></service>
     </application>
 
 </manifest>
