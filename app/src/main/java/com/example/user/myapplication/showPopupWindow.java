@@ -63,20 +63,6 @@ public class showPopupWindow extends Activity{
         if(img != null){
             photo_sticker.setImageBitmap(img);
         }
-
-        photo_sticker.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent();
-                intent.setType("image/*");
-                intent.setAction(Intent.ACTION_PICK);
-                ((Activity) context).startActivityForResult(intent,0);
-                popupWindow.dismiss();
-            }
-        });
-
-
-
         menu_open = view.findViewById(R.id.menu_btn_open);
         menu_open.setOnClickListener(new View.OnClickListener() {
             @Override
