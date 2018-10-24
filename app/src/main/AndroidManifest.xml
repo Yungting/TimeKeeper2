@@ -10,6 +10,7 @@
         tools:ignore="ProtectedPermissions" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
 
     <application
         android:allowBackup="true"
@@ -18,14 +19,16 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".mainpage"
+        <activity
+            android:name=".mainpage"
             android:excludeFromRecents="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-        </activity>>
+        </activity>
+        >
         <activity
             android:name=".normal_alarmalert"
             android:excludeFromRecents="true"
@@ -39,15 +42,25 @@
         <activity android:name=".setting_setup.setting_setup" />
         <activity android:name=".setting_friend" />
         <activity android:name=".setting_friend_search" />
-        <activity android:name=".login"/>
+        <activity android:name=".login" />
         <activity android:name=".sign_up" />
         <activity android:name=".forget_pwd" />
-        <activity android:name=".check"></activity>
+        <activity android:name=".check" />
+
+        <receiver android:name=".Reciver">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED"/>
+            </intent-filter>
+        </receiver>
 
         <service
             android:name=".AlertService"
             android:enabled="true"
-            android:exported="true"></service>
+            android:exported="true" />
+        <service
+            android:name=".BootService"
+            android:enabled="true"
+            android:exported="true"/>
     </application>
 
 </manifest>
