@@ -2,6 +2,7 @@ package com.example.user.myapplication;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.os.IBinder;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -74,7 +75,7 @@ public class setting_friend extends AppCompatActivity {
         });
         search_friend.start();
         try {
-            Thread.sleep(400);
+            search_friend.join();
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -111,7 +112,6 @@ public class setting_friend extends AppCompatActivity {
         }
 
 
-
         //點選 ADD FRIEND 按鈕
         add_friend_btn = findViewById(R.id.add_friend_btn);
         add_friend_btn.setOnClickListener(new View.OnClickListener() {
@@ -138,7 +138,13 @@ public class setting_friend extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 if(popupWindow==null){
-                    showPopupWindow();
+                    showPopupWindow show = new showPopupWindow(setting_friend.this,getSharedPreferences(KEY, MODE_PRIVATE).getString("u_id", null));
+                    try {
+                        show.showPopupWindow(menu);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                    //showPopupWindow();
                 }else if(popupWindow.isShowing()){
                     popupWindow.dismiss();
                 }
@@ -150,49 +156,6 @@ public class setting_friend extends AppCompatActivity {
     }
 
     //跳出選單
-    private void showPopupWindow() {
-        View view = LayoutInflater.from(this).inflate(R.layout.menu_window,null);//获取popupWindow子布局对象
-        popupWindow = new PopupWindow(view, ViewGroup.LayoutParams.WRAP_CONTENT,ViewGroup.LayoutParams.WRAP_CONTENT,false);//初始化
-        popupWindow.showAsDropDown(menu,-300,-155);//在ImageView控件下方弹出
-
-        menu_open = view.findViewById(R.id.menu_btn_open);
-        menu_open.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                popupWindow.dismiss();
-            }
-        });
-
-        set_up = view.findViewById(R.id.set_up);
-        friend = view.findViewById(R.id.friend);
-        check = view.findViewById(R.id.check);
-
-        set_up.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent2 = new Intent(setting_friend.this, setting_setup.class);
-                startActivity(intent2);
-            }
-        });
-
-        friend.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent3 = new Intent(setting_friend.this, setting_friend.class);
-                startActivity(intent3);
-            }
-        });
-
-        check.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent2 = new Intent(setting_friend.this, check.class);
-                startActivity(intent2);
-            }
-        });
-
-//        popupWindow.setAnimationStyle(R.style.popupAnim);//设置动画
-    }
 
     // 按返回鍵取消delete狀態
     @Override
@@ -293,12 +256,29 @@ public class setting_friend extends AppCompatActivity {
             }
             holder.name_tv.setText(areaEneity.get(position).getArea());
             holder.delete_btn.setVisibility(isShowDelete ? View.VISIBLE : View.GONE);
+
+            final String my_id = getSharedPreferences(KEY, MODE_PRIVATE).getString("u_id", null);
+            final String f_id = areaEneity.get(position).getId();
+            final Bitmap[] img = new Bitmap[1];
+            Thread get_photo = new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    img[0] = get_u_sticker.get_sticker("http://140.127.218.207/uploads/"+f_id+".png");
+                }
+            });
+            get_photo.start();
+            try {
+                get_photo.join();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            if(img[0] !=null){
+                holder.img.setImageBitmap(img[0]);
+            }
             holder.img.setAlpha(isShowDelete ? 0.5f : 1.0f);
             holder.delete_btn.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    final String my_id = getSharedPreferences(KEY, MODE_PRIVATE).getString("u_id", null);
-                    final String f_id = areaEneity.get(position).getId();
                     delete_friend = new Connect_To_Server();
                     Thread res_friend_invitations = new Thread(new Runnable() {
                         @Override

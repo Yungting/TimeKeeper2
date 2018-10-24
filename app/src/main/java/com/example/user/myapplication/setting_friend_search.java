@@ -3,6 +3,7 @@ package com.example.user.myapplication;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.graphics.drawable.GradientDrawable;
 import android.os.IBinder;
 import android.support.v7.app.AlertDialog;
@@ -10,6 +11,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -22,6 +24,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.PopupMenu;
@@ -47,6 +50,7 @@ public class setting_friend_search extends AppCompatActivity {
     EditText search_friend;
     TextView friend_text;
     Connect_To_Server find_friend,check_friend;
+    ImageView friend_photo;
 
     // list
     RecyclerView req_list;
@@ -73,6 +77,7 @@ public class setting_friend_search extends AppCompatActivity {
         search_friend = (EditText) findViewById(R.id.search_friend);
         search_btn = findViewById(R.id.search_btn);
         friend_name = findViewById(R.id.friend_name);
+        friend_photo = findViewById(R.id.friend_photo);
         find_friend = new Connect_To_Server();
         final String u_id = getSharedPreferences(KEY, MODE_PRIVATE).getString("u_id", null);
         search_btn.setOnClickListener(new View.OnClickListener() {
@@ -86,7 +91,7 @@ public class setting_friend_search extends AppCompatActivity {
                 });
                 search_account.start();
                 try {
-                    Thread.sleep(400);
+                    search_account.join();
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
@@ -118,6 +123,22 @@ public class setting_friend_search extends AppCompatActivity {
                         friend_text.setText(R.string.friend_ser);
                     }
                     final String finalF_id = f_id;
+                    final Bitmap[] img = new Bitmap[1];
+                    Thread get_photo = new Thread(new Runnable() {
+                        @Override
+                        public void run() {
+                            img[0] = get_u_sticker.get_sticker("http://140.127.218.207/uploads/"+finalF_id+".png");
+                        }
+                    });
+                    get_photo.start();
+                    try {
+                        get_photo.join();
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                    if(img[0] != null){
+                        friend_photo.setImageBitmap(img[0]);
+                    }
                     friend_add.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
@@ -131,7 +152,7 @@ public class setting_friend_search extends AppCompatActivity {
                             });
                             search_friend_invitation.start();
                             try {
-                                Thread.sleep(400);
+                                search_friend_invitation.join();
                             } catch (InterruptedException e) {
                                 e.printStackTrace();
                             }
@@ -208,7 +229,13 @@ public class setting_friend_search extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 if (popupWindow == null) {
-                    showPopupWindow();
+                    showPopupWindow show = new showPopupWindow(setting_friend_search.this,getSharedPreferences(KEY, MODE_PRIVATE).getString("u_id", null));
+                    try {
+                        show.showPopupWindow(menu);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                    //showPopupWindow();
                 } else if (popupWindow.isShowing()) {
                     popupWindow.dismiss();
                 } else {
@@ -225,7 +252,7 @@ public class setting_friend_search extends AppCompatActivity {
         });
         search_friend_invitations.start();
         try {
-            Thread.sleep(400);
+            search_friend_invitations.join();
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -256,50 +283,7 @@ public class setting_friend_search extends AppCompatActivity {
     }
 
 
-    //跳出選單
-    private void showPopupWindow() {
-        View view = LayoutInflater.from(this).inflate(R.layout.menu_window, null);//获取popupWindow子布局对象
-        popupWindow = new PopupWindow(view, ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT, false);//初始化
-        popupWindow.showAsDropDown(menu, -300, -155);//在ImageView控件下方弹出
 
-        menu_open = view.findViewById(R.id.menu_btn_open);
-        menu_open.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                popupWindow.dismiss();
-            }
-        });
-
-        set_up = view.findViewById(R.id.set_up);
-        friend = view.findViewById(R.id.friend);
-        check = view.findViewById(R.id.check);
-
-        set_up.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent2 = new Intent(setting_friend_search.this, setting_setup.class);
-                startActivity(intent2);
-            }
-        });
-
-        friend.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent3 = new Intent(setting_friend_search.this, setting_friend.class);
-                startActivity(intent3);
-            }
-        });
-
-        check.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent2 = new Intent(setting_friend_search.this, check.class);
-                startActivity(intent2);
-            }
-        });
-
-//        popupWindow.setAnimationStyle(R.style.popupAnim);//设置动画
-    }
 
     //點擊空白處隱藏鍵盤
     public boolean dispatchTouchEvent(MotionEvent ev) {
@@ -348,12 +332,14 @@ public class setting_friend_search extends AppCompatActivity {
 
         public class ViewHolder extends RecyclerView.ViewHolder {
             public TextView mTextView;
+            public ImageView photo;
             public ImageButton Y_response,N_response;/////
             public ViewHolder(View v) {
                 super(v);
                 mTextView = v.findViewById(R.id.friend_name);
                 Y_response = v.findViewById(R.id.request_yes);////
                 N_response = v.findViewById(R.id.request_no);////
+                photo = v.findViewById(R.id.friend_photo);
             }
         }
 
@@ -372,6 +358,23 @@ public class setting_friend_search extends AppCompatActivity {
 
         @Override
         public void onBindViewHolder(final ViewHolder holder, final int position) {
+            final String data = mData2.get(position);
+            final Bitmap[] img = new Bitmap[1];
+            Thread get_photo = new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    img[0] = get_u_sticker.get_sticker("http://140.127.218.207/uploads/"+data+".png");
+                }
+            });
+            get_photo.start();
+            try {
+                get_photo.join();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            if(img[0] !=null){
+                holder.photo.setImageBitmap(img[0]);
+            }
             holder.mTextView.setText(mData1.get(position));
             holder.Y_response.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -381,7 +384,6 @@ public class setting_friend_search extends AppCompatActivity {
                     Thread res_friend_invitations = new Thread(new Runnable() {
                         @Override
                         public void run() {
-                            String data = mData2.get(position);
                             check_friend.connect("insert_sql", "INSERT INTO `user_friends` (`user_id`, `friend_id`) VALUES ('"+Y_u_id+"', '"+data+"')");
                             check_friend.connect("insert_sql", "INSERT INTO `user_friends` (`user_id`, `friend_id`) VALUES ('"+data+"', '"+Y_u_id+"')");
                             check_friend.connect("insert_sql","DELETE FROM `user_friends_invitation` WHERE `user_friends_invitation`.`user_id` = '"+data+"' AND `user_friends_invitation`.`friend_id` = '"+Y_u_id+"'");

@@ -11,6 +11,7 @@
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
+    <uses-permission android:name="android.permission.VIBRATE"/>
 
     <application
         android:allowBackup="true"
@@ -53,6 +54,10 @@
             </intent-filter>
         </receiver>
 
+        <service
+            android:name=".Friend_Invite_Service"
+            android:enabled="true"
+            android:exported="true"/>
         <service
             android:name=".AlertService"
             android:enabled="true"
