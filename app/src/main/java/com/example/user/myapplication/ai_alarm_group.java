@@ -86,6 +86,7 @@ public class ai_alarm_group extends Activity {
 
 
         ArrayAdapter adapter = new ArrayAdapter(this, R.layout.ai_group_item, R.id.name, friend_list);
+        ai_gruop.setAdapter(adapter);
         
 
     }
