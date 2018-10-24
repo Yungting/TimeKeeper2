@@ -60,7 +60,7 @@ public class setting_setup extends AppCompatActivity {
     Button menu,sign_out;
     ImageButton menu_open;
     PopupWindow popupWindow;
-    TextView name, mail, pwd;
+    TextView name, mail, pwd,gender,birth,job;
     View sticker;
 
     @Override
@@ -110,12 +110,15 @@ public class setting_setup extends AppCompatActivity {
         name = findViewById(R.id.name);
         mail = findViewById(R.id.mail);
         pwd = findViewById(R.id.pwd);
+        gender = findViewById(R.id.gender);
+        birth = findViewById(R.id.birthday);
+        job = findViewById(R.id.career);
         JSONArray get_result;
         final Connect_To_Server u_data = new Connect_To_Server();
         Thread search_account = new Thread(new Runnable() {
             @Override
             public void run() {
-                u_data.connect("select_sql", "SELECT user_id,u_password,u_name FROM `user` WHERE user_id = '" + u_id + "'");
+                u_data.connect("select_sql", "SELECT * FROM `user` WHERE user_id = '" + u_id + "'");
             }
         });
         search_account.start();
@@ -124,7 +127,7 @@ public class setting_setup extends AppCompatActivity {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-        String u_pwd = null,u_name =null;
+        String u_pwd = null,u_name =null,u_gender = null,u_birth = null,u_job = null;
         try {
             get_result = new JSONArray(u_data.get_data);
             int lenght = get_result.length();
@@ -132,6 +135,9 @@ public class setting_setup extends AppCompatActivity {
                 JSONObject jsonObject = get_result.getJSONObject(i);
                 u_pwd = jsonObject.getString("u_password");
                 u_name = jsonObject.getString("u_name");
+                u_gender = jsonObject.getString("u_gender");
+                u_birth = jsonObject.getString("u_birth");
+                u_job = jsonObject.getString("u_job");
                 int pwd_lenght = u_pwd.length();
                 String not_pwd ="";
                 for(int j = 0;j<pwd_lenght;j++){
@@ -140,6 +146,9 @@ public class setting_setup extends AppCompatActivity {
                 name.setText(u_name);
                 mail.setText(u_id);
                 pwd.setText(not_pwd);
+                gender.setText(u_gender);
+                birth.setText(u_birth);
+                job.setText(u_job);
             }
         } catch (JSONException e) {
             e.printStackTrace();
