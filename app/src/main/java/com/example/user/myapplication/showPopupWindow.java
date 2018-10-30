@@ -50,7 +50,7 @@ public class showPopupWindow extends Activity{
             @Override
             public void run() {
                 get_u_sticker get_img = new get_u_sticker();
-                img = get_img.get_sticker("http://140.127.218.207/uploads/"+user_id+".jpg");
+                img = get_img.get_sticker("http://140.127.218.207/uploads/"+user_id+".png");
             }
         });
         get_photo.start();
@@ -63,20 +63,6 @@ public class showPopupWindow extends Activity{
         if(img != null){
             photo_sticker.setImageBitmap(img);
         }
-
-        photo_sticker.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent();
-                intent.setType("image/*");
-                intent.setAction(Intent.ACTION_PICK);
-                ((Activity) context).startActivityForResult(intent,0);
-                popupWindow.dismiss();
-            }
-        });
-
-
-
         menu_open = view.findViewById(R.id.menu_btn_open);
         menu_open.setOnClickListener(new View.OnClickListener() {
             @Override

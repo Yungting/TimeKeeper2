@@ -19,6 +19,7 @@
     <string name="pwd">PASSWORD :</string>
     <string name="gender">GENDER :</string>
     <string name="birthday">BIRTHDAY :</string>
+    <string name="career">CAREER :</string>
     <string name="female">FEMALE</string>
     <string name="male">MALE</string>
     <string name="forget_chatbox">Please do not forget your password again : )</string>

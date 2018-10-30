@@ -64,7 +64,7 @@ public class upload_img {
                 dos.writeBytes(twoHyphens + boundary + lineEnd);
 
                 //adding parameter
-                final String description =user_id+".jpg";
+                final String description =user_id+".png";
                 //Send parameter #name
                 dos.writeBytes("Content-Disposition: form-data; name='description'" + lineEnd);
                 dos.writeBytes(lineEnd);

@@ -38,7 +38,7 @@
         android:layout_below="@+id/view"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="-80dp"
-        android:background="@drawable/set_up_background"
+        android:background="@drawable/ai_open"
         android:elevation="10dp" />
 
     <LinearLayout
@@ -165,9 +165,9 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/birthday"
-                    android:textSize="18sp"
-                    android:textColor="@color/text"/>
+                    android:text="@string/career"
+                    android:textColor="@color/text"
+                    android:textSize="18sp" />
 
                 <TextView
                     android:id="@+id/career"

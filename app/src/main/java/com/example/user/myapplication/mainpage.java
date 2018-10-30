@@ -12,50 +12,29 @@ import android.content.Intent;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.provider.Settings;
 import android.support.v4.app.ActivityCompat;
-import android.support.v7.view.menu.MenuPopupHelper;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
-import android.view.Gravity;
 import android.view.LayoutInflater;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
-import android.view.animation.Animation;
-import android.view.animation.RotateAnimation;
 import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.PopupMenu;
 import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-
-import com.example.user.myapplication.setting_setup.setting_setup;
 import com.nikhilpanju.recyclerviewenhanced.OnActivityTouchListener;
 import com.nikhilpanju.recyclerviewenhanced.RecyclerTouchListener;
 
-import java.io.DataOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.lang.reflect.Field;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
@@ -250,46 +229,6 @@ public class mainpage extends Activity implements RecyclerTouchListener.Recycler
                 });
     }
 
-    public String getPath(Uri uri) {
-        String[] projection = { MediaStore.Images.Media.DATA };
-        Cursor cursor = managedQuery(uri, projection, null, null, null);
-        int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
-        cursor.moveToFirst();
-        return cursor.getString(column_index);
-    }
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        View view = LayoutInflater.from(this).inflate(R.layout.menu_window,null);//获取popupWindow子布局对象
-        //當使用者按下確定後
-        if (resultCode == RESULT_OK) {
-            //取得圖檔的路徑位置
-            final Uri uri = data.getData();
-            //寫log
-            Log.e("uri", uri.toString());
-            //抽象資料的接口
-            ContentResolver cr = this.getContentResolver();
-            try {
-                final String user_id = getSharedPreferences(KEY, MODE_PRIVATE).getString("u_id", null);
-                //由抽象資料接口轉換圖檔路徑為Bitmap
-                Bitmap bitmap = BitmapFactory.decodeStream(cr.openInputStream(uri));
-                Log.e("uri", bitmap.toString());
-                Thread upload_thread =  new Thread(new Runnable() {
-                    public void run() {
-                        upload_img upload_sticker = new upload_img();
-                        upload_sticker.uploadFile(user_id,getPath(uri));
-                    }
-                });
-                upload_thread.start();
-
-            } catch (FileNotFoundException e) {
-                Log.e("Exception", e.getMessage(),e);
-            }
-
-        }
-        super.onActivityResult(requestCode, resultCode, data);
-    }
-
-
 
     //recyclerview
     @Override
@@ -478,10 +417,10 @@ public class mainpage extends Activity implements RecyclerTouchListener.Recycler
                                         } else {
                                             if (System.currentTimeMillis() > Long.parseLong(cursor.getString(6))) {
                                                 Log.d("case", ":settmr");
-                                                alarm.set(AlarmManager.RTC_WAKEUP, Long.parseLong(cursor.getString(6)) + 24 * 60 * 60 * 1000, pi1);
+                                                alarm.setExact(AlarmManager.RTC_WAKEUP, Long.parseLong(cursor.getString(6)) + 24 * 60 * 60 * 1000, pi1);
                                             } else {
                                                 Log.d("case", ":settoday");
-                                                alarm.set(AlarmManager.RTC_WAKEUP, Long.parseLong(cursor.getString(6)), pi1);
+                                                alarm.setExact(AlarmManager.RTC_WAKEUP, Long.parseLong(cursor.getString(6)), pi1);
                                             }
                                         }
                                     }
