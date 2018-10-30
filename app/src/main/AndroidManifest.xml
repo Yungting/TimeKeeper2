@@ -34,7 +34,7 @@
         <activity android:name=".normal_alarm" />
         <activity android:name=".normal_alarm_music" />
         <activity android:name=".ai_alarm" />
-        <activity android:name=".ai_alarm_group" />
+        <activity android:name=".ai_group.ai_alarm_group" />
         <activity android:name=".ai_alarm_music" />
         <activity android:name=".ai_alarm_manage.ai_alarm_manage" />
         <activity android:name=".setting_setup.setting_setup" />

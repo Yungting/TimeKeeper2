@@ -11,10 +11,12 @@ import android.net.Uri;
 import android.provider.MediaStore;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.CursorAdapter;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
 import android.widget.TextView;
@@ -78,6 +80,11 @@ public class normal_alarm_music extends Activity {
         music_list = findViewById(R.id.music_list);
         music_list1 = findViewById(R.id.music_list1);
         music_list.setAdapter(adapter);
+
+        View footer = LayoutInflater.from(this).inflate(R.layout.footer,null);
+        LinearLayout linearLayout = footer.findViewById(R.id.footerview);
+        linearLayout.setBackgroundColor(Color.WHITE);
+        music_list.addFooterView(footer);
 
         if (orignalpois >= 0){
             music_list.setSelection(orignalpois);

@@ -1,19 +1,24 @@
 package com.example.user.myapplication;
 
 import android.app.Activity;
+import android.content.Context;
 import android.graphics.Color;
 import android.content.Intent;
 import android.database.Cursor;
 import android.provider.MediaStore;
 import android.os.Bundle;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.Window;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.CursorAdapter;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
 import android.widget.TextView;
+
+import com.example.user.myapplication.R;
 
 import java.io.File;
 
@@ -44,10 +49,16 @@ public class ai_alarm_music extends Activity {
         music_list1 = findViewById(R.id.music_list1);
         music_list1.setBackgroundColor(Color.GRAY);
 
+
         final String[] str = new String[]{MediaStore.Audio.Media.TITLE, MediaStore.Audio.Media.ARTIST};
         final int[] displayViews = new int[]{R.id.music_name};
         SimpleCursorAdapter adapter = new SimpleCursorAdapter(this, R.layout.music_item, cursor, str, displayViews, CursorAdapter.FLAG_REGISTER_CONTENT_OBSERVER);
         music_list.setAdapter(adapter);
+
+        View footer = LayoutInflater.from(this).inflate(R.layout.footer,null);
+        LinearLayout linearLayout = footer.findViewById(R.id.footerview);
+        linearLayout.setBackgroundColor(Color.WHITE);
+        music_list.addFooterView(footer);
 
         music_list1.setOnClickListener(new View.OnClickListener() {
             @Override
