@@ -5,15 +5,12 @@ import android.app.Activity;
 import android.app.AlarmManager;
 import android.app.AppOpsManager;
 import android.app.PendingIntent;
-import android.app.ProgressDialog;
-import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.os.Bundle;
-import android.provider.MediaStore;
 import android.provider.Settings;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.widget.LinearLayoutManager;
@@ -32,9 +29,13 @@ import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+
+import com.example.user.myapplication.ai_group.ai_Adapter;
+import com.example.user.myapplication.guide.guide_page;
 import com.nikhilpanju.recyclerviewenhanced.OnActivityTouchListener;
 import com.nikhilpanju.recyclerviewenhanced.RecyclerTouchListener;
 
+import java.sql.RowId;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
@@ -52,12 +53,19 @@ public class mainpage extends Activity implements RecyclerTouchListener.Recycler
     CrossView crossView;
     int[] itemlist = new int[50];
 
+    // footer
+    public static final int TYPE_FOOTER = 1;  //说明是带有Footer的
+    public static final int TYPE_NORMAL = 2;  //说明是不带有header和footer的
+
     // hamburger
     Button menu;
-    ImageButton menu_open;
+    ImageButton menu_open,qus;
+    LinearLayout qus_view;
     PopupWindow popupWindow;
     FrameLayout menu_window;
     TextView set_up, friend, check;
+    TextView textView1,textView2,textView3;
+    private ai_Adapter mMyAdapter;
 
 
     public class BuildDev {
@@ -91,24 +99,47 @@ public class mainpage extends Activity implements RecyclerTouchListener.Recycler
         counter_layout = findViewById(R.id.counter_layout);
         crossView = findViewById(R.id.cross_view);
 
+        qus = findViewById(R.id.qus);
+        qus_view =findViewById(R.id.qus_view);
+        qus.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(mainpage.this, guide_page.class);
+                startActivity(intent);
+                finish();
+            }
+        });
+
+        textView1 = findViewById(R.id.textView1);
+        textView1.setText("當鬧鐘響後\n" +
+                "我會記錄你的使用行為\n" +
+                "用於之後的AI訓練");
+
+        textView2 = findViewById(R.id.textView2);
+        textView2.setText("起床後請到「設定醒/睡著」\n" +
+                "讓我知道你剛剛是醒著還是睡著喔！\n" +
+                "這樣我才能學習呦");
+
+        textView3 = findViewById(R.id.textView3);
+        textView3.setText("當跳出頁面後就無法修改囉！！\n");
 
         // 選單彈跳
         menu = findViewById(R.id.menu);
         menu.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(popupWindow==null){
-                    showPopupWindow show = new showPopupWindow(mainpage.this,getSharedPreferences(KEY, MODE_PRIVATE).getString("u_id", null));
+                if (popupWindow == null) {
+                    showPopupWindow show = new showPopupWindow(mainpage.this, getSharedPreferences(KEY, MODE_PRIVATE).getString("u_id", null));
                     try {
                         show.showPopupWindow(menu);
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
                     //showPopupWindow();
-                }else if(popupWindow.isShowing()){
+                } else if (popupWindow.isShowing()) {
                     popupWindow.dismiss();
-                }else{
-                    popupWindow.showAsDropDown(menu,0,-155);
+                } else {
+                    popupWindow.showAsDropDown(menu, 0, -155);
                 }
             }
         });
@@ -116,7 +147,7 @@ public class mainpage extends Activity implements RecyclerTouchListener.Recycler
 
         String user = getSharedPreferences(KEY, MODE_PRIVATE).getString("u_id", null);
         String pwd = getSharedPreferences(KEY, MODE_PRIVATE).getString("u_pwd", null);
-        Log.d("測試","暫存"+user+"/"+pwd);
+        Log.d("測試", "暫存" + user + "/" + pwd);
         if (user == null || pwd == null) {
             Intent intent = new Intent(this, login.class);
             startActivity(intent);
@@ -175,7 +206,7 @@ public class mainpage extends Activity implements RecyclerTouchListener.Recycler
         Intent service = new Intent(this, Friend_Invite_Service.class);
         service.putExtra("my_id", user);
         startService(service);
-        Log.d("背景","測試");
+        Log.d("背景", "測試");
         //recyclerview
         unclickableRows = new ArrayList<>();
         unswipeableRows = new ArrayList<>();
@@ -189,6 +220,12 @@ public class mainpage extends Activity implements RecyclerTouchListener.Recycler
         mRecyclerView.setAdapter(mAdapter);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
 
+        setFooterView(mRecyclerView);
+        mAdapter.getFooterView().setEnabled(false);
+        mAdapter.getFooterView().setFocusable(false);
+        mAdapter.getFooterView().setClickable(false);
+
+
         onTouchListener = new RecyclerTouchListener(this, mRecyclerView);
         onTouchListener
                 .setIndependentViews(R.id.rowButton)
@@ -197,6 +234,7 @@ public class mainpage extends Activity implements RecyclerTouchListener.Recycler
                     @Override
                     public void onRowClicked(int position) {
                         Intent intent;
+
                         if (alarmtype[position].equals("normal")) {
                             intent = new Intent(mainpage.this, normal_alarm.class);
                         } else {
@@ -282,7 +320,11 @@ public class mainpage extends Activity implements RecyclerTouchListener.Recycler
 
     @Override
     public boolean dispatchTouchEvent(MotionEvent ev) {
-        if (touchListener != null) touchListener.getTouchCoordinates(ev);
+        if (touchListener != null) {
+            touchListener.getTouchCoordinates(ev);
+        } else {
+
+        }
         return super.dispatchTouchEvent(ev);
     }
 
@@ -295,6 +337,37 @@ public class mainpage extends Activity implements RecyclerTouchListener.Recycler
         LayoutInflater inflater;
         List<mainpage_RowModel> modelList;
 
+        // footer
+        public static final int TYPE_FOOTER = 1;  //说明是带有Footer的
+        public static final int TYPE_NORMAL = 2;  //说明是不带有header和footer的
+        private View mFooterView;
+
+        //FooterView的get和set函数
+        public View getFooterView() {
+            return mFooterView;
+        }
+
+        public void setFooterView(View footerView) {
+            mFooterView = footerView;
+            mFooterView.setClickable(false);
+            mFooterView.setFocusable(false);
+            mFooterView.setEnabled(false);
+            notifyItemInserted(getItemCount() - 1);
+        }
+
+        @Override
+        public int getItemViewType(int position) {
+            if (mFooterView == null) {
+                return TYPE_NORMAL;
+            }
+            if (position == getItemCount() - 1) {
+                //最后一个,应该加载Footer
+                return TYPE_FOOTER;
+            }
+            return TYPE_NORMAL;
+        }
+
+
         public MainAdapter(Context context, List<mainpage_RowModel> list) {
             inflater = LayoutInflater.from(context);
             modelList = new ArrayList<>(list);
@@ -302,22 +375,37 @@ public class mainpage extends Activity implements RecyclerTouchListener.Recycler
 
         @Override
         public MainViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+            if (mFooterView != null && viewType == TYPE_FOOTER) {
+                return new MainViewHolder(mFooterView);
+            }
             View view = inflater.inflate(R.layout.mainpage_alarm_row, parent, false);
             return new MainViewHolder(view);
         }
 
         @Override
         public void onBindViewHolder(final MainViewHolder holder, final int position) {
-            holder.bindData(modelList.get(position));
+//            holder.bindData(modelList.get(position));
 
-            //點擊刪除layout後的動作
-            holder.delete.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    removeData(itemlist[position]);
+            //增加footer
+            if (getItemViewType(position) == TYPE_NORMAL) {
+                if (holder instanceof MainViewHolder) {
+                    //这里加载数据的时候要注意，是从position-1开始，因为position==0已经被header占用了
+                    holder.bindData(modelList.get(position));
+
+                    //點擊刪除layout後的動作
+                    holder.delete.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            removeData(itemlist[position]);
+                        }
+                    });
+
+                    return;
                 }
-            });
-
+                return;
+            } else {
+                return;
+            }
 
         }
 
@@ -332,19 +420,26 @@ public class mainpage extends Activity implements RecyclerTouchListener.Recycler
             PendingIntent pi = PendingIntent.getActivity(mainpage.this, requestcode[position], intent, PendingIntent.FLAG_UPDATE_CURRENT);
             alarmManager.cancel(pi);
             db.delete(requestcode[position]);
-            for (int a = position; itemlist.length >= a; a++){
+            for (int a = position; itemlist.length >= a; a++) {
                 itemlist[position] = position - 1;
             }
         }
 
         @Override
         public int getItemCount() {
-            return modelList.size();
+//            return modelList.size();
+            if (mFooterView == null) {
+                return modelList.size();
+            } else {
+                return modelList.size() + 1;
+            }
         }
+
 
         class MainViewHolder extends RecyclerView.ViewHolder {
 
             TextView mainText, repeatday, alarm_time;
+            TextView tv;
             Button alarm_btn;
             LinearLayout alarm, rowFG;
             RelativeLayout delete;
@@ -358,6 +453,11 @@ public class mainpage extends Activity implements RecyclerTouchListener.Recycler
                 alarm_time = itemView.findViewById(R.id.alarm_time);
                 delete = itemView.findViewById(R.id.delete);
                 rowFG = itemView.findViewById(R.id.rowFG);
+
+                //加入footer
+                if (itemView == mFooterView) {
+                    return;
+                }
 
                 // 開啟/關閉鬧鐘
                 alarm = itemView.findViewById(R.id.alarm);
@@ -451,11 +551,16 @@ public class mainpage extends Activity implements RecyclerTouchListener.Recycler
                 }
             }
         }
+
     }
 
-
-
-
+    private void setFooterView(RecyclerView view) {
+        View footer = LayoutInflater.from(this).inflate(R.layout.footer, view, false);
+        footer.setClickable(false);
+        footer.setFocusable(false);
+        footer.setEnabled(false);
+        mAdapter.setFooterView(footer);
+    }
 
     private boolean isAccessGranted() {
         try {

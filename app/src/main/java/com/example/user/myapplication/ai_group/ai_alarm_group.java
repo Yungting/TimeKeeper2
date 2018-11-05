@@ -14,7 +14,10 @@ import android.widget.FrameLayout;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 
+import com.example.user.myapplication.Connect_To_Server;
 import com.example.user.myapplication.R;
+
+import org.json.JSONArray;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -40,6 +43,8 @@ public class ai_alarm_group extends Activity {
 
         //为RecyclerView添加HeaderView和FooterView
         setFooterView(mRecyclerView);
+
+
     }
 
     //      資料產生

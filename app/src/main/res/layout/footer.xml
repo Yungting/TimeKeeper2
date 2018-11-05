@@ -8,6 +8,10 @@
     <View
         android:id="@+id/footer"
         android:layout_width="match_parent"
-        android:layout_height="80dp" />
+        android:layout_height="80dp"
+        android:clickable="false"
+        android:focusable="false"
+        android:focusableInTouchMode="false"
+        android:visibility="invisible" />
 
 </LinearLayout>
