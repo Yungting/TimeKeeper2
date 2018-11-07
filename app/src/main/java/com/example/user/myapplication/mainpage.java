@@ -279,7 +279,7 @@ public class mainpage extends Activity implements RecyclerTouchListener.Recycler
                 });
     }
 
-
+    //設定add btn的顯示與隱藏
     private void openMenu() {
         mRecyclerView.setLayoutFrozen(true);
         normal_layout.setVisibility(View.VISIBLE);

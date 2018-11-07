@@ -13,7 +13,7 @@
         android:layout_alignParentRight="true"
         android:backgroundTint="@android:color/white"
         android:gravity="right"
-        android:layout_marginRight="20dp"
+        android:layout_marginRight="25dp"
         android:orientation="horizontal">
 
         <RelativeLayout
@@ -53,25 +53,24 @@
         android:focusable="true"
         android:orientation="horizontal"
         android:visibility="visible"
-        android:layout_marginRight="15dp"
-        android:layout_marginLeft="15dp">
+        android:layout_marginRight="25dp"
+        android:layout_marginLeft="20dp">
 
         <LinearLayout
             android:id="@+id/alarm"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@drawable/mainpage_alarm_background"
+            android:layout_height="65dp"
+            android:padding="10dp"
+            android:background="@drawable/mainpage_alarm_background2"
             android:orientation="horizontal"
-            android:paddingLeft="20dp"
-            android:layout_marginRight="10dp"
             android:layout_marginTop="8dp">
 
             <TextView
                 android:id="@+id/alarm_time"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                android:layout_marginLeft="13dp"
-                android:layout_marginRight="30dp"
+                android:layout_marginLeft="20dp"
+                android:layout_marginRight="20dp"
                 android:gravity="center_vertical"
                 android:text="08:00"
                 android:textColor="#63553B"
@@ -112,7 +111,6 @@
                 android:layout_width="40dp"
                 android:layout_height="40dp"
                 android:layout_gravity="right|center_vertical"
-                android:layout_marginRight="10dp"
                 android:background="@drawable/ai_open"
                 android:gravity="right|center_vertical" />
         </LinearLayout>
