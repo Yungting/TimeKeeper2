@@ -3,6 +3,7 @@ package com.example.user.myapplication;
 
 import android.app.DatePickerDialog;
 import android.content.ContentResolver;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
@@ -11,6 +12,7 @@ import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.provider.MediaStore;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.InputType;
@@ -27,8 +29,6 @@ import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 import android.widget.Spinner;
 import android.widget.TextView;
-
-
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -164,10 +164,42 @@ public class setting_setup extends AppCompatActivity {
         sticker.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent();
-                intent.setType("image/*");
-                intent.setAction(Intent.ACTION_PICK);
-                startActivityForResult(intent, 0);
+                new AlertDialog.Builder(setting_setup.this)
+                        .setTitle("更新大頭貼")
+                        .setMessage("選擇更新或是刪除大頭貼")
+                        .setPositiveButton("編輯",
+                                new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        Intent intent = new Intent();
+                                        intent.setType("image/*");
+                                        intent.setAction(Intent.ACTION_PICK);
+                                        startActivityForResult(intent,0);
+                                    }
+                                })
+                        .setNegativeButton("清除",
+                                new DialogInterface.OnClickListener() {
+
+                                    @Override
+                                    public void onClick(DialogInterface dialog,
+                                                        int which) {
+                                        Thread clean_img = new Thread(new Runnable() {
+                                            @Override
+                                            public void run() {
+                                                delete_img clean = new delete_img();
+                                                clean.deleteFile(u_id);
+                                            }
+                                        });
+                                        clean_img.start();
+                                        try {
+                                            clean_img.join();
+                                        } catch (InterruptedException e) {
+                                            e.printStackTrace();
+                                        }
+                                        sticker.setBackgroundResource(R.drawable.ai_open);
+                                    }
+                                }).show();
+
             }
         });
 
