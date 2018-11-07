@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -31,9 +32,10 @@ public class showPopupWindow extends Activity{
     ImageView photo_sticker;
     PopupWindow popupWindow;
     FrameLayout menu_window;
-    TextView set_up, friend, check;
+    TextView set_up, friend, check, about;
     Bitmap img;
     String user_id;
+
     public showPopupWindow(Context context,String user_id){
         this.context = context;
         this.user_id = user_id;
@@ -41,8 +43,10 @@ public class showPopupWindow extends Activity{
 
     public void showPopupWindow(Button menu) throws InterruptedException {
         View view = LayoutInflater.from(context).inflate(R.layout.menu_window,null);//获取popupWindow子布局对象
-        popupWindow = new PopupWindow(view, ViewGroup.LayoutParams.WRAP_CONTENT,ViewGroup.LayoutParams.WRAP_CONTENT,false);//初始化
+        popupWindow = new PopupWindow(view, ViewGroup.LayoutParams.WRAP_CONTENT,ViewGroup.LayoutParams.WRAP_CONTENT,true);//初始化
         popupWindow.showAsDropDown(menu,-300,-155);//在ImageView控件下方弹出
+        popupWindow.setOutsideTouchable(true);
+        popupWindow.update();
 
         photo_sticker = view.findViewById(R.id.photo_sticker);
 
@@ -74,6 +78,7 @@ public class showPopupWindow extends Activity{
         set_up = view.findViewById(R.id.set_up);
         friend = view.findViewById(R.id.friend);
         check = view.findViewById(R.id.check);
+        about = view.findViewById(R.id.about);
 
         set_up.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -96,6 +101,14 @@ public class showPopupWindow extends Activity{
             public void onClick(View v) {
                 Intent intent2 = new Intent(context, check.class);
                 context.startActivity(intent2);
+            }
+        });
+
+        about.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent3 = new Intent(context, about.class);
+                context.startActivity(intent3);
             }
         });
 

@@ -29,7 +29,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        >
+
         <activity
             android:name=".normal_alarmalert"
             android:excludeFromRecents="true"
@@ -39,7 +39,7 @@
         <activity android:name=".ai_alarm" />
         <activity android:name=".ai_group.ai_alarm_group" />
         <activity android:name=".ai_alarm_music" />
-        <activity android:name=".ai_alarm_manage.ai_alarm_manage" />
+        <activity android:name=".ai_manage.ai_alarm_manage" />
         <activity android:name=".setting_setup.setting_setup" />
         <activity android:name=".setting_friend" />
         <activity android:name=".setting_friend_search" />
@@ -47,6 +47,8 @@
         <activity android:name=".sign_up" />
         <activity android:name=".forget_pwd" />
         <activity android:name=".check" />
+        <activity android:name=".guide.guide_page"/>
+        <activity android:name=".about"/>
 
         <receiver android:name=".Reciver">
             <intent-filter>

@@ -16,6 +16,7 @@
     <string name="sign_out">SIGN OUT</string>
     <string name="login"><u>LOGIN</u></string>
     <string name="edit">EDIT</string>
+    <string name="ai_manage">AI MANAGE</string>
     <string name="forgot_pwd"><u>Forgot my password</u></string>
     <string name="pwd">PASSWORD :</string>
     <string name="gender">GENDER :</string>
@@ -34,6 +35,8 @@
     <string name="cancel">CANCEL</string>
     <string name="save">SAVE</string>
     <string name="clear">CLEAR</string>
+    <string name="about_us">A B O U T</string>
+    <string name="find_bug">請大家多多幫我們找bug，歡迎回報</string>
 
 
     <string-array name="career">

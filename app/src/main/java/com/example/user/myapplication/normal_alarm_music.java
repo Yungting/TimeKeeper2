@@ -144,4 +144,10 @@ public class normal_alarm_music extends Activity {
         });
 
     }
+
+    public void view(int i){
+        music_list.setSelection(i);
+        music_list.getSelectedView().setBackgroundColor(Color.GRAY);
+    }
+
 }
