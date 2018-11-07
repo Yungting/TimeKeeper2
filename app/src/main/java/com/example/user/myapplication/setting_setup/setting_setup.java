@@ -41,6 +41,7 @@ import android.widget.TextView;
 import com.example.user.myapplication.Connect_To_Server;
 import com.example.user.myapplication.R;
 import com.example.user.myapplication.check;
+import com.example.user.myapplication.delete_img;
 import com.example.user.myapplication.get_u_sticker;
 import com.example.user.myapplication.mainpage;
 import com.example.user.myapplication.setting_friend;
@@ -201,10 +202,42 @@ public class setting_setup extends AppCompatActivity {
         sticker.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent();
-                intent.setType("image/*");
-                intent.setAction(Intent.ACTION_PICK);
-                startActivityForResult(intent, 0);
+                new AlertDialog.Builder(setting_setup.this)
+                        .setTitle("更新大頭貼")
+                        .setMessage("選擇更新或是刪除大頭貼")
+                        .setPositiveButton("編輯",
+                                new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        Intent intent = new Intent();
+                                        intent.setType("image/*");
+                                        intent.setAction(Intent.ACTION_PICK);
+                                        startActivityForResult(intent,0);
+                                    }
+                                })
+                        .setNegativeButton("清除",
+                                new DialogInterface.OnClickListener() {
+
+                                    @Override
+                                    public void onClick(DialogInterface dialog,
+                                                        int which) {
+                                        Thread clean_img = new Thread(new Runnable() {
+                                            @Override
+                                            public void run() {
+                                                delete_img clean = new delete_img();
+                                                clean.deleteFile(u_id);
+                                            }
+                                        });
+                                        clean_img.start();
+                                        try {
+                                            clean_img.join();
+                                        } catch (InterruptedException e) {
+                                            e.printStackTrace();
+                                        }
+                                        sticker.setBackgroundResource(R.drawable.ai_open);
+                                    }
+                                }).show();
+
             }
         });
 
