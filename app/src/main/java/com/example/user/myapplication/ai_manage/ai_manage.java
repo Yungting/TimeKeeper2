@@ -1,4 +1,4 @@
-package com.example.user.myapplication.ai_alarm_manage;
+package com.example.user.myapplication.ai_manage;
 
 import android.content.Context;
 import android.os.IBinder;
@@ -15,44 +15,67 @@ import android.widget.Button;
 import android.widget.EditText;
 
 import com.example.user.myapplication.R;
+import com.example.user.myapplication.setting_setup.CardPagerAdapter;
 
-public class ai_alarm_manage extends AppCompatActivity{
+public class ai_manage extends AppCompatActivity{
 
-    private android.support.design.widget.TabLayout mTabs;
+//    private android.support.design.widget.TabLayout mTabs;
     private ViewPager mViewPager;
-    private ai_manage_traffic traffic = new ai_manage_traffic();
-    private ai_manage_holiday holiday = new ai_manage_holiday();
+    private CardAdapter mCardAdapter;
+//    private ai_manage_traffic traffic = new ai_manage_traffic();
+//    private ai_manage_holiday holiday = new ai_manage_holiday();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.ai_alarm_manage);
 
-        //fragment換頁
-        mTabs = findViewById(R.id.tabs);
         mViewPager = findViewById(R.id.viewpager);
 
-        mTabs.addOnTabSelectedListener(new TabLayout.ViewPagerOnTabSelectedListener(mViewPager));
-        mViewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(mTabs));
 
-        mViewPager.setAdapter(new FragmentPagerAdapter(getSupportFragmentManager()) {
-            @Override
-            public Fragment getItem(int position) {
-                switch (position) {
-                    case 0:
-                        return traffic;
-                    case 1:
-                        return holiday;
-                }
-                return null;
-            }
+        mCardAdapter = new CardPagerAdapter();
 
-            @Override
-            public int getCount() {
-                return 2;
-            }
+//        mCardAdapter = new CardAdapter(getChildManager(),
+////                dpToPixels(2, getActivity()));
 
-        });
+        mFragmentCardShadowTransformer = new ShadowTransformer(mViewPager, mFragmentCardAdapter);
+        mViewPager.setAdapter(mFragmentCardAdapter);
+        mViewPager.setPageTransformer(false, mFragmentCardShadowTransformer);
+        mViewPager.setOffscreenPageLimit(3);
+        mFragmentCardShadowTransformer.enableScaling(true);
+
+    }
+
+    public static float dpToPixels(int dp, Context context) {
+        return dp * (context.getResources().getDisplayMetrics().density);
+    }
+
+
+//        //fragment換頁
+//        mTabs = findViewById(R.id.tabs);
+
+//
+//        mTabs.addOnTabSelectedListener(new TabLayout.ViewPagerOnTabSelectedListener(mViewPager));
+//        mViewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(mTabs));
+//
+//        mViewPager.setAdapter(new FragmentPagerAdapter(getSupportFragmentManager()) {
+//            @Override
+//            public Fragment getItem(int position) {
+//                switch (position) {
+//                    case 0:
+//                        return traffic;
+//                    case 1:
+//                        return holiday;
+//                }
+//                return null;
+//            }
+//
+//            @Override
+//            public int getCount() {
+//                return 2;
+//            }
+//
+//        });
 
     }
 

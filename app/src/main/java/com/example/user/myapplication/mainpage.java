@@ -50,6 +50,7 @@ public class mainpage extends Activity implements RecyclerTouchListener.Recycler
     private static final int REQUEST_EXTERNAL_STORAGE = 1;
     ImageButton add_btn, normal_btn, ai_btn, counter_btn;
     LinearLayout normal_layout, ai_layout, counter_layout;
+    FrameLayout frame_layout;
     CrossView crossView;
     int[] itemlist = new int[50];
 
@@ -57,14 +58,16 @@ public class mainpage extends Activity implements RecyclerTouchListener.Recycler
     public static final int TYPE_FOOTER = 1;  //说明是带有Footer的
     public static final int TYPE_NORMAL = 2;  //说明是不带有header和footer的
 
+    View add_background;
+
     // hamburger
     Button menu;
-    ImageButton menu_open,qus;
+    ImageButton menu_open, qus;
     LinearLayout qus_view;
     PopupWindow popupWindow;
     FrameLayout menu_window;
     TextView set_up, friend, check;
-    TextView textView1,textView2,textView3;
+    TextView textView1, textView2, textView3;
     private ai_Adapter mMyAdapter;
 
 
@@ -90,6 +93,8 @@ public class mainpage extends Activity implements RecyclerTouchListener.Recycler
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.mainpage);
 
+        add_background = findViewById(R.id.add_background);
+
         add_btn = findViewById(R.id.add_btn);
         ai_btn = findViewById(R.id.ai_btn);
         ai_layout = findViewById(R.id.ai_layout);
@@ -98,9 +103,10 @@ public class mainpage extends Activity implements RecyclerTouchListener.Recycler
         counter_btn = findViewById(R.id.counter_btn);
         counter_layout = findViewById(R.id.counter_layout);
         crossView = findViewById(R.id.cross_view);
+        frame_layout = findViewById(R.id.framelayout);
 
         qus = findViewById(R.id.qus);
-        qus_view =findViewById(R.id.qus_view);
+        qus_view = findViewById(R.id.qus_view);
         qus.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -173,17 +179,13 @@ public class mainpage extends Activity implements RecyclerTouchListener.Recycler
 
         //設定增加的子按鈕顯示或隱藏
         add_btn.setOnClickListener(new View.OnClickListener() {
+
             @Override
             public void onClick(View view) {
-                crossView.toggle();
                 if (normal_layout.getVisibility() == View.VISIBLE && ai_layout.getVisibility() == View.VISIBLE && counter_layout.getVisibility() == View.VISIBLE) {
-                    normal_layout.setVisibility(View.GONE);
-                    ai_layout.setVisibility(View.GONE);
-                    counter_layout.setVisibility(View.GONE);
+                    closeMenu();
                 } else {
-                    normal_layout.setVisibility(View.VISIBLE);
-                    ai_layout.setVisibility(View.VISIBLE);
-                    counter_layout.setVisibility(View.VISIBLE);
+                    openMenu();
                 }
             }
         });
@@ -226,6 +228,16 @@ public class mainpage extends Activity implements RecyclerTouchListener.Recycler
         mAdapter.getFooterView().setClickable(false);
 
 
+        //點擊空白處，add_btn選項會消失
+        add_background.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (normal_layout.getVisibility() == View.VISIBLE && ai_layout.getVisibility() == View.VISIBLE && counter_layout.getVisibility() == View.VISIBLE) {
+                    closeMenu();
+                }
+            }
+        });
+
         onTouchListener = new RecyclerTouchListener(this, mRecyclerView);
         onTouchListener
                 .setIndependentViews(R.id.rowButton)
@@ -234,7 +246,6 @@ public class mainpage extends Activity implements RecyclerTouchListener.Recycler
                     @Override
                     public void onRowClicked(int position) {
                         Intent intent;
-
                         if (alarmtype[position].equals("normal")) {
                             intent = new Intent(mainpage.this, normal_alarm.class);
                         } else {
@@ -242,6 +253,7 @@ public class mainpage extends Activity implements RecyclerTouchListener.Recycler
                         }
                         intent.putExtra("requestcode", requestcode[position]);
                         startActivity(intent);
+
                     }
 
                     @Override
@@ -267,6 +279,24 @@ public class mainpage extends Activity implements RecyclerTouchListener.Recycler
                 });
     }
 
+
+    private void openMenu() {
+        mRecyclerView.setLayoutFrozen(true);
+        normal_layout.setVisibility(View.VISIBLE);
+        ai_layout.setVisibility(View.VISIBLE);
+        counter_layout.setVisibility(View.VISIBLE);
+        crossView.cross();
+        add_background.setVisibility(View.VISIBLE);
+    }
+
+    private void closeMenu() {
+        mRecyclerView.setLayoutFrozen(false);
+        normal_layout.setVisibility(View.GONE);
+        ai_layout.setVisibility(View.GONE);
+        counter_layout.setVisibility(View.GONE);
+        crossView.plus();
+        add_background.setVisibility(View.GONE);
+    }
 
     //recyclerview
     @Override
@@ -318,14 +348,18 @@ public class mainpage extends Activity implements RecyclerTouchListener.Recycler
         return list;
     }
 
+
     @Override
     public boolean dispatchTouchEvent(MotionEvent ev) {
-        if (touchListener != null) {
-            touchListener.getTouchCoordinates(ev);
-        } else {
-
+        try {
+            if (touchListener != null) {
+                touchListener.getTouchCoordinates(ev);
+            }
+            return super.dispatchTouchEvent(ev);
+        } catch (Exception e) {
+            return false;
         }
-        return super.dispatchTouchEvent(ev);
+
     }
 
     @Override
@@ -399,7 +433,6 @@ public class mainpage extends Activity implements RecyclerTouchListener.Recycler
                             removeData(itemlist[position]);
                         }
                     });
-
                     return;
                 }
                 return;

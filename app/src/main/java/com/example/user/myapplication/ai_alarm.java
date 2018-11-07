@@ -4,25 +4,24 @@ import android.app.Activity;
 import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.app.TimePickerDialog;
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.IBinder;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.Window;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.CheckBox;
-import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.TimePicker;
 
-import com.example.user.myapplication.ai_alarm_manage.ai_alarm_manage;
+import com.example.user.myapplication.ai_manage.ai_alarm_manage;
 import com.example.user.myapplication.ai_group.ai_alarm_group;
 
 import java.util.Calendar;
+
+import static com.example.user.myapplication.hideinput.hideSoftInput;
+import static com.example.user.myapplication.hideinput.isShouldHideInput;
 
 public class ai_alarm extends Activity {
     TextView group, ai_manage, alarm_number;
@@ -191,34 +190,9 @@ public class ai_alarm extends Activity {
             View v = getCurrentFocus();
 
             if (isShouldHideInput(v, ev)) {
-                hideSoftInput(v.getWindowToken());
+                hideSoftInput(v.getWindowToken(),this);
             }
         }
         return super.dispatchTouchEvent(ev);
-    }
-
-    private boolean isShouldHideInput(View v, MotionEvent event) {
-        if (v != null && (v instanceof EditText)) {
-            int[] l = { 0, 0 };
-            v.getLocationInWindow(l);
-            int left = l[0], top = l[1], bottom = top + v.getHeight(), right = left
-                    + v.getWidth();
-            if (event.getX() > left && event.getX() < right
-                    && event.getY() > top && event.getY() < bottom) {
-                // 点击EditText的事件，忽略它。
-                return false;
-            } else {
-                return true;
-            }
-        }
-        // 如果焦点不是EditText则忽略，这个发生在视图刚绘制完，第一个焦点不在EditView上，和用户用轨迹球选择其他的焦点
-        return false;
-    }
-
-    private void hideSoftInput(IBinder token) {
-        if (token != null) {
-            InputMethodManager im = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-            im.hideSoftInputFromWindow(token, InputMethodManager.HIDE_NOT_ALWAYS);
-        }
     }
 }

@@ -7,79 +7,36 @@
     android:orientation="vertical">
 
     <FrameLayout
-        android:layout_width="wrap_content"
-        android:layout_height="110dp"
-        android:background="@drawable/ai_manage_titlebar">
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <View
+            android:id="@+id/title_bar"
+            android:layout_width="wrap_content"
+            android:layout_height="68dp"
+            android:background="@drawable/ai_music_titlebar"
+            app:layout_constraintStart_toStartOf="parent" />
 
-        <LinearLayout
+        <TextView
             android:layout_width="match_parent"
-            android:layout_height="61dp"
-            android:orientation="horizontal">
-
-            <View
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1" />
-
-            <TextView
-                android:layout_width="500dp"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_weight="1"
-                android:text="AI MANAGE"
-                android:textAlignment="center"
-                android:textColor="@color/black"
-                android:textSize="18sp" />
-
-            <View
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1" />
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginTop="61dp"
-            android:orientation="vertical">
-
-
-            <android.support.design.widget.TabLayout
-                android:id="@+id/tabs"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                app:tabIndicatorColor="@android:color/white"
-                app:tabMode="fixed"
-                app:tabSelectedTextColor="@android:color/white"
-                app:tabTextAppearance="@android:style/TextAppearance.Holo.Medium"
-                app:tabIndicatorHeight="3dp"
-                app:tabTextColor="@color/light_gray">
-
-
-                <android.support.design.widget.TabItem
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:text="TRAFFIC" />
-
-
-                <android.support.design.widget.TabItem
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:text="HOLIDAY" />
-
-
-            </android.support.design.widget.TabLayout>
-
-        </LinearLayout>
-
+            android:layout_height="68dp"
+            android:text="@string/ai_manage"
+            android:gravity="center"
+            android:textColor="@color/black"
+            android:textSize="18sp"/>
     </FrameLayout>
 
     <android.support.v4.view.ViewPager
-        android:id="@+id/viewpager"
+        android:id="@+id/viewPager"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="430dp"
+        android:layout_gravity="bottom"
+        android:clipToPadding="false"
+        android:overScrollMode="never"
+        android:layout_marginTop="50dp"
+        android:paddingEnd="@dimen/card_padding"
+        android:paddingLeft="@dimen/card_padding"
+        android:paddingRight="@dimen/card_padding"
+        android:paddingTop="@dimen/card_padding"/>
 
 
 </LinearLayout>

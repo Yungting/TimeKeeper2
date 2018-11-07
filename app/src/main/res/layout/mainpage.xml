@@ -5,6 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".mainpage"
+    android:clickable="true"
     android:background="@color/white">
 
     <View
@@ -27,41 +28,6 @@
         android:layout_marginEnd="29dp"
         android:layout_marginTop="27dp"
         android:background="@drawable/mainpage_menu" />
-
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/recyclerView"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_below="@+id/view"
-        android:layout_marginTop="10dp"/>
-
-    <FrameLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        tools:context=".MainActivity">
-
-        <ImageButton
-            android:id="@+id/add_btn"
-            android:layout_width="80dp"
-            android:layout_height="55dp"
-            android:layout_gravity="center|bottom"
-            android:layout_marginBottom="17dp"
-            android:src="@drawable/mainpage_add_btn"
-            android:scaleType="centerCrop"
-            android:backgroundTint="@android:color/transparent"/>
-        <include layout="@layout/mainpage_add_fab"/>
-
-        <cdflynn.android.library.crossview.CrossView
-            android:id="@+id/cross_view"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
-            android:layout_gravity="center|bottom"
-            android:layout_marginBottom="21dp"
-            android:padding="14dp"
-            app:lineColor="@android:color/white"
-            android:backgroundTint="@color/white"/>
-
-    </FrameLayout>
 
     <ImageButton
         android:id="@+id/qus"
@@ -168,5 +134,49 @@
             android:background="@drawable/pic" />
 
     </LinearLayout>
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/framelayout"
+        tools:context=".MainActivity">
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/recyclerView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginTop="134dp"
+            android:clickable="true"
+            android:focusable="true" />
+
+        <View
+            android:id="@+id/add_background"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/pressed_btn"
+            android:visibility="gone"/>
+
+        <ImageButton
+            android:id="@+id/add_btn"
+            android:layout_width="80dp"
+            android:layout_height="55dp"
+            android:layout_gravity="center|bottom"
+            android:layout_marginBottom="17dp"
+            android:src="@drawable/mainpage_add_btn"
+            android:scaleType="centerCrop"
+            android:backgroundTint="@android:color/transparent"/>
+        <include layout="@layout/mainpage_add_fab"/>
+
+        <cdflynn.android.library.crossview.CrossView
+            android:id="@+id/cross_view"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_gravity="center|bottom"
+            android:layout_marginBottom="21dp"
+            android:padding="14dp"
+            app:lineColor="@android:color/white"
+            android:backgroundTint="@color/white"/>
+
+    </FrameLayout>
 
 </RelativeLayout>

@@ -21,6 +21,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -55,6 +56,8 @@ import java.io.FileNotFoundException;
 import java.util.Calendar;
 
 import static com.example.user.myapplication.R.menu.mainpage_menu;
+import static com.example.user.myapplication.hideinput.hideSoftInput;
+import static com.example.user.myapplication.hideinput.isShouldHideInput;
 import static com.example.user.myapplication.mainpage.KEY;
 import static com.example.user.myapplication.mainpage.logon;
 
@@ -68,7 +71,7 @@ public class setting_setup extends AppCompatActivity {
 //    private ShadowTransformer mCardShadowTransformer;
 
     // hamburger
-    Button menu,sign_out,edit_btn, save_btn, date_btn;
+    Button menu, sign_out, edit_btn, save_btn, date_btn;
     ImageButton menu_open;
     PopupWindow popupWindow;
     TextView name, mail, pwd, gender, birth, job;
@@ -124,11 +127,11 @@ public class setting_setup extends AppCompatActivity {
             }
         });
 
-        //避免點擊2下才
+        //避免點擊2下才打開
         birthday_edit.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
-                if(hasFocus) showDatePickerDialog();
+                if (hasFocus) showDatePickerDialog();
             }
         });
 
@@ -175,13 +178,14 @@ public class setting_setup extends AppCompatActivity {
 //        mViewPager.setAdapter(mCardAdapter);
 //        mViewPager.setOffscreenPageLimit(3);
 //        mCardShadowTransformer.enableScaling(true);
+
         final String u_id = getSharedPreferences(KEY, MODE_PRIVATE).getString("u_id", null);
         final Bitmap[] img = new Bitmap[1];
         sticker = findViewById(R.id.headshot);
         Thread get_photo = new Thread(new Runnable() {
             @Override
             public void run() {
-                img[0] = get_u_sticker.get_sticker("http://140.127.218.207/uploads/"+u_id+".png");
+                img[0] = get_u_sticker.get_sticker("http://140.127.218.207/uploads/" + u_id + ".png");
             }
         });
         get_photo.start();
@@ -190,8 +194,8 @@ public class setting_setup extends AppCompatActivity {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-        if(img[0] !=null){
-            BitmapDrawable drawable_sticker =new BitmapDrawable(img[0]);
+        if (img[0] != null) {
+            BitmapDrawable drawable_sticker = new BitmapDrawable(img[0]);
             sticker.setBackground(drawable_sticker);
         }
         sticker.setOnClickListener(new View.OnClickListener() {
@@ -200,7 +204,7 @@ public class setting_setup extends AppCompatActivity {
                 Intent intent = new Intent();
                 intent.setType("image/*");
                 intent.setAction(Intent.ACTION_PICK);
-                startActivityForResult(intent,0);
+                startActivityForResult(intent, 0);
             }
         });
 
@@ -219,11 +223,11 @@ public class setting_setup extends AppCompatActivity {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-        String u_pwd = null,u_name =null,u_gender = null,u_birth = null,u_job = null;
+        String u_pwd = null, u_name = null, u_gender = null, u_birth = null, u_job = null;
         try {
             get_result = new JSONArray(u_data.get_data);
             int lenght = get_result.length();
-            for(int i = 0;i < lenght;i++){
+            for (int i = 0; i < lenght; i++) {
                 JSONObject jsonObject = get_result.getJSONObject(i);
                 u_pwd = jsonObject.getString("u_password");
                 u_name = jsonObject.getString("u_name");
@@ -231,9 +235,9 @@ public class setting_setup extends AppCompatActivity {
                 u_birth = jsonObject.getString("u_birth");
                 u_job = jsonObject.getString("u_job");
                 int pwd_lenght = u_pwd.length();
-                String not_pwd ="";
-                for(int j = 0;j<pwd_lenght;j++){
-                    not_pwd = not_pwd+"*";
+                String not_pwd = "";
+                for (int j = 0; j < pwd_lenght; j++) {
+                    not_pwd = not_pwd + "*";
                 }
                 name.setText(u_name);
                 mail.setText(u_id);
@@ -246,12 +250,12 @@ public class setting_setup extends AppCompatActivity {
             e.printStackTrace();
         }
 
-
+        //登出
         sign_out = findViewById(R.id.btn_singout);
         sign_out.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                SharedPreferences pref  = v.getContext().getSharedPreferences(KEY,MODE_PRIVATE);
+                SharedPreferences pref = v.getContext().getSharedPreferences(KEY, MODE_PRIVATE);
                 pref.edit().clear().commit();
                 logon = false;
                 Intent intent = new Intent(v.getContext(), mainpage.class);
@@ -274,34 +278,35 @@ public class setting_setup extends AppCompatActivity {
         menu.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(popupWindow==null){
-                    showPopupWindow show = new showPopupWindow(setting_setup.this,getSharedPreferences(KEY, MODE_PRIVATE).getString("u_id", null));
+                if (popupWindow == null) {
+                    showPopupWindow show = new showPopupWindow(setting_setup.this, getSharedPreferences(KEY, MODE_PRIVATE).getString("u_id", null));
                     try {
                         show.showPopupWindow(menu);
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
                     //showPopupWindow();
-                }else if(popupWindow.isShowing()){
+                } else if (popupWindow.isShowing()) {
                     popupWindow.dismiss();
-                }
-                else{
-                    popupWindow.showAsDropDown(menu,-200,-155);
+                } else {
+                    popupWindow.showAsDropDown(menu, -200, -155);
                 }
             }
         });
 
     }
+
     public String getPath(Uri uri) {
-        String[] projection = { MediaStore.Images.Media.DATA };
+        String[] projection = {MediaStore.Images.Media.DATA};
         Cursor cursor = managedQuery(uri, projection, null, null, null);
         int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
         cursor.moveToFirst();
         return cursor.getString(column_index);
     }
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        View view = LayoutInflater.from(this).inflate(R.layout.menu_window,null);//获取popupWindow子布局对象
+        View view = LayoutInflater.from(this).inflate(R.layout.menu_window, null);//获取popupWindow子布局对象
         //當使用者按下確定後
         if (resultCode == RESULT_OK) {
             //取得圖檔的路徑位置
@@ -315,16 +320,16 @@ public class setting_setup extends AppCompatActivity {
                 //由抽象資料接口轉換圖檔路徑為Bitmap
                 Bitmap bitmap = BitmapFactory.decodeStream(cr.openInputStream(uri));
                 Log.e("uri", bitmap.toString());
-                Thread upload_thread =  new Thread(new Runnable() {
+                Thread upload_thread = new Thread(new Runnable() {
                     public void run() {
                         upload_img upload_sticker = new upload_img();
-                        upload_sticker.uploadFile(user_id,getPath(uri));
+                        upload_sticker.uploadFile(user_id, getPath(uri));
                     }
                 });
                 upload_thread.start();
                 upload_thread.join();
             } catch (FileNotFoundException e) {
-                Log.e("Exception", e.getMessage(),e);
+                Log.e("Exception", e.getMessage(), e);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
@@ -332,14 +337,15 @@ public class setting_setup extends AppCompatActivity {
         refresh();
         super.onActivityResult(requestCode, resultCode, data);
     }
-    public void refresh(){
+
+    public void refresh() {
         final String u_id = getSharedPreferences(KEY, MODE_PRIVATE).getString("u_id", null);
         final Bitmap[] img = new Bitmap[1];
         sticker = findViewById(R.id.headshot);
         Thread get_photo = new Thread(new Runnable() {
             @Override
             public void run() {
-                img[0] = get_u_sticker.get_sticker("http://140.127.218.207/uploads/"+u_id+".png");
+                img[0] = get_u_sticker.get_sticker("http://140.127.218.207/uploads/" + u_id + ".png");
             }
         });
         get_photo.start();
@@ -348,11 +354,12 @@ public class setting_setup extends AppCompatActivity {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-        if(img[0] !=null){
-            BitmapDrawable drawable_sticker =new BitmapDrawable(img[0]);
+        if (img[0] != null) {
+            BitmapDrawable drawable_sticker = new BitmapDrawable(img[0]);
             sticker.setBackground(drawable_sticker);
         }
     }
+
     @Override
     protected void onResume() {
 
@@ -368,11 +375,26 @@ public class setting_setup extends AppCompatActivity {
             @Override
             public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
                 // TODO Auto-generated method stub
-                birthday_edit.setText(" "+year+" / "+(monthOfYear+1)+" / "+dayOfMonth);
+                birthday_edit.setText(" " + year + " / " + (monthOfYear + 1) + " / " + dayOfMonth);
             }
         }, c.get(Calendar.YEAR), c.get(Calendar.MONTH), c.get(Calendar.DAY_OF_MONTH)).show();
 
     }
 
+    //點擊空白處隱藏鍵盤
+    public boolean dispatchTouchEvent(MotionEvent ev) {
+        if (ev.getAction() == MotionEvent.ACTION_DOWN) {
+
+            // 获得当前得到焦点的View，一般情况下就是EditText（特殊情况就是轨迹求或者实体案件会移动焦点）
+            View v = getCurrentFocus();
+
+            if (isShouldHideInput(v, ev)) {
+                hideSoftInput(v.getWindowToken(),this);
+            }
+        }
+        return super.dispatchTouchEvent(ev);
+    }
+
 }
+
 
