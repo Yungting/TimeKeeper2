@@ -1,14 +1,9 @@
 package com.example.user.myapplication;
 
 import android.app.Activity;
-import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.drawable.BitmapDrawable;
-import android.net.Uri;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,13 +13,6 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.PopupWindow;
 import android.widget.TextView;
-
-import com.example.user.myapplication.setting_setup.setting_setup;
-
-import java.io.FileNotFoundException;
-
-import static android.app.Activity.RESULT_OK;
-import static com.example.user.myapplication.mainpage.KEY;
 
 public class showPopupWindow extends Activity{
     Context context;

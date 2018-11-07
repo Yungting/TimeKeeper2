@@ -9,6 +9,7 @@
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
+
         <View
             android:id="@+id/title_bar"
             android:layout_width="wrap_content"
@@ -19,24 +20,35 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="68dp"
-            android:text="@string/ai_manage"
             android:gravity="center"
+            android:text="@string/ai_manage"
             android:textColor="@color/black"
-            android:textSize="18sp"/>
+            android:textSize="18sp" />
     </FrameLayout>
+
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1" />
 
     <android.support.v4.view.ViewPager
         android:id="@+id/mviewPager"
         android:layout_width="match_parent"
-        android:layout_height="430dp"
-        android:layout_gravity="bottom"
+        android:layout_height="0dp"
+        android:layout_weight="5"
         android:clipToPadding="false"
         android:overScrollMode="never"
-        android:layout_marginTop="50dp"
         android:paddingEnd="@dimen/card_padding"
         android:paddingLeft="@dimen/card_padding"
         android:paddingRight="@dimen/card_padding"
-        android:paddingTop="@dimen/card_padding"/>
+        android:paddingStart="@dimen/card_padding"
+        android:paddingTop="10dp" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1" />
 
 
 </LinearLayout>
