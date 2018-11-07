@@ -1,7 +1,9 @@
 package com.example.user.myapplication.setting_setup;
 
 
+import android.app.DatePickerDialog;
 import android.content.ContentResolver;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
@@ -11,19 +13,27 @@ import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.provider.MediaStore;
 import android.support.v4.view.ViewPager;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.InputType;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.DatePicker;
+import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
+import android.widget.LinearLayout;
 import android.widget.PopupMenu;
 import android.widget.PopupWindow;
+import android.widget.Spinner;
 import android.widget.TextView;
 
 
@@ -42,6 +52,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.FileNotFoundException;
+import java.util.Calendar;
 
 import static com.example.user.myapplication.R.menu.mainpage_menu;
 import static com.example.user.myapplication.mainpage.KEY;
@@ -57,16 +68,102 @@ public class setting_setup extends AppCompatActivity {
 //    private ShadowTransformer mCardShadowTransformer;
 
     // hamburger
-    Button menu,sign_out;
+    Button menu,sign_out,edit_btn, save_btn, date_btn;
     ImageButton menu_open;
     PopupWindow popupWindow;
-    TextView name, mail, pwd,gender,birth,job;
+    TextView name, mail, pwd, gender, birth, job;
+    EditText name_edit, pwd_edit, birthday_edit;
+    LinearLayout show_layout, edit_layout, show_btn_layout, edit_btn_layout;
     View sticker;
+    Spinner spinner;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.setting_setup);
+
+        name = findViewById(R.id.name);
+        mail = findViewById(R.id.mail);
+        pwd = findViewById(R.id.pwd);
+        gender = findViewById(R.id.gender);
+        birth = findViewById(R.id.birthday);
+        job = findViewById(R.id.career);
+        edit_btn = findViewById(R.id.btn_edit);
+        save_btn = findViewById(R.id.btn_save);
+        name_edit = findViewById(R.id.name_edit);
+        birthday_edit = findViewById(R.id.birthday_edit);
+        date_btn = findViewById(R.id.date_btn);
+        show_layout = findViewById(R.id.show_layout);
+        edit_layout = findViewById(R.id.edit_layout);
+        show_btn_layout = findViewById(R.id.show_btn_layout);
+        edit_btn_layout = findViewById(R.id.edit_btn_latout);
+
+        //下拉選單
+        spinner = findViewById(R.id.career_edit);
+        ArrayAdapter<CharSequence> careerList = ArrayAdapter.createFromResource(setting_setup.this, R.array.career,
+                android.R.layout.simple_spinner_dropdown_item);
+        spinner.setAdapter(careerList);
+        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                //點擊後的動作
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+
+        //生日的輸入框動作
+        birthday_edit.setInputType(InputType.TYPE_NULL); //不显示系统输入键盘
+        birthday_edit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showDatePickerDialog();
+            }
+        });
+
+        //避免點擊2下才
+        birthday_edit.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if(hasFocus) showDatePickerDialog();
+            }
+        });
+
+        date_btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showDatePickerDialog();
+            }
+        });
+
+        //切換edit或show模式
+        edit_btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                show_layout.setVisibility(View.GONE);
+                edit_layout.setVisibility(View.VISIBLE);
+                show_btn_layout.setVisibility(View.GONE);
+                edit_btn_layout.setVisibility(View.VISIBLE);
+                name.setVisibility(View.GONE);
+                name_edit.setVisibility(View.VISIBLE);
+            }
+        });
+
+        save_btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                show_layout.setVisibility(View.VISIBLE);
+                edit_layout.setVisibility(View.GONE);
+                show_btn_layout.setVisibility(View.VISIBLE);
+                edit_btn_layout.setVisibility(View.GONE);
+                name.setVisibility(View.VISIBLE);
+                name_edit.setVisibility(View.GONE);
+            }
+        });
+
 
 //        mViewPager = findViewById(R.id.viewPager);
 //
@@ -107,12 +204,7 @@ public class setting_setup extends AppCompatActivity {
             }
         });
 
-        name = findViewById(R.id.name);
-        mail = findViewById(R.id.mail);
-        pwd = findViewById(R.id.pwd);
-        gender = findViewById(R.id.gender);
-        birth = findViewById(R.id.birthday);
-        job = findViewById(R.id.career);
+
         JSONArray get_result;
         final Connect_To_Server u_data = new Connect_To_Server();
         Thread search_account = new Thread(new Runnable() {
@@ -265,6 +357,20 @@ public class setting_setup extends AppCompatActivity {
     protected void onResume() {
 
         super.onResume();
+
+    }
+
+    //跳出DatePicker選擇生日日期
+    private void showDatePickerDialog() {
+        Calendar c = Calendar.getInstance();
+        new DatePickerDialog(setting_setup.this, new DatePickerDialog.OnDateSetListener() {
+
+            @Override
+            public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
+                // TODO Auto-generated method stub
+                birthday_edit.setText(" "+year+" / "+(monthOfYear+1)+" / "+dayOfMonth);
+            }
+        }, c.get(Calendar.YEAR), c.get(Calendar.MONTH), c.get(Calendar.DAY_OF_MONTH)).show();
 
     }
 
