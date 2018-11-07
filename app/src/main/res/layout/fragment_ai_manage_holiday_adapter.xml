@@ -16,7 +16,6 @@
             android:layout_width="wrap_content"
             android:layout_height="231dp"
             android:layout_gravity="center"
-            android:src="@drawable/holiday"
             android:layout_marginTop="-6dp"/>
 
         <Switch
