@@ -15,7 +15,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.TimePicker;
 
-import com.example.user.myapplication.ai_manage.ai_alarm_manage;
+import com.example.user.myapplication.ai_manage.ai_manage;
 import com.example.user.myapplication.ai_group.ai_alarm_group;
 
 import java.util.Calendar;
@@ -76,7 +76,7 @@ public class ai_alarm extends Activity {
         ai_manage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent1 = new Intent(ai_alarm.this, ai_alarm_manage.class);
+                Intent intent1 = new Intent(ai_alarm.this, ai_manage.class);
                 startActivity(intent1);
             }
         });
