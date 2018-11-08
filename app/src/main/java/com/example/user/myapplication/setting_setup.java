@@ -1,4 +1,4 @@
-package com.example.user.myapplication.setting_setup;
+package com.example.user.myapplication;
 
 
 import android.app.DatePickerDialog;
@@ -12,45 +12,25 @@ import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.provider.MediaStore;
-import android.support.v4.view.ViewPager;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.InputType;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
-import android.widget.FrameLayout;
-import android.widget.ImageButton;
 import android.widget.LinearLayout;
-import android.widget.PopupMenu;
 import android.widget.PopupWindow;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Spinner;
 import android.widget.TextView;
-
-
-import com.example.user.myapplication.Connect_To_Server;
-import com.example.user.myapplication.R;
-import com.example.user.myapplication.check;
-import com.example.user.myapplication.delete_img;
-import com.example.user.myapplication.get_u_sticker;
-import com.example.user.myapplication.mainpage;
-import com.example.user.myapplication.setting_friend;
-import com.example.user.myapplication.setting_friend_search;
-import com.example.user.myapplication.showPopupWindow;
-import com.example.user.myapplication.upload_img;
-
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -61,7 +41,6 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
-import static com.example.user.myapplication.R.menu.mainpage_menu;
 import static com.example.user.myapplication.hideinput.hideSoftInput;
 import static com.example.user.myapplication.hideinput.isShouldHideInput;
 import static com.example.user.myapplication.mainpage.KEY;
@@ -71,17 +50,11 @@ public class setting_setup extends AppCompatActivity {
 
     View timekeeper_logo;
 
-//    private Button mButton;
-//    private ViewPager mViewPager;
-//    private CardPagerAdapter mCardAdapter;
-//    private ShadowTransformer mCardShadowTransformer;
-
     // hamburger
     Button menu, sign_out, edit_btn, save_btn, date_btn;
-    ImageButton menu_open;
     PopupWindow popupWindow;
     TextView name, mail, pwd, gender, birth, job;
-    EditText name_edit, pwd_edit, birthday_edit;
+    EditText name_edit, birthday_edit;
     LinearLayout show_layout, edit_layout, show_btn_layout, edit_btn_layout;
     RadioGroup gender_edit;
     RadioButton male,female;
@@ -214,17 +187,6 @@ public class setting_setup extends AppCompatActivity {
             }
         });
 
-
-//        mViewPager = findViewById(R.id.viewPager);
-//
-//        mCardAdapter = new CardPagerAdapter();
-//        mCardAdapter.addCardItem(new CardItem("hi@gmail.com","info"));
-//        mCardAdapter.addCardItem(new CardItem("Location Setup", "location"));
-//
-//        mCardShadowTransformer = new ShadowTransformer(mViewPager, mCardAdapter);
-//        mViewPager.setAdapter(mCardAdapter);
-//        mViewPager.setOffscreenPageLimit(3);
-//        mCardShadowTransformer.enableScaling(true);
 
         final String u_id = getSharedPreferences(KEY, MODE_PRIVATE).getString("u_id", null);
         final Bitmap[] img = new Bitmap[1];
