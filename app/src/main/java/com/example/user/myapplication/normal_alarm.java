@@ -3,14 +3,19 @@ package com.example.user.myapplication;
 import android.Manifest;
 import android.app.Activity;
 import android.app.AlarmManager;
+import android.app.AlertDialog;
 import android.app.PendingIntent;
 import android.app.TimePickerDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
+import android.net.Uri;
+import android.os.Build;
 import android.os.IBinder;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.support.v4.app.ActivityCompat;
 import android.util.Log;
 import android.view.MotionEvent;
@@ -42,25 +47,16 @@ public class normal_alarm extends Activity {
     LinearLayout repeat_layout,repeat_day;
     int[] repeatday = new int[7];
     int rcode1 = 0;
+    AlertDialog dialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.normal_alarm);
+        Button creat_btn = findViewById(R.id.creat_btn);
         TextView normal_edit_title = findViewById(R.id.normal_edit_title);
 
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO)
-                != PackageManager.PERMISSION_GRANTED) {
-
-            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.RECORD_AUDIO}, mainpage.BuildDev.RECORD_AUDIO);
-        }
-        int permission = ActivityCompat.checkSelfPermission(this,
-                Manifest.permission.READ_EXTERNAL_STORAGE);
-        if (permission != PackageManager.PERMISSION_GRANTED){
-            ActivityCompat.requestPermissions(this, new String[] {READ_EXTERNAL_STORAGE}, REQUEST_EXTERNAL_STORAGE );
-        }
-        
         Intent intentcode = getIntent();
         if (intentcode!= null){
             rcode1 = intentcode.getIntExtra("requestcode", 0);
@@ -80,6 +76,7 @@ public class normal_alarm extends Activity {
                 audioFilePath = cursor.getString(1);
                 rday = cursor.getString(0);
                 pickday();
+                creat_btn.setText("UPDATE");
             }
         }
         alarmpicker();
@@ -141,7 +138,6 @@ public class normal_alarm extends Activity {
             }
         });
 
-        Button creat_btn = findViewById(R.id.creat_btn);
         creat_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -260,33 +256,17 @@ public class normal_alarm extends Activity {
         Intent intent = new Intent(this, normal_alarmalert.class);
         intent.putExtra("requestcode", requestcode);
         if (repeat_checkbox.isChecked() && !repeat_text.equals("")){
-//            PendingIntent pi = PendingIntent.getActivity(this, requestcode, intent, PendingIntent.FLAG_UPDATE_CURRENT);
-//            if (System.currentTimeMillis() > calendar2.getTimeInMillis()){
-//                Log.d("case",":settmr");
-//                am2.setRepeating(AlarmManager.RTC_WAKEUP, calendar2.getTimeInMillis()+24*60*60*1000, 24*60*60*1000, pi);
-//            }else{
-//                Log.d("case",":settoday");
-//                am2.setRepeating(AlarmManager.RTC_WAKEUP, calendar2.getTimeInMillis(), 24*60*60*1000, pi);
-//            }
-//            Log.d("sest",":set");
             ifrepeat = true;
         }else {
-//            PendingIntent pi = PendingIntent.getActivity(this, requestcode, intent, PendingIntent.FLAG_UPDATE_CURRENT);
-//            if (System.currentTimeMillis() > calendar2.getTimeInMillis()){
-//                Log.d("case",":settmr");
-//                am2.set(AlarmManager.RTC_WAKEUP, calendar2.getTimeInMillis()+24*60*60*1000, pi);
-//            }else{
-//                Log.d("case",":settoday");
-//                am2.set(AlarmManager.RTC_WAKEUP, calendar2.getTimeInMillis(), pi);
-//            }
             ifrepeat = false;
         }
 
         DB_normal_alarm db = new DB_normal_alarm(this);
         String millis = String.valueOf(calendar2.getTimeInMillis());
-        db.insert(repeat_text, audioFilePath, index, requestcode, ifrepeat, edit_text, millis,"normal",1);
+        db.insert(repeat_text, audioFilePath, index, requestcode, ifrepeat, edit_text, millis,"normal",1, null, null);
         db.close();
         Intent service = new Intent(this, BootService.class);
+        service.putExtra("req",requestcode);
         startService(service);
         Intent mIntent = new Intent(this, mainpage.class);
         mIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
@@ -302,32 +282,18 @@ public class normal_alarm extends Activity {
         Intent intent = new Intent(this, normal_alarmalert.class);
         intent.putExtra("requestcode", requestcode);
         if (repeat_checkbox.isChecked() && !repeat_text.equals("")){
-            PendingIntent pi = PendingIntent.getActivity(this, requestcode, intent, PendingIntent.FLAG_UPDATE_CURRENT);
-            if (System.currentTimeMillis() > calendar2.getTimeInMillis()){
-                Log.d("case",":settmr");
-                am2.setRepeating(AlarmManager.RTC_WAKEUP, calendar2.getTimeInMillis()+24*60*60*1000, 24*60*60*1000, pi);
-            }else{
-                Log.d("case",":settoday");
-                am2.setRepeating(AlarmManager.RTC_WAKEUP, calendar2.getTimeInMillis(), 24*60*60*1000, pi);
-            }
-            Log.d("sest",":set");
             ifrepeat = true;
         }else {
-            PendingIntent pi = PendingIntent.getActivity(this, requestcode, intent, PendingIntent.FLAG_UPDATE_CURRENT);
-            if (System.currentTimeMillis() > calendar2.getTimeInMillis()){
-                Log.d("case",":settmr");
-                am2.setExact(AlarmManager.RTC_WAKEUP, calendar2.getTimeInMillis()+24*60*60*1000, pi);
-            }else{
-                Log.d("case",":settoday");
-                am2.setExact(AlarmManager.RTC_WAKEUP, calendar2.getTimeInMillis(), pi);
-            }
             ifrepeat = false;
         }
 
         DB_normal_alarm db = new DB_normal_alarm(this);
         String millis = String.valueOf(calendar2.getTimeInMillis());
-        db.updateall(requestcode, repeat_text, audioFilePath, index, ifrepeat, edit_text, millis,"normal",1);
+        db.updateall(requestcode, repeat_text, audioFilePath, index, ifrepeat, edit_text, millis,"normal",1, null, null);
         db.close();
+        Intent service = new Intent(this, BootService.class);
+        service.putExtra("req",requestcode);
+        startService(service);
         Intent mIntent = new Intent(this, mainpage.class);
         mIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(mIntent);
@@ -361,10 +327,93 @@ public class normal_alarm extends Activity {
             View v = getCurrentFocus();
 
             if (isShouldHideInput(v, ev)) {
-                hideSoftInput(v.getWindowToken(),this);
+                hideSoftInput(v.getWindowToken());
             }
         }
         return super.dispatchTouchEvent(ev);
+    }
+
+    private boolean isShouldHideInput(View v, MotionEvent event) {
+        if (v != null && (v instanceof EditText)) {
+            int[] l = { 0, 0 };
+            v.getLocationInWindow(l);
+            int left = l[0], top = l[1], bottom = top + v.getHeight(), right = left
+                    + v.getWidth();
+            if (event.getX() > left && event.getX() < right
+                    && event.getY() > top && event.getY() < bottom) {
+                // 点击EditText的事件，忽略它。
+                return false;
+            } else {
+                return true;
+            }
+        }
+        // 如果焦点不是EditText则忽略，这个发生在视图刚绘制完，第一个焦点不在EditView上，和用户用轨迹球选择其他的焦点
+        return false;
+    }
+
+    private void hideSoftInput(IBinder token) {
+        if (token != null) {
+            InputMethodManager im = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+            im.hideSoftInputFromWindow(token, InputMethodManager.HIDE_NOT_ALWAYS);
+        }
+    }
+
+    @Override
+    public void onResume(){
+        super.onResume();
+
+        //Permission
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO)
+                != PackageManager.PERMISSION_GRANTED) {
+            if (Build.VERSION.SDK_INT >=  Build.VERSION_CODES.M){
+                if (!ActivityCompat.shouldShowRequestPermissionRationale(this,
+                        Manifest.permission.RECORD_AUDIO)) {
+                    final AlertDialog.Builder builder = new AlertDialog.Builder(this);
+                    builder.setMessage("ＡＩ需要開啟麥克風及九軸的權限，才能進行ＡＩ收集！請麻煩一定要開啟權限喔。");
+                    builder.setPositiveButton("我知道了", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            Uri packageURI = Uri.parse("package:" + "com.example.user.timekeeper_testtest");
+                            Intent appintent= new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS, packageURI);
+                            startActivity(appintent);
+                        }
+                    });
+                    dialog = builder.show();
+                    builder.show();
+
+                }else {
+                    ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.RECORD_AUDIO},
+                            mainpage.BuildDev.RECORD_AUDIO);
+                }
+            }
+        }
+        int permission = ActivityCompat.checkSelfPermission(this,
+                Manifest.permission.READ_EXTERNAL_STORAGE);
+        if (permission != PackageManager.PERMISSION_GRANTED) {
+            if (Build.VERSION.SDK_INT >=  Build.VERSION_CODES.M){
+                if (!ActivityCompat.shouldShowRequestPermissionRationale(this,
+                        Manifest.permission.READ_EXTERNAL_STORAGE)) {
+                    final AlertDialog.Builder builder = new AlertDialog.Builder(this);
+                    builder.setMessage("提供存取權限，才能記錄鬧鐘以及選音樂喔！");
+                    builder.setPositiveButton("我知道了", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            Uri packageURI = Uri.parse("package:" + "com.example.user.timekeeper_testtest");
+                            Intent appintent= new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS, packageURI);
+                            startActivity(appintent);
+                        }
+                    });
+                    dialog = builder.show();
+                    builder.show();
+                }else {
+                    ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
+                            REQUEST_EXTERNAL_STORAGE);
+                }
+            }else {
+                ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
+                        REQUEST_EXTERNAL_STORAGE);
+            }
+        }
     }
 
 }

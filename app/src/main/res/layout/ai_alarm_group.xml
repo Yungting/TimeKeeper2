@@ -55,6 +55,7 @@
         android:layout_height="match_parent">
 
         <Button
+            android:id="@+id/btn_save"
             android:layout_width="167dp"
             android:layout_height="48dp"
             android:layout_gravity="center|bottom"
