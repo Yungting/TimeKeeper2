@@ -54,7 +54,7 @@ public class setting_setup extends AppCompatActivity {
     Button menu, sign_out, edit_btn, save_btn, date_btn;
     PopupWindow popupWindow;
     TextView name, mail, pwd, gender, birth, job;
-    EditText name_edit, birthday_edit;
+    EditText name_edit, birthday_edit, pwd_edit;
     LinearLayout show_layout, edit_layout, show_btn_layout, edit_btn_layout;
     RadioGroup gender_edit;
     RadioButton male,female;
