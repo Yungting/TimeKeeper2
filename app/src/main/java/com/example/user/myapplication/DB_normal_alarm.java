@@ -25,6 +25,8 @@ public class DB_normal_alarm extends SQLiteOpenHelper{
     public static final String ALARMTIME = "alarmtime";
     public static final String TYPE = "type";
     public static final String STATE = "state";
+    public static final String FGROUP = "fgroup";
+    public static final String MANAGE = "manage";
 
     private SQLiteDatabase db;
 
@@ -45,7 +47,10 @@ public class DB_normal_alarm extends SQLiteOpenHelper{
                         IFREPEAT + " BOOLEAN , " +
                         NORMAL_EDIT_TITLE + " TEXT," +
                         ALARMTIME+" TEXT ," +
-                        TYPE +" TEXT ," + STATE + " INTEGER);";
+                        TYPE +" TEXT ," +
+                        STATE + " INTEGER," +
+                        FGROUP + " TEXT ," +
+                        MANAGE + " TEXT );";
         db.execSQL(CREATE_TABLE);
     }
     @Override
@@ -59,7 +64,7 @@ public class DB_normal_alarm extends SQLiteOpenHelper{
         return cursor;
     }
     public long insert(String repeat_txt , String audiopath, String audioname, int request_code, boolean ifrepeat, String normal_edit_title ,
-                       String alarmtime, String type, int state) {
+                       String alarmtime, String type, int state, String fgroup, String manage) {
         //SQLiteDatabase db = this.getWritableDatabase();
         // 建立準備新增資料的ContentValues物件
         ContentValues cv = new ContentValues();
@@ -74,6 +79,8 @@ public class DB_normal_alarm extends SQLiteOpenHelper{
         cv.put(ALARMTIME, alarmtime);
         cv.put(TYPE, type);
         cv.put(STATE, state);
+        cv.put(FGROUP, fgroup);
+        cv.put(MANAGE, manage);
 
         // 新增一筆資料並取得編號
         // 第一個參數是表格名稱
@@ -82,7 +89,7 @@ public class DB_normal_alarm extends SQLiteOpenHelper{
         long row = db.insert(TABLE_NAME, null, cv);
         return row;
     }
-    public void updateall(int request_code,String repeat_txt ,String audiopath, String audioname, boolean ifrepeat, String normal_edit_title , String alarmtime, String type, int state){
+    public void updateall(int request_code,String repeat_txt ,String audiopath, String audioname, boolean ifrepeat, String normal_edit_title , String alarmtime, String type, int state, String fgroup, String manage){
         ContentValues values = new ContentValues();
         values.put(REPEAT_TXT,repeat_txt);
         values.put(AUDIOPATH, audiopath);
@@ -92,6 +99,8 @@ public class DB_normal_alarm extends SQLiteOpenHelper{
         values.put(ALARMTIME, alarmtime);
         values.put(TYPE, type);
         values.put(STATE, state);
+        values.put(FGROUP, fgroup);
+        values.put(MANAGE, manage);
         db.update(TABLE_NAME,values,"requestcode="+request_code,null);
     }
 

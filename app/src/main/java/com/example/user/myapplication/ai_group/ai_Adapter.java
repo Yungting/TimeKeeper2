@@ -1,13 +1,19 @@
 package com.example.user.myapplication.ai_group;
 
+import android.graphics.Bitmap;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.user.myapplication.R;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class ai_Adapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
@@ -16,10 +22,16 @@ public class ai_Adapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
 
     private List<String> mDatas;
     private View mFooterView;
+    private ArrayList<Bitmap> bitmapArray = new ArrayList<Bitmap>();
+    private List<String> Friend;
+    private List<String> idlist;
 
     //构造函数
-    public ai_Adapter(List<String> list){
+    public ai_Adapter(List<String> list, ArrayList<Bitmap> bitmaps, List<String> friendlist, List<String> idlist){
         this.mDatas = list;
+        this.bitmapArray = bitmaps;
+        this.Friend = friendlist;
+        this.idlist = idlist;
     }
 
     //FooterView的get和set函数
@@ -51,16 +63,40 @@ public class ai_Adapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
             return new ListHolder(mFooterView);
         }
         View layout = LayoutInflater.from(parent.getContext()).inflate(R.layout.ai_group_item, parent, false);
+
         return new ListHolder(layout);
     }
 
     //绑定View，这里是根据返回的这个position的类型，从而进行绑定的，   HeaderView和FooterView, 就不同绑定了
     @Override
-    public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
+    public void onBindViewHolder(RecyclerView.ViewHolder holder, final int position) {
         if(getItemViewType(position) == TYPE_NORMAL){
             if(holder instanceof ListHolder) {
                 //这里加载数据的时候要注意，是从position-1开始，因为position==0已经被header占用了
                 ((ListHolder) holder).tv.setText(mDatas.get(position));
+                ((ListHolder) holder).iw.setImageBitmap(bitmapArray.get(position));
+                for (int a = 0; a < idlist.size(); a++){
+                    if (idlist.get(a).equals(Friend.get(position))){
+                        ((ListHolder) holder).checkBox.setChecked(true);
+                    }
+                }
+
+                ((ListHolder) holder).checkBox.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        if (((CheckBox) v).isChecked()){
+                            idlist.add(Friend.get(position));
+                            Log.d("check",":"+idlist);
+                        }else {
+                            for (int i = 0; i < idlist.size(); i++){
+                                if (idlist.get(i).equals(Friend.get(position))){
+                                    idlist.remove(i);
+                                }
+                            }
+                            Log.d("re",":"+idlist);
+                        }
+                    }
+                });
                 return;
             }
             return;
@@ -72,6 +108,8 @@ public class ai_Adapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
     //在这里面加载ListView中的每个item的布局
     class ListHolder extends RecyclerView.ViewHolder{
         TextView tv;
+        ImageView iw;
+        CheckBox checkBox;
         public ListHolder(View itemView) {
             super(itemView);
             //如果是footerview,直接返回
@@ -79,6 +117,8 @@ public class ai_Adapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
                 return;
             }
             tv = itemView.findViewById(R.id.name);
+            iw = itemView.findViewById(R.id.photo);
+            checkBox = itemView.findViewById(R.id.addfriend_checkbox);
         }
     }
 
