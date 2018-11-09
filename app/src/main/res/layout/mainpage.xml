@@ -5,8 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".mainpage"
-    android:clickable="true"
-    android:background="@color/white">
+    android:background="@android:color/white">
 
     <View
         android:layout_width="match_parent"
@@ -28,18 +27,6 @@
         android:layout_marginEnd="29dp"
         android:layout_marginTop="27dp"
         android:background="@drawable/mainpage_menu" />
-
-    <ImageButton
-        android:id="@+id/qus"
-        android:layout_width="38dp"
-        android:layout_height="38dp"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentEnd="true"
-        android:layout_marginBottom="20dp"
-        android:layout_marginRight="20dp"
-        android:background="@drawable/qus_btn"
-        android:scaleType="centerInside"
-        android:src="@drawable/question" />
 
     <LinearLayout
         android:id="@+id/qus_view"
@@ -145,9 +132,18 @@
             android:id="@+id/recyclerView"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_marginTop="134dp"
-            android:clickable="true"
-            android:focusable="true" />
+            android:layout_marginTop="134dp" />
+
+        <ImageButton
+            android:id="@+id/qus"
+            android:layout_width="38dp"
+            android:layout_height="38dp"
+            android:layout_gravity="bottom|right"
+            android:layout_marginBottom="20dp"
+            android:layout_marginRight="20dp"
+            android:background="@drawable/qus_btn"
+            android:scaleType="centerInside"
+            android:src="@drawable/question" />
 
         <View
             android:id="@+id/add_background"

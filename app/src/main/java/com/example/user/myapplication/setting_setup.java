@@ -1,4 +1,4 @@
-package com.example.user.myapplication.setting_setup;
+package com.example.user.myapplication;
 
 
 import android.app.DatePickerDialog;
@@ -12,50 +12,35 @@ import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.provider.MediaStore;
-import android.support.v4.view.ViewPager;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.InputType;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
-import android.widget.FrameLayout;
-import android.widget.ImageButton;
 import android.widget.LinearLayout;
-import android.widget.PopupMenu;
 import android.widget.PopupWindow;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.Spinner;
 import android.widget.TextView;
-
-
-import com.example.user.myapplication.Connect_To_Server;
-import com.example.user.myapplication.R;
-import com.example.user.myapplication.check;
-import com.example.user.myapplication.get_u_sticker;
-import com.example.user.myapplication.mainpage;
-import com.example.user.myapplication.setting_friend;
-import com.example.user.myapplication.setting_friend_search;
-import com.example.user.myapplication.showPopupWindow;
-import com.example.user.myapplication.upload_img;
-
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.FileNotFoundException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 
-import static com.example.user.myapplication.R.menu.mainpage_menu;
 import static com.example.user.myapplication.hideinput.hideSoftInput;
 import static com.example.user.myapplication.hideinput.isShouldHideInput;
 import static com.example.user.myapplication.mainpage.KEY;
@@ -65,20 +50,17 @@ public class setting_setup extends AppCompatActivity {
 
     View timekeeper_logo;
 
-//    private Button mButton;
-//    private ViewPager mViewPager;
-//    private CardPagerAdapter mCardAdapter;
-//    private ShadowTransformer mCardShadowTransformer;
-
     // hamburger
     Button menu, sign_out, edit_btn, save_btn, date_btn;
-    ImageButton menu_open;
     PopupWindow popupWindow;
     TextView name, mail, pwd, gender, birth, job;
-    EditText name_edit, pwd_edit, birthday_edit;
+    EditText name_edit, birthday_edit;
     LinearLayout show_layout, edit_layout, show_btn_layout, edit_btn_layout;
+    RadioGroup gender_edit;
+    RadioButton male,female;
     View sticker;
     Spinner spinner;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -86,9 +68,15 @@ public class setting_setup extends AppCompatActivity {
         setContentView(R.layout.setting_setup);
 
         name = findViewById(R.id.name);
+        name_edit = findViewById(R.id.name_edit);
         mail = findViewById(R.id.mail);
         pwd = findViewById(R.id.pwd);
+        pwd_edit = findViewById(R.id.pwd_edit);
         gender = findViewById(R.id.gender);
+        gender_edit = findViewById(R.id.group);
+        male = findViewById(R.id.radioButton);
+        female = findViewById(R.id.radioButton2);
+        birthday_edit = findViewById(R.id.birthday_edit);
         birth = findViewById(R.id.birthday);
         job = findViewById(R.id.career);
         edit_btn = findViewById(R.id.btn_edit);
@@ -100,6 +88,8 @@ public class setting_setup extends AppCompatActivity {
         edit_layout = findViewById(R.id.edit_layout);
         show_btn_layout = findViewById(R.id.show_btn_layout);
         edit_btn_layout = findViewById(R.id.edit_btn_latout);
+
+        final Connect_To_Server edit_data  = new Connect_To_Server();
 
         //下拉選單
         spinner = findViewById(R.id.career_edit);
@@ -141,11 +131,27 @@ public class setting_setup extends AppCompatActivity {
                 showDatePickerDialog();
             }
         });
+        //編輯性別
+        final String[] new_gender = {null};
+        gender_edit.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(RadioGroup group, int checkedId) {
+                switch(checkedId){
+                    case R.id.radioButton:
+                        new_gender[0] = "MALE";
+                        break;
+                    case R.id.radioButton2:
+                        new_gender[0] = "FEMALE";
+                        break;
+                }
+            }
+        });
 
         //切換edit或show模式
         edit_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
                 show_layout.setVisibility(View.GONE);
                 edit_layout.setVisibility(View.VISIBLE);
                 show_btn_layout.setVisibility(View.GONE);
@@ -158,6 +164,20 @@ public class setting_setup extends AppCompatActivity {
         save_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                //儲存編輯
+                Thread edit = new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        edit_data.connect("insert_sql","UPDATE `user` SET `u_name` = '"+name_edit.getText().toString()+"', `u_password` = '"+pwd_edit.getText().toString()+"', `u_gender` = '"+new_gender[0]+"', `u_birth` = '"+birthday_edit.getText().toString()+"' , `u_job` = '"+spinner.getSelectedItem().toString()+"'WHERE `user`.`user_id` = '"+getSharedPreferences(KEY, MODE_PRIVATE).getString("u_id", null)+"';");
+                    }
+                });
+                edit.start();
+                try {
+                    edit.join();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                refresh_user_data();
                 show_layout.setVisibility(View.VISIBLE);
                 edit_layout.setVisibility(View.GONE);
                 show_btn_layout.setVisibility(View.VISIBLE);
@@ -167,17 +187,6 @@ public class setting_setup extends AppCompatActivity {
             }
         });
 
-
-//        mViewPager = findViewById(R.id.viewPager);
-//
-//        mCardAdapter = new CardPagerAdapter();
-//        mCardAdapter.addCardItem(new CardItem("hi@gmail.com","info"));
-//        mCardAdapter.addCardItem(new CardItem("Location Setup", "location"));
-//
-//        mCardShadowTransformer = new ShadowTransformer(mViewPager, mCardAdapter);
-//        mViewPager.setAdapter(mCardAdapter);
-//        mViewPager.setOffscreenPageLimit(3);
-//        mCardShadowTransformer.enableScaling(true);
 
         final String u_id = getSharedPreferences(KEY, MODE_PRIVATE).getString("u_id", null);
         final Bitmap[] img = new Bitmap[1];
@@ -201,54 +210,47 @@ public class setting_setup extends AppCompatActivity {
         sticker.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent();
-                intent.setType("image/*");
-                intent.setAction(Intent.ACTION_PICK);
-                startActivityForResult(intent, 0);
+                new AlertDialog.Builder(setting_setup.this)
+                        .setTitle("更新大頭貼")
+                        .setMessage("選擇更新或是刪除大頭貼")
+                        .setPositiveButton("編輯",
+                                new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        Intent intent = new Intent();
+                                        intent.setType("image/*");
+                                        intent.setAction(Intent.ACTION_PICK);
+                                        startActivityForResult(intent,0);
+                                    }
+                                })
+                        .setNegativeButton("清除",
+                                new DialogInterface.OnClickListener() {
+
+                                    @Override
+                                    public void onClick(DialogInterface dialog,
+                                                        int which) {
+                                        Thread clean_img = new Thread(new Runnable() {
+                                            @Override
+                                            public void run() {
+                                                delete_img clean = new delete_img();
+                                                clean.deleteFile(u_id);
+                                            }
+                                        });
+                                        clean_img.start();
+                                        try {
+                                            clean_img.join();
+                                        } catch (InterruptedException e) {
+                                            e.printStackTrace();
+                                        }
+                                        sticker.setBackgroundResource(R.drawable.ai_open);
+                                    }
+                                }).show();
+
             }
         });
 
+        refresh_user_data();
 
-        JSONArray get_result;
-        final Connect_To_Server u_data = new Connect_To_Server();
-        Thread search_account = new Thread(new Runnable() {
-            @Override
-            public void run() {
-                u_data.connect("select_sql", "SELECT * FROM `user` WHERE user_id = '" + u_id + "'");
-            }
-        });
-        search_account.start();
-        try {
-            search_account.join();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-        String u_pwd = null, u_name = null, u_gender = null, u_birth = null, u_job = null;
-        try {
-            get_result = new JSONArray(u_data.get_data);
-            int lenght = get_result.length();
-            for (int i = 0; i < lenght; i++) {
-                JSONObject jsonObject = get_result.getJSONObject(i);
-                u_pwd = jsonObject.getString("u_password");
-                u_name = jsonObject.getString("u_name");
-                u_gender = jsonObject.getString("u_gender");
-                u_birth = jsonObject.getString("u_birth");
-                u_job = jsonObject.getString("u_job");
-                int pwd_lenght = u_pwd.length();
-                String not_pwd = "";
-                for (int j = 0; j < pwd_lenght; j++) {
-                    not_pwd = not_pwd + "*";
-                }
-                name.setText(u_name);
-                mail.setText(u_id);
-                pwd.setText(not_pwd);
-                gender.setText(u_gender);
-                birth.setText(u_birth);
-                job.setText(u_job);
-            }
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
 
         //登出
         sign_out = findViewById(R.id.btn_singout);
@@ -337,7 +339,76 @@ public class setting_setup extends AppCompatActivity {
         refresh();
         super.onActivityResult(requestCode, resultCode, data);
     }
+    public void refresh_user_data(){
+        final String u_id = getSharedPreferences(KEY, MODE_PRIVATE).getString("u_id", null);
+        JSONArray get_result;
+        final Connect_To_Server u_data = new Connect_To_Server();
+        Thread search_account = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                u_data.connect("select_sql", "SELECT * FROM `user` WHERE user_id = '" + u_id + "'");
+            }
+        });
+        search_account.start();
+        try {
+            search_account.join();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        String u_pwd = null, u_name = null, u_gender = null, u_birth = null, u_job = null;
+        try {
+            get_result = new JSONArray(u_data.get_data);
+            int lenght = get_result.length();
+            for (int i = 0; i < lenght; i++) {
+                JSONObject jsonObject = get_result.getJSONObject(i);
+                u_pwd = jsonObject.getString("u_password");
+                u_name = jsonObject.getString("u_name");
+                u_gender = jsonObject.getString("u_gender");
+                u_birth = jsonObject.getString("u_birth");
+                u_job = jsonObject.getString("u_job");
+                int pwd_lenght = u_pwd.length();
+                String not_pwd = "";
+                for (int j = 0; j < pwd_lenght; j++) {
+                    not_pwd = not_pwd + "*";
+                }
+                name.setText(u_name);
+                mail.setText(u_id);
+                pwd.setText(not_pwd);
+                gender.setText(u_gender);
+                birth.setText(u_birth);
+                job.setText(u_job);
+                name_edit.setText(u_name, TextView.BufferType.EDITABLE);
+                pwd_edit.setText(u_pwd,TextView.BufferType.EDITABLE);
+                birthday_edit.setText(u_birth,TextView.BufferType.EDITABLE);
+                if(u_gender.equals("MALE")){
+                    gender_edit.check(R.id.radioButton);
+                }else{
+                    gender_edit.check(R.id.radioButton2);
+                }
+                switch (u_job){
+                    case "Worker":
+                        spinner.setSelection(0);
+                        break;
+                    case "Student":
+                        spinner.setSelection(1);
+                        break;
+                    case "Homemaker":
+                        spinner.setSelection(2);
+                        break;
+                    case "Retirees":
+                        spinner.setSelection(3);
+                        break;
+                    case "Others":
+                        spinner.setSelection(4);
+                        break;
+                }
 
+
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
     public void refresh() {
         final String u_id = getSharedPreferences(KEY, MODE_PRIVATE).getString("u_id", null);
         final Bitmap[] img = new Bitmap[1];

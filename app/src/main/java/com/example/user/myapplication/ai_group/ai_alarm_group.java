@@ -86,6 +86,7 @@ public class ai_alarm_group extends Activity {
                 finish();
             }
         });
+
     }
 
     //      資料產生
