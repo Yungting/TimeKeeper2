@@ -96,17 +96,6 @@ public class setting_setup extends AppCompatActivity {
         ArrayAdapter<CharSequence> careerList = ArrayAdapter.createFromResource(setting_setup.this, R.array.career,
                 android.R.layout.simple_spinner_dropdown_item);
         spinner.setAdapter(careerList);
-        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                //點擊後的動作
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-
-            }
-        });
 
         //生日的輸入框動作
         birthday_edit.setInputType(InputType.TYPE_NULL); //不显示系统输入键盘
@@ -242,7 +231,7 @@ public class setting_setup extends AppCompatActivity {
                                         } catch (InterruptedException e) {
                                             e.printStackTrace();
                                         }
-                                        sticker.setBackgroundResource(R.drawable.ai_open);
+                                        sticker.setBackgroundResource(R.drawable.logo_small);
                                     }
                                 }).show();
 
