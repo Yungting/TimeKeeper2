@@ -1,17 +1,12 @@
 package com.example.user.myapplication;
 
-import android.app.usage.UsageStats;
-import android.app.usage.UsageStatsManager;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.database.Cursor;
 import android.hardware.SensorManager;
-import android.os.Bundle;
 import android.os.PowerManager;
-import android.provider.Settings;
-import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 
 import java.sql.Timestamp;
@@ -19,22 +14,17 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.List;
-import java.util.SortedMap;
-import java.util.TreeMap;
 
 import static android.content.Context.MODE_PRIVATE;
 import static com.example.user.myapplication.mainpage.KEY;
 
 //extends AppCompatActivity
 public class ai_count{
-    public static long start_time;
-    public static long stop_record_time;
-    long time, stopuse, usetime, totaltime;
-    int min, hr, sec;
+    public static int clock_count = 0;
+    long time, stopuse;
+    int sec;
     static String state;
     static double volume;
-    private StringBuilder sb;
     private DB_usage dbUsage;
     private DB_soundaxis dbSoundaxis;
     private IntentFilter theFilter;
@@ -53,16 +43,14 @@ public class ai_count{
     public static ArrayList z_axis;
     public static ArrayList sound_db;
     ArrayList up_id,up_date_alarm,up_date_time,up_x_axis,up_y_axis,up_z_axis,up_sound_db;
-    ArrayList up_id_u,up_date_time_u,up_period_u;
+    ArrayList up_id_u,up_date_time_u,up_period_u,up_awake_u;
     String sql,sqltmp,sql_u,sql_u_tmp,u_id;
     Connect_To_Server connecting;
     Context record ;
+    data_img_prediction produce_img;
 
-    //@Override
-    //protected void onCreate(Bundle savedInstanceState) {
     public void record(Context context){
         this.record = context;
-        //super.onCreate(savedInstanceState);
         sensorManager = (SensorManager)record.getSystemService(Context.SENSOR_SERVICE);
         theFilter = new IntentFilter();
         theFilter.addAction(Intent.ACTION_SCREEN_ON);
@@ -88,6 +76,7 @@ public class ai_count{
         up_sound_db = new ArrayList();
         up_id_u = new ArrayList();
         up_date_time_u = new ArrayList();
+        up_awake_u  = new ArrayList();
         up_period_u = new ArrayList();
         dbSoundaxis = new DB_soundaxis(record);
         dbUsage = new DB_usage(record);
@@ -97,6 +86,7 @@ public class ai_count{
         sql_u_tmp = new String();
         u_id = new String();
         connecting = new Connect_To_Server();
+        produce_img = new data_img_prediction();
 
         u_id = record.getSharedPreferences(KEY,MODE_PRIVATE).getString("u_id",null);
 
@@ -106,9 +96,9 @@ public class ai_count{
         time = cd.getTimeInMillis();
         Log.d("tag", "get"+time);
 
-        getScreen();
-        start_time = System.currentTimeMillis();
-        stop_record_time = start_time+ 60*1000;//結束時間設為一分鐘後
+        getScreen(time);
+//        start_time = System.currentTimeMillis();
+//        stop_record_time = start_time+ 60*1000;//結束時間設為一分鐘後
         Log.d("state", "s"+state);
         if(state == "true"){
             start_listen_nine_axis();
@@ -117,43 +107,38 @@ public class ai_count{
             Log.d("紀錄", "開始");
         }
         CheckState_SubmitRecord();
-        CheckRecordtime_SubmitRecord();
     }
 
     public void usagetime(long stopuse){
-        UsageStatsManager usm = (UsageStatsManager)record.getSystemService(Context.USAGE_STATS_SERVICE);
         Calendar calendar1 = Calendar.getInstance();
         calendar1.setTimeInMillis(time);
         Calendar calendar2 = Calendar.getInstance();
         calendar2.setTimeInMillis(stopuse);
+        Long tt = calendar2.getTimeInMillis() - calendar1.getTimeInMillis();
+        sec = (int) (tt/1000);
+        Log.d("totla",":"+tt/1000);
+    }
 
-        final List<UsageStats> stats = usm.queryUsageStats(UsageStatsManager.INTERVAL_BEST, calendar1.getTimeInMillis(),
-                calendar2.getTimeInMillis());
-        if (stats == null || stats.isEmpty()){
-
-        }else {
-            SortedMap<Long, UsageStats> mySortedMap = new TreeMap<Long, UsageStats>();
-            for (UsageStats usageStats : stats){
-                if (usageStats.getLastTimeStamp() > calendar1.getTimeInMillis()){
-                    usetime = usageStats.getLastTimeStamp() - calendar1.getTimeInMillis();
-                    totaltime = totaltime + usetime;
-                }
-                min = (int) ((totaltime)/(1000*60)%60);
-                hr = (int)((totaltime/(1000*60*60))%24);
+    public void getScreen(Long t){
+        PowerManager pm = (PowerManager)record.getSystemService(Context.POWER_SERVICE);
+        boolean isScreenOn = pm.isInteractive();
+        Calendar fivemin = Calendar.getInstance();
+        fivemin.setTimeInMillis(System.currentTimeMillis());
+        Long five = fivemin.getTimeInMillis();
+        Calendar fivmin2 = Calendar.getInstance();
+        fivmin2.setTimeInMillis(t+300000);
+        Long five2 = fivmin2.getTimeInMillis();
+        if (five < five2){
+            if (isScreenOn == true){
+                state = "true";
+            }else if (isScreenOn == false){
+                state = "false";
             }
-            sec = (int) (totaltime/1000)%60;
-            Log.d("sec",":"+sec);
+        }else {
+            state = "false";
         }
     }
 
-    public void getScreen(){
-        PowerManager pm = (PowerManager)record.getSystemService(Context.POWER_SERVICE);
-        boolean isScreenOn = pm.isInteractive();
-        if (isScreenOn == true){
-            state = "true";
-        }else if (isScreenOn == false){state = "false"; }
-
-    }
     public void start_listen_nine_axis(){
         Thread start = new Thread((new Runnable() {
             @Override
@@ -167,25 +152,11 @@ public class ai_count{
         Thread thread_check_time = new Thread(new Runnable() {
             @Override
             public void run() {
-                while(System.currentTimeMillis() <= stop_record_time){
-                    if(System.currentTimeMillis() == stop_record_time){
-                        axis_recorder.start_record(sensorManager,false);//九軸停止紀錄(但現在我註解掉了)
-                        sound_recorder.stopRecord();//停止錄音
-                        for(int i = 0;i<id.size();i++){
-                            dbSoundaxis.insert(id.get(i).toString(), (Timestamp) date_time.get(i), Double.parseDouble(x_axis.get(i).toString()),
-                                    Double.parseDouble(y_axis.get(i).toString()),Double.parseDouble(z_axis.get(i).toString()),
-                                    Double.parseDouble(sound_db.get(i).toString()), String.valueOf(time));
-                            Log.d("資料庫",id.get(i).toString()+"/"+(Timestamp) date_time.get(i)+"/"+Double.parseDouble(x_axis.get(i).toString())+"/"+Double.parseDouble(y_axis.get(i).toString())+"/"+Double.parseDouble(z_axis.get(i).toString())+"/"+Double.parseDouble(sound_db.get(i).toString()));
-                        }
-                        Log.d("紀錄", "結束");
-                        Log.d("TAG", "九軸&分貝資料上傳");
-                    }
-                }
                 Cursor update_cursor = dbSoundaxis.select_update();
                 for(int i = 0; i<update_cursor.getCount();i++){
                     update_cursor.moveToPosition(i);
                     up_id.add(update_cursor.getString(update_cursor.getColumnIndex("_id")));
-                    up_date_alarm.add(String.valueOf(time));
+                    up_date_alarm.add(update_cursor.getString(update_cursor.getColumnIndex("date_alarm")));
                     up_date_time.add((update_cursor.getString(update_cursor.getColumnIndex("date_time"))));
                     up_x_axis.add((update_cursor.getString(update_cursor.getColumnIndex("x_axis"))));
                     up_y_axis.add((update_cursor.getString(update_cursor.getColumnIndex("y_axis"))));
@@ -210,18 +181,38 @@ public class ai_count{
                 sql = sql+sqltmp;
                 Log.d("sql語法",sql);
                 connecting.connect("insert_sql",sql);
-                dbSoundaxis.update_state_change();
-                dbSoundaxis.deleteAll();
+                try {
+                    Thread.sleep(400);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                Log.d("測試","狀態"+connecting.internet_connect);
+                if(connecting.internet_connect){
+                    dbSoundaxis.update_state_change();
+                    dbSoundaxis.deleteAll();
+                }
             }
         });
         thread_check_time.start();
+        try {
+            thread_check_time.join();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        Thread produce = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                produce_img.produce_img(String.valueOf(time));
+            }
+        });
+        produce.start();
     }
     public void CheckState_SubmitRecord(){
         Thread thread_check_state = new Thread(new Runnable() {
             @Override
             public void run() {
                 while(state == "true"){
-                    getScreen();
+                    getScreen(time);
                     Log.d("執行續", "檢查螢幕狀態");
                     try {
                         Thread.sleep(500);
@@ -248,21 +239,31 @@ public class ai_count{
                     up_date_time_u.add(update_cursor.getString(update_cursor.getColumnIndex("date")));
                     up_period_u.add((update_cursor.getString(update_cursor.getColumnIndex("period"))));
                 }
-                sql_u = "INSERT INTO `screen_record` (`Date`, `User_id`, `Period`) VALUES";
+                //sql_u = "INSERT INTO `screen_record` (`Date`, `User_id`, `Period`, `r_ifawake`) VALUES";
                 for(int i = 0;i<up_id_u.size();i++){
                     String id = up_id_u.get(i).toString();
                     String time = up_date_time_u.get(i).toString();
                     int period  = Integer.parseInt(up_period_u.get(i).toString());
+                    sql_u = "INSERT INTO `screen_record` (`Date`, `User_id`, `Period`) VALUES";
                     if(i == up_id_u.size()-1){
                         sql_u_tmp = sql_u_tmp+"('"+time+"','"+id+"', '"+period+"');";
                     }else {
                         sql_u_tmp = sql_u_tmp+"('"+time+"','"+id+"', '"+period+"'),";
                     }
+
                 }
                 sql_u = sql_u+sql_u_tmp;
                 Log.d("sql語法",sql_u);
                 connecting.connect("insert_sql",sql_u);
-                dbUsage.update_state_change();
+                try {
+                    Thread.sleep(400);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                Log.d("測試","狀態"+connecting.internet_connect);
+                if(connecting.internet_connect){
+                    dbUsage.update_state_change();
+                }
             }
         });
         thread_check_state.start();
@@ -270,9 +271,10 @@ public class ai_count{
     public void startListenAudio() {
         final int Base = 1;
         Thread thread_sound = new Thread(new Runnable() {
+            int count = 0;
             @Override
             public void run() {
-                while (System.currentTimeMillis() <= stop_record_time) {
+                while (count < 121) {
                     try {
                         if (sound_recorder.mMediaRecorder != null) {
                             volume = sound_recorder.mMediaRecorder.getMaxAmplitude() / Base;  //獲取聲壓值
@@ -288,16 +290,34 @@ public class ai_count{
                                 volume = 20 * Math.log10(volume);//將聲壓值轉為分貝值
                             }
                             sound_db.add(String.format("%.02f",volume));
+                            Log.d("執行續",(count+1)+" data");
                             Log.d("執行續",volume+"分貝");
                             Log.d("執行續",axis_recorder.x+"X軸");
                             Log.d("執行續",axis_recorder.y+"Y軸");
                             Log.d("執行續",axis_recorder.z+"Z軸");
+                            count++;
                         }
                         Thread.sleep(500);
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
                 }
+                clock_count--;
+                if(clock_count == 0){
+                    axis_recorder.start_record(sensorManager,false);//九軸停止紀錄(但現在我註解掉了)
+                    sound_recorder.stopRecord();//停止錄音
+                }
+//                axis_recorder.start_record(sensorManager,false);//九軸停止紀錄(但現在我註解掉了)
+//                sound_recorder.stopRecord();//停止錄音
+                for(int i = 0;i<id.size();i++){
+                    dbSoundaxis.insert(id.get(i).toString(), (Timestamp) date_time.get(i), Double.parseDouble(x_axis.get(i).toString()),
+                            Double.parseDouble(y_axis.get(i).toString()),Double.parseDouble(z_axis.get(i).toString()),
+                            Double.parseDouble(sound_db.get(i).toString()), String.valueOf(time));
+                    Log.d("資料庫",id.get(i).toString()+"/"+(Timestamp) date_time.get(i)+"/"+Double.parseDouble(x_axis.get(i).toString())+"/"+Double.parseDouble(y_axis.get(i).toString())+"/"+Double.parseDouble(z_axis.get(i).toString())+"/"+Double.parseDouble(sound_db.get(i).toString()));
+                }
+                Log.d("紀錄", "結束");
+                Log.d("TAG", "九軸&分貝資料上傳");
+                CheckRecordtime_SubmitRecord();
             }
         });
         thread_sound.start();
