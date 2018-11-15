@@ -54,7 +54,10 @@ public class setting_setup extends AppCompatActivity {
     Button menu, sign_out, edit_btn, save_btn, date_btn,clear;
     PopupWindow popupWindow;
     TextView name, mail, pwd, gender, birth, job;
-    EditText name_edit, birthday_edit,pwd_edit;
+
+
+    EditText name_edit, birthday_edit, pwd_edit;
+
     LinearLayout show_layout, edit_layout, show_btn_layout, edit_btn_layout;
     RadioGroup gender_edit;
     RadioButton male,female;
@@ -97,17 +100,6 @@ public class setting_setup extends AppCompatActivity {
         ArrayAdapter<CharSequence> careerList = ArrayAdapter.createFromResource(setting_setup.this, R.array.career,
                 android.R.layout.simple_spinner_dropdown_item);
         spinner.setAdapter(careerList);
-        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                //點擊後的動作
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-
-            }
-        });
 
         //生日的輸入框動作
         birthday_edit.setInputType(InputType.TYPE_NULL); //不显示系统输入键盘
@@ -252,7 +244,7 @@ public class setting_setup extends AppCompatActivity {
                                         } catch (InterruptedException e) {
                                             e.printStackTrace();
                                         }
-                                        sticker.setBackgroundResource(R.drawable.ai_open);
+                                        sticker.setBackgroundResource(R.drawable.logo_small);
                                     }
                                 }).show();
 

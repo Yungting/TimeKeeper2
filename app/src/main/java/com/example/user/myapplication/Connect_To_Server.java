@@ -23,6 +23,7 @@ public class Connect_To_Server {
     private final static String mUrl = "http://140.127.218.207:80/Connecter.php";
     public static Boolean internet_connect = false;
     public String get_data = "";
+    public static Boolean internet_connect = false;
     public void connect(final String sqltype, final String sql){
         Thread connecting = new Thread(new Runnable() {
             @Override
@@ -81,6 +82,7 @@ public class Connect_To_Server {
             Bundle data = msg.getData();
             String val = data.getString("key");//取出key中的字串存入val
             Log.d("上傳Server","成功"+val);
+            internet_connect = true;
             //data_txt.setText(val);
         }
     };
@@ -92,6 +94,7 @@ public class Connect_To_Server {
             Bundle data = msg.getData();
             String val = data.getString("key");
             Log.d("上傳Server","失敗"+val);
+            internet_connect = false;
 
         }
     };
@@ -103,6 +106,7 @@ public class Connect_To_Server {
             Bundle data = msg.getData();
             String val = data.getString("key");
             Log.d("上傳Server","失敗"+val);
+            internet_connect = false;
 
         }
     };

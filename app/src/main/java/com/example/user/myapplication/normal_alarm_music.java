@@ -1,22 +1,16 @@
 package com.example.user.myapplication;
 
 import android.app.Activity;
-import android.content.ContentValues;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Color;
-import android.media.MediaPlayer;
-import android.media.RingtoneManager;
-import android.net.Uri;
-import android.provider.MediaStore;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.CursorAdapter;
-import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
 import android.widget.TextView;
@@ -39,36 +33,36 @@ public class normal_alarm_music extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.normal_alarm_music);
 
-        String selection = MediaStore.Audio.Media.DURATION+">5000";
+        String selection = MediaStore.Audio.Media.DURATION + ">5000";
         cursor = getContentResolver().query(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, null,
                 selection, null, MediaStore.Audio.Media.DEFAULT_SORT_ORDER);
-        String[] str = new String[]{MediaStore.Audio.Media.TITLE , MediaStore.Audio.Media.ARTIST};
+        String[] str = new String[]{MediaStore.Audio.Media.TITLE, MediaStore.Audio.Media.ARTIST};
         int[] displayViews = new int[]{R.id.music_name};
         SimpleCursorAdapter adapter = new SimpleCursorAdapter(this, R.layout.music_item, cursor, str, displayViews, CursorAdapter.FLAG_REGISTER_CONTENT_OBSERVER);
 
         Intent intent1 = getIntent();
-        if (intent1 != null){
-            rcode = intent1.getIntExtra("rcode",0);
+        if (intent1 != null) {
+            rcode = intent1.getIntExtra("rcode", 0);
             String path = intent1.getStringExtra("audiopath");
             DB_normal_alarm db = new DB_normal_alarm(this);
             cursor1 = db.selectbycode(rcode);
             int i = 0;
-            if (cursor1 != null && cursor1.moveToFirst()){
-                for (cursor.moveToFirst(); !cursor.isAfterLast(); cursor.moveToNext()){
+            if (cursor1 != null && cursor1.moveToFirst()) {
+                for (cursor.moveToFirst(); !cursor.isAfterLast(); cursor.moveToNext()) {
                     pois[i] = i;
                     int file = cursor.getColumnIndex(MediaStore.Audio.Media.DATA);
                     String audiopath = cursor.getString(file);
-                    if (audiopath.equals(cursor1.getString(1))){
+                    if (audiopath.equals(cursor1.getString(1))) {
                         orignalpois = i;
                     }
                     i++;
                 }
-            }else{
-                for (cursor.moveToFirst(); !cursor.isAfterLast(); cursor.moveToNext()){
+            } else {
+                for (cursor.moveToFirst(); !cursor.isAfterLast(); cursor.moveToNext()) {
                     pois[i] = i;
                     int file = cursor.getColumnIndex(MediaStore.Audio.Media.DATA);
                     String audiopath = cursor.getString(file);
-                    if (audiopath.equals(path)){
+                    if (audiopath.equals(path)) {
                         orignalpois = i;
                     }
                     i++;
@@ -81,15 +75,11 @@ public class normal_alarm_music extends Activity {
         music_list1 = findViewById(R.id.music_list1);
         music_list.setAdapter(adapter);
 
-        View footer = LayoutInflater.from(this).inflate(R.layout.footer,null);
-        LinearLayout linearLayout = footer.findViewById(R.id.footerview);
-        linearLayout.setBackgroundColor(Color.WHITE);
-        music_list.addFooterView(footer);
-
-        if (orignalpois >= 0){
+        if (orignalpois >= 0) {
             music_list.setSelection(orignalpois);
             select_item = orignalpois;
-        }else{
+            Log.d("firstvisible", ":" + music_list.getFirstVisiblePosition());
+        } else {
             music_list1.setBackgroundColor(getResources().getColor(R.color.background_gray));
         }
 
@@ -97,7 +87,7 @@ public class normal_alarm_music extends Activity {
             @Override
             public void onClick(View v) {
                 v.setBackgroundColor(Color.GRAY);
-                if (select_item != -1){
+                if (select_item != -1) {
                     view2.setBackgroundColor(Color.WHITE);
                 }
                 select_item = -1;
@@ -143,11 +133,6 @@ public class normal_alarm_music extends Activity {
             }
         });
 
-    }
-
-    public void view(int i){
-        music_list.setSelection(i);
-        music_list.getSelectedView().setBackgroundColor(Color.GRAY);
     }
 
 }

@@ -1,8 +1,15 @@
 package com.example.user.myapplication.ai_manage;
 
+import android.graphics.Color;
+import android.graphics.PorterDuff;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.CardView;
+import android.util.Log;
 import android.view.View;
+import android.widget.CompoundButton;
+import android.widget.Switch;
+
+import com.example.user.myapplication.R;
 
 
 public class ShadowTransformer implements ViewPager.OnPageChangeListener, ViewPager.PageTransformer {
@@ -11,6 +18,7 @@ public class ShadowTransformer implements ViewPager.OnPageChangeListener, ViewPa
     private CardAdapter mAdapter;
     private float mLastOffset;
     private boolean mScalingEnabled;
+
 
     public ShadowTransformer(ViewPager viewPager, CardAdapter adapter) {
         mViewPager = viewPager;
@@ -71,6 +79,36 @@ public class ShadowTransformer implements ViewPager.OnPageChangeListener, ViewPa
 
         CardView currentCard = mAdapter.getCardViewAt(realCurrentPosition);
 
+        //修改switch的顏色
+        final Switch switch1 = mAdapter.getCardViewAt(0).findViewById(R.id.switch1);
+        switch1.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                if (b) {
+                    switch1.getThumbDrawable().setColorFilter(Color.rgb( 33, 130, 185), PorterDuff.Mode.MULTIPLY);
+                    switch1.getTrackDrawable().setColorFilter(Color.argb( 100,255, 255, 255), PorterDuff.Mode.MULTIPLY);
+                }else {
+                    switch1.getThumbDrawable().setColorFilter(Color.WHITE, PorterDuff.Mode.MULTIPLY);
+                    switch1.getTrackDrawable().setColorFilter(Color.BLACK, PorterDuff.Mode.MULTIPLY);
+                }
+            }
+        });
+
+        final Switch switch2 = mAdapter.getCardViewAt(1).findViewById(R.id.switch1);
+        switch2.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                if (b) {
+                    switch2.getThumbDrawable().setColorFilter(Color.rgb( 255, 64, 129), PorterDuff.Mode.MULTIPLY);
+                    switch2.getTrackDrawable().setColorFilter(Color.argb( 100,255, 255, 255), PorterDuff.Mode.MULTIPLY);
+                }else {
+                    switch2.getThumbDrawable().setColorFilter(Color.WHITE, PorterDuff.Mode.MULTIPLY);
+                    switch2.getTrackDrawable().setColorFilter(Color.BLACK, PorterDuff.Mode.MULTIPLY);
+                }
+            }
+        });
+
+
         // This might be null if a fragment is being used
         // and the views weren't created yet
         if (currentCard != null) {
@@ -80,6 +118,7 @@ public class ShadowTransformer implements ViewPager.OnPageChangeListener, ViewPa
             }
             currentCard.setCardElevation((baseElevation + baseElevation
                     * (CardAdapter.MAX_ELEVATION_FACTOR - 1) * (1 - realOffset)));
+
         }
 
         CardView nextCard = mAdapter.getCardViewAt(nextPosition);
