@@ -4,9 +4,11 @@ import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.CardView;
+import android.text.Layout;
 import android.util.Log;
 import android.view.View;
 import android.widget.CompoundButton;
+import android.widget.LinearLayout;
 import android.widget.Switch;
 
 import com.example.user.myapplication.R;
