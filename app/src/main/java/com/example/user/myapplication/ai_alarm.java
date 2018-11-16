@@ -43,7 +43,7 @@ public class ai_alarm extends Activity {
     TextView group, ai_manage, alarm_number;
     Calendar calendar2 = Calendar.getInstance();
     int hour,minute, i, requestcode;
-    String repeat_text, index, mimeType, audioFilePath, alarmtime, rday, idlist;
+    String repeat_text, index, mimeType, audioFilePath, alarmtime, rday, idlist, smartlist;
     CheckBox day_Su, day_M, day_T, day_W, day_Th, day_F, day_S, repeat_checkbox;
     LinearLayout rington;
     LinearLayout repeat_layout,repeat_day;
@@ -57,7 +57,7 @@ public class ai_alarm extends Activity {
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.ai_alarm);
         Button creat_btn = findViewById(R.id.creat_btn);
-        TextView normal_edit_title = findViewById(R.id.normal_edit_title);
+        TextView ai_edit_title = findViewById(R.id.ai_edit_title);
 
         Intent intentcode = getIntent();
         if (intentcode!= null){
@@ -73,14 +73,19 @@ public class ai_alarm extends Activity {
             if (cursor != null && cursor.moveToFirst()){
                 Long t = Long.parseLong(cursor.getString(6));
                 calendar2.setTimeInMillis(t);
-                normal_edit_title.setText(cursor.getString(5));
+                ai_edit_title.setText(cursor.getString(5));
                 index = cursor.getString(2);
                 audioFilePath = cursor.getString(1);
                 rday = cursor.getString(0);
                 idlist = cursor.getString(9);
-                if (!idlist.equals("") || idlist != null){
+                if (idlist != null && !idlist.equals("")){
                     CheckBox groupbox = findViewById(R.id.group_checkbox);
                     groupbox.setChecked(true);
+                }
+                smartlist = cursor.getString(10);
+                if (smartlist != null && !smartlist.equals("0  0  ")){
+                    CheckBox aibox = findViewById(R.id.ai_manage_checkbox);
+                    aibox.setChecked(true);
                 }
                 pickday();
                 creat_btn.setText("UPDATE");
@@ -143,7 +148,8 @@ public class ai_alarm extends Activity {
             @Override
             public void onClick(View view) {
                 Intent intent1 = new Intent(ai_alarm.this, ai_manage.class);
-                startActivity(intent1);
+                intent1.putExtra("sbar", smartlist);
+                startActivityForResult(intent1, 1);
             }
         });
 
@@ -288,7 +294,7 @@ public class ai_alarm extends Activity {
 
         DB_normal_alarm db = new DB_normal_alarm(this);
         String millis = String.valueOf(calendar2.getTimeInMillis());
-        db.insert(repeat_text, audioFilePath, index, requestcode, ifrepeat, edit_text, millis,"ai",1, idlist, null);
+        db.insert(repeat_text, audioFilePath, index, requestcode, ifrepeat, edit_text, millis,"ai",1, idlist, smartlist);
         db.close();
         Intent service = new Intent(this, BootService.class);
         service.putExtra("req",requestcode);
@@ -302,8 +308,8 @@ public class ai_alarm extends Activity {
         repeat_checkbox = (CheckBox)findViewById(R.id.repeat_checkbox);
         Boolean ifrepeat;
         detectday();
-        TextView normal_edit_title = findViewById(R.id.normal_edit_title);
-        String edit_text = normal_edit_title.getText().toString();
+        TextView ai_edit_title = findViewById(R.id.ai_edit_title);
+        String edit_text = ai_edit_title.getText().toString();
         Intent intent = new Intent(this, normal_alarmalert.class);
         intent.putExtra("requestcode", requestcode);
         if (repeat_checkbox.isChecked() && !repeat_text.equals("")){
@@ -314,7 +320,7 @@ public class ai_alarm extends Activity {
 
         DB_normal_alarm db = new DB_normal_alarm(this);
         String millis = String.valueOf(calendar2.getTimeInMillis());
-        db.updateall(requestcode, repeat_text, audioFilePath, index, ifrepeat, edit_text, millis,"ai",1, idlist, null);
+        db.updateall(requestcode, repeat_text, audioFilePath, index, ifrepeat, edit_text, millis,"ai",1, idlist, smartlist);
         db.close();
         Intent service = new Intent(this, BootService.class);
         service.putExtra("req",requestcode);
@@ -341,15 +347,32 @@ public class ai_alarm extends Activity {
                     rington_show.setText(index);
                 }
             }
-        }else if (resultCode == 3){
+        }
+        if (resultCode == 3){
             if (requestCode == 1){
                 CheckBox groupbox = findViewById(R.id.group_checkbox);
                 idlist = data.getStringExtra("idlist");
-                if (idlist != null || !idlist.equals("")){
+                Log.d("idlist",":"+idlist);
+                if (!idlist.equals("")){
                     groupbox.setChecked(true);
+                }else {
+                    groupbox.setChecked(false);
                 }
             }
         }
+        if (resultCode == 4){
+            if (requestCode == 1){
+                CheckBox manageb = findViewById(R.id.ai_manage_checkbox);
+                smartlist = data.getStringExtra("switchb");
+                Log.d("smartlist",":"+smartlist);
+                if (!smartlist.equals("0  0  ") ){
+                    manageb.setChecked(true);
+                }else if(smartlist.equals("0  0  ")){
+                    manageb.setChecked(false);
+                }
+            }
+        }
+
     }
 
     //點擊空白處隱藏鍵盤
