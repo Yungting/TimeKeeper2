@@ -51,10 +51,13 @@ public class setting_setup extends AppCompatActivity {
     View timekeeper_logo;
 
     // hamburger
-    Button menu, sign_out, edit_btn, save_btn, date_btn;
+    Button menu, sign_out, edit_btn, save_btn, date_btn,clear;
     PopupWindow popupWindow;
     TextView name, mail, pwd, gender, birth, job;
+
+
     EditText name_edit, birthday_edit, pwd_edit;
+
     LinearLayout show_layout, edit_layout, show_btn_layout, edit_btn_layout;
     RadioGroup gender_edit;
     RadioButton male,female;
@@ -88,6 +91,7 @@ public class setting_setup extends AppCompatActivity {
         edit_layout = findViewById(R.id.edit_layout);
         show_btn_layout = findViewById(R.id.show_btn_layout);
         edit_btn_layout = findViewById(R.id.edit_btn_latout);
+        clear = findViewById(R.id.btn_clear);
 
         final Connect_To_Server edit_data  = new Connect_To_Server();
 
@@ -175,7 +179,16 @@ public class setting_setup extends AppCompatActivity {
                 name_edit.setVisibility(View.GONE);
             }
         });
-
+        clear.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                name_edit.setText("");
+                pwd_edit.setText("");
+                birthday_edit.setText("");
+                gender_edit.check(R.id.radioButton);
+                spinner.setSelection(0);
+            }
+        });
 
         final String u_id = getSharedPreferences(KEY, MODE_PRIVATE).getString("u_id", null);
         final Bitmap[] img = new Bitmap[1];

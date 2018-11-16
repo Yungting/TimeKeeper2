@@ -20,6 +20,7 @@ public class ShadowTransformer implements ViewPager.OnPageChangeListener, ViewPa
     private CardAdapter mAdapter;
     private float mLastOffset;
     private boolean mScalingEnabled;
+    int[] switchb = new int[2];
 
 
     public ShadowTransformer(ViewPager viewPager, CardAdapter adapter) {
@@ -89,10 +90,13 @@ public class ShadowTransformer implements ViewPager.OnPageChangeListener, ViewPa
                 if (b) {
                     switch1.getThumbDrawable().setColorFilter(Color.rgb( 33, 130, 185), PorterDuff.Mode.MULTIPLY);
                     switch1.getTrackDrawable().setColorFilter(Color.argb( 100,255, 255, 255), PorterDuff.Mode.MULTIPLY);
+                    switchb[0] = 1;
                 }else {
                     switch1.getThumbDrawable().setColorFilter(Color.WHITE, PorterDuff.Mode.MULTIPLY);
                     switch1.getTrackDrawable().setColorFilter(Color.BLACK, PorterDuff.Mode.MULTIPLY);
+                    switchb[0] = 0;
                 }
+                sbar();
             }
         });
 
@@ -103,10 +107,13 @@ public class ShadowTransformer implements ViewPager.OnPageChangeListener, ViewPa
                 if (b) {
                     switch2.getThumbDrawable().setColorFilter(Color.rgb( 255, 64, 129), PorterDuff.Mode.MULTIPLY);
                     switch2.getTrackDrawable().setColorFilter(Color.argb( 100,255, 255, 255), PorterDuff.Mode.MULTIPLY);
+                    switchb[1] = 1;
                 }else {
                     switch2.getThumbDrawable().setColorFilter(Color.WHITE, PorterDuff.Mode.MULTIPLY);
                     switch2.getTrackDrawable().setColorFilter(Color.BLACK, PorterDuff.Mode.MULTIPLY);
+                    switchb[1] = 0;
                 }
+                sbar();
             }
         });
 
@@ -147,5 +154,13 @@ public class ShadowTransformer implements ViewPager.OnPageChangeListener, ViewPa
     @Override
     public void onPageScrollStateChanged(int state) {
 
+    }
+
+    public int[] sbar(){
+        return switchb;
+    }
+
+    public String setcheck(String a){
+        return a;
     }
 }

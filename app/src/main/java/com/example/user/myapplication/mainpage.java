@@ -3,13 +3,17 @@ package com.example.user.myapplication;
 import android.Manifest;
 import android.app.Activity;
 import android.app.AlarmManager;
+import android.app.AlertDialog;
 import android.app.AppOpsManager;
 import android.app.PendingIntent;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
+import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.support.v4.app.ActivityCompat;
@@ -53,6 +57,8 @@ public class mainpage extends Activity implements RecyclerTouchListener.Recycler
     FrameLayout frame_layout;
     CrossView crossView;
     int[] itemlist = new int[50];
+    AlertDialog dialog;
+    DB_usage db;
 
     // footer
     public static final int TYPE_FOOTER = 1;  //说明是带有Footer的
@@ -129,28 +135,6 @@ public class mainpage extends Activity implements RecyclerTouchListener.Recycler
         textView3 = findViewById(R.id.textView3);
         textView3.setText("當跳出頁面後就無法修改囉！！\n");
 
-        // 選單彈跳
-        menu = findViewById(R.id.menu);
-        menu.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (popupWindow == null) {
-                    showPopupWindow show = new showPopupWindow(mainpage.this, getSharedPreferences(KEY, MODE_PRIVATE).getString("u_id", null));
-                    try {
-                        show.showPopupWindow(menu);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                    //showPopupWindow();
-                } else if (popupWindow.isShowing()) {
-                    popupWindow.dismiss();
-                } else {
-                    popupWindow.showAsDropDown(menu, 0, -155);
-                }
-            }
-        });
-
-
         String user = getSharedPreferences(KEY, MODE_PRIVATE).getString("u_id", null);
         String pwd = getSharedPreferences(KEY, MODE_PRIVATE).getString("u_pwd", null);
         Log.d("測試", "暫存" + user + "/" + pwd);
@@ -158,37 +142,6 @@ public class mainpage extends Activity implements RecyclerTouchListener.Recycler
             Intent intent = new Intent(this, login.class);
             startActivity(intent);
         }
-
-        //Permission
-        if (!isAccessGranted()) {
-            startActivity(new Intent(Settings.ACTION_USAGE_ACCESS_SETTINGS));
-        }
-
-
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO)
-                != PackageManager.PERMISSION_GRANTED) {
-
-            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.RECORD_AUDIO}, BuildDev.RECORD_AUDIO);
-        }
-        int permission = ActivityCompat.checkSelfPermission(this,
-                Manifest.permission.READ_EXTERNAL_STORAGE);
-        if (permission != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(this, new String[]{READ_EXTERNAL_STORAGE}, REQUEST_EXTERNAL_STORAGE);
-        }
-
-
-        //設定增加的子按鈕顯示或隱藏
-        add_btn.setOnClickListener(new View.OnClickListener() {
-
-            @Override
-            public void onClick(View view) {
-                if (normal_layout.getVisibility() == View.VISIBLE && ai_layout.getVisibility() == View.VISIBLE && counter_layout.getVisibility() == View.VISIBLE) {
-                    closeMenu();
-                } else {
-                    openMenu();
-                }
-            }
-        });
 
         normal_btn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -209,6 +162,7 @@ public class mainpage extends Activity implements RecyclerTouchListener.Recycler
         service.putExtra("my_id", user);
         startService(service);
         Log.d("背景", "測試");
+
         //recyclerview
         unclickableRows = new ArrayList<>();
         unswipeableRows = new ArrayList<>();
@@ -279,6 +233,8 @@ public class mainpage extends Activity implements RecyclerTouchListener.Recycler
                 });
     }
 
+
+
     //設定add btn的顯示與隱藏
     private void openMenu() {
         mRecyclerView.setLayoutFrozen(true);
@@ -302,12 +258,107 @@ public class mainpage extends Activity implements RecyclerTouchListener.Recycler
     @Override
     protected void onResume() {
         super.onResume();
+        checkusage();
+        mAdapter = new MainAdapter(this, getData());
+        mRecyclerView.setAdapter(mAdapter);
+        mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         mRecyclerView.addOnItemTouchListener(onTouchListener);
+
+        // 選單彈跳
+        menu = findViewById(R.id.menu);
+        menu.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (popupWindow == null) {
+                    showPopupWindow show = new showPopupWindow(mainpage.this, getSharedPreferences(KEY, MODE_PRIVATE).getString("u_id", null));
+                    try {
+                        show.showPopupWindow(menu);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                    //showPopupWindow();
+                } else if (popupWindow.isShowing()) {
+                    popupWindow.dismiss();
+                } else {
+                    popupWindow.showAsDropDown(menu, 0, -155);
+                }
+            }
+        });
+
+        //設定增加的子按鈕顯示或隱藏
+        add_btn.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View view) {
+                if (normal_layout.getVisibility() == View.VISIBLE && ai_layout.getVisibility() == View.VISIBLE && counter_layout.getVisibility() == View.VISIBLE) {
+                    closeMenu();
+                } else {
+                    openMenu();
+                }
+            }
+        });
+
+        //Permission
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO)
+                != PackageManager.PERMISSION_GRANTED) {
+            if (Build.VERSION.SDK_INT >=  Build.VERSION_CODES.M){
+                if (ActivityCompat.shouldShowRequestPermissionRationale(this,
+                        Manifest.permission.RECORD_AUDIO)) {
+                    final AlertDialog.Builder builder = new AlertDialog.Builder(this);
+                    builder.setMessage("ＡＩ需要開啟麥克風及九軸的權限，才能進行ＡＩ收集！請麻煩一定要開啟權限喔。");
+                    builder.setPositiveButton("我知道了", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            Uri packageURI = Uri.parse("package:" + "com.example.user.timekeeper_testtest");
+                            Intent appintent= new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS, packageURI);
+                            startActivity(appintent);
+                        }
+                    });
+                    dialog = builder.show();
+                    builder.show();
+                }else {
+                    ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.RECORD_AUDIO},
+                            BuildDev.RECORD_AUDIO);
+                }
+            }
+        }
+        int permission = ActivityCompat.checkSelfPermission(this,
+                Manifest.permission.READ_EXTERNAL_STORAGE);
+        if (permission != PackageManager.PERMISSION_GRANTED) {
+            if (Build.VERSION.SDK_INT >=  Build.VERSION_CODES.M){
+                if (ActivityCompat.shouldShowRequestPermissionRationale(this,
+                        Manifest.permission.READ_EXTERNAL_STORAGE)) {
+                    final AlertDialog.Builder builder = new AlertDialog.Builder(this);
+                    builder.setMessage("提供存取權限，才能記錄鬧鐘以及選音樂喔！");
+                    builder.setPositiveButton("我知道了", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            Uri packageURI = Uri.parse("package:" + "com.example.user.timekeeper_testtest");
+                            Intent appintent= new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS, packageURI);
+                            startActivity(appintent);
+                        }
+                    });
+                    dialog = builder.show();
+                    builder.show();
+                }else {
+                    ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
+                            REQUEST_EXTERNAL_STORAGE);
+                }
+            }else {
+                ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
+                        REQUEST_EXTERNAL_STORAGE);
+            }
+        }
+
     }
 
     @Override
     protected void onPause() {
         super.onPause();
+        if (dialog != null && dialog.isShowing()){
+            dialog.dismiss();
+            dialog.cancel();
+        }
         mRecyclerView.removeOnItemTouchListener(onTouchListener);
     }
 
@@ -610,6 +661,24 @@ public class mainpage extends Activity implements RecyclerTouchListener.Recycler
         } catch (PackageManager.NameNotFoundException e) {
             return false;
         }
+    }
+
+    public void checkusage(){
+        db = new DB_usage(this);
+        if (db != null) {
+            Cursor cursor = db.select();
+            if (cursor.getCount() > 0) {
+                for (cursor.moveToFirst(); !cursor.isAfterLast(); cursor.moveToNext()) {
+                    if (cursor.getString(3) == null) {
+                        Intent pageintent = new Intent(this, check.class);
+                        startActivity(pageintent);
+                        db.close();
+                        finish();
+                    }
+                }
+            }
+        }
+        db.close();
     }
 
 }

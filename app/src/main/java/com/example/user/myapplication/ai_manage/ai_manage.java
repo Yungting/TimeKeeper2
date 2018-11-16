@@ -1,23 +1,35 @@
 package com.example.user.myapplication.ai_manage;
 
+import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.os.Bundle;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
+
+import android.util.Log;
+import android.view.KeyEvent;
 import android.widget.ArrayAdapter;
+
 import android.widget.CompoundButton;
 import android.widget.Spinner;
 import android.widget.Switch;
 
 import com.example.user.myapplication.R;
+import com.example.user.myapplication.ai_alarm;
+
+import java.util.ArrayList;
+import java.util.List;
 import com.example.user.myapplication.setting_setup;
+
 
 public class ai_manage extends AppCompatActivity {
     private ViewPager mViewPager;
     private Switch switch1;
     private CardPagerAdapter mCardAdapter;
     private ShadowTransformer mCardShadowTransformer;
+    String smartlist;
+    List<String> slist;
     Spinner spinner_home, spinner_work;
 
     @Override
@@ -56,5 +68,47 @@ public class ai_manage extends AppCompatActivity {
         mViewPager.setPageTransformer(false, mCardShadowTransformer);
         mViewPager.setOffscreenPageLimit(3);
         mCardShadowTransformer.enableScaling(true);
+
+        Intent intent1 = getIntent();
+        slist = new ArrayList<>();
+        if (intent1 != null){
+            smartlist = intent1.getStringExtra("sbar");
+            if (smartlist != null && !smartlist.equals("0  0")){
+                String[] arrays = smartlist.trim().split("\\s+");
+                for(String s : arrays){
+                    slist.add(s);
+                }
+            }
+
+        }
+
+    }
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if (keyCode == KeyEvent.KEYCODE_BACK) {
+            int[] swithb = mCardShadowTransformer.switchb;
+            String sbar = "";
+            for (int i = 0; i < 2 ; i++){
+                sbar = sbar + swithb[i] + "  ";
+            }
+            Intent intent = new Intent(ai_manage.this, ai_alarm.class);
+            intent.putExtra("switchb", sbar);
+            setResult(4, intent);
+            Log.d("ss",":"+sbar);
+            finish();
+        }
+        return false;
+    }
+
+    public void setcheck(String a, String b){
+        final Switch switch1 = mCardAdapter.getCardViewAt(0).findViewById(R.id.switch1);
+        final Switch switch2 = mCardAdapter.getCardViewAt(1).findViewById(R.id.switch1);
+        if (a.equals("1")){
+            switch1.setChecked(true);
+        }else { switch1.setChecked(false); }
+        if (b.equals("1")){
+            switch2.setChecked(true);
+        }else { switch2.setChecked(false); }
     }
 }

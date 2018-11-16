@@ -2,7 +2,9 @@ package com.example.user.myapplication.ai_group;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.content.res.Resources;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -142,7 +144,9 @@ public class ai_alarm_group extends Activity {
             if (img[0] != null) {
                 mbitmapArray.add(img[0]);
             } else {
-                mbitmapArray.add(null);
+                Resources res = getResources();
+                Bitmap logo = BitmapFactory.decodeResource(res, R.drawable.ai_open);
+                mbitmapArray.add(logo);
             }
         }
 

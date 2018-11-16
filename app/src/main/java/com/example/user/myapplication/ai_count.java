@@ -47,6 +47,7 @@ public class ai_count{
     String sql,sqltmp,sql_u,sql_u_tmp,u_id;
     Connect_To_Server connecting;
     Context record ;
+    data_img_prediction produce_img;
 
     public void record(Context context){
         this.record = context;
@@ -85,6 +86,7 @@ public class ai_count{
         sql_u_tmp = new String();
         u_id = new String();
         connecting = new Connect_To_Server();
+        produce_img = new data_img_prediction();
 
         u_id = record.getSharedPreferences(KEY,MODE_PRIVATE).getString("u_id",null);
 
@@ -192,6 +194,18 @@ public class ai_count{
             }
         });
         thread_check_time.start();
+        try {
+            thread_check_time.join();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        Thread produce = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                produce_img.produce_img(String.valueOf(time));
+            }
+        });
+        produce.start();
     }
     public void CheckState_SubmitRecord(){
         Thread thread_check_state = new Thread(new Runnable() {
