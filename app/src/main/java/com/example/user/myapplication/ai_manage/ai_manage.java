@@ -9,8 +9,10 @@ import android.support.v7.app.AppCompatActivity;
 
 import android.util.Log;
 import android.view.KeyEvent;
+import android.view.View;
 import android.widget.ArrayAdapter;
 
+import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.Spinner;
 import android.widget.Switch;
@@ -64,12 +66,6 @@ public class ai_manage extends AppCompatActivity {
 
 
         mCardShadowTransformer = new ShadowTransformer(mViewPager, mCardAdapter);
-
-        mViewPager.setAdapter(mCardAdapter);
-        mViewPager.setPageTransformer(false, mCardShadowTransformer);
-        mViewPager.setOffscreenPageLimit(3);
-        mCardShadowTransformer.enableScaling(true);
-
         Intent intent1 = getIntent();
         slist = new ArrayList<>();
         if (intent1 != null){
@@ -83,23 +79,29 @@ public class ai_manage extends AppCompatActivity {
 
         }
 
-    }
+        mViewPager.setAdapter(mCardAdapter);
+        mViewPager.setPageTransformer(false, mCardShadowTransformer);
+        mViewPager.setOffscreenPageLimit(3);
+        mCardShadowTransformer.enableScaling(true);
+        mCardShadowTransformer.setcheck(slist.get(0), slist.get(1));
 
-    @Override
-    public boolean onKeyDown(int keyCode, KeyEvent event) {
-        if (keyCode == KeyEvent.KEYCODE_BACK) {
-            int[] swithb = mCardShadowTransformer.switchb;
-            String sbar = "";
-            for (int i = 0; i < 2 ; i++){
-                sbar = sbar + swithb[i] + "  ";
+        Button save = findViewById(R.id.btn_save);
+        save.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                int[] swithb = mCardShadowTransformer.switchb;
+                String sbar = "";
+                for (int i = 0; i < 2 ; i++){
+                    sbar = sbar + swithb[i] + "  ";
+                }
+                Intent intent = new Intent(ai_manage.this, ai_alarm.class);
+                intent.putExtra("switchb", sbar);
+                setResult(4, intent);
+                Log.d("ss",":"+sbar);
+                finish();
             }
-            Intent intent = new Intent(ai_manage.this, ai_alarm.class);
-            intent.putExtra("switchb", sbar);
-            setResult(4, intent);
-            Log.d("ss",":"+sbar);
-            finish();
-        }
-        return false;
+        });
+
     }
 
     public void setcheck(String a, String b){
