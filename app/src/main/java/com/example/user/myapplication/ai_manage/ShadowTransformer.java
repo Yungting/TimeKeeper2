@@ -27,6 +27,7 @@ public class ShadowTransformer implements ViewPager.OnPageChangeListener, ViewPa
         mViewPager = viewPager;
         viewPager.addOnPageChangeListener(this);
         mAdapter = adapter;
+
     }
 
     public void enableScaling(boolean enable) {
@@ -160,7 +161,21 @@ public class ShadowTransformer implements ViewPager.OnPageChangeListener, ViewPa
         return switchb;
     }
 
-    public String setcheck(String a){
-        return a;
+    public void setcheck(String a, String b){
+        final Switch switch1 = mAdapter.getCardViewAt(0).findViewById(R.id.switch1);
+        final Switch switch2 = mAdapter.getCardViewAt(1).findViewById(R.id.switch1);
+        if (a.equals("1")){
+            switch1.setChecked(true);
+            switchb[0] = 1;
+        }else {
+            switchb[0] = 0;
+        }
+        if (b.equals("1")){
+            switch2.setChecked(true);
+            switchb[1] = 1;
+        }else {
+            switchb[1] = 0;
+        }
+        sbar();
     }
 }
