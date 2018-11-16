@@ -21,12 +21,16 @@ public class ShadowTransformer implements ViewPager.OnPageChangeListener, ViewPa
     private float mLastOffset;
     private boolean mScalingEnabled;
     int[] switchb = new int[2];
+    String status_1 ;
+    String status_2 ;
 
 
-    public ShadowTransformer(ViewPager viewPager, CardAdapter adapter) {
+    public ShadowTransformer(ViewPager viewPager, CardAdapter adapter,String status_1,String status_2) {
         mViewPager = viewPager;
         viewPager.addOnPageChangeListener(this);
         mAdapter = adapter;
+        this.status_2 = status_2;
+        this.status_1 = status_1;
 
     }
 
@@ -85,6 +89,13 @@ public class ShadowTransformer implements ViewPager.OnPageChangeListener, ViewPa
 
         //修改switch的顏色
         final Switch switch1 = mAdapter.getCardViewAt(0).findViewById(R.id.switch1);
+        if (status_1.equals("1")){
+            switch1.setChecked(true);
+            Log.d("傳值","成功");
+            switchb[0] = 1;
+        }else {
+            switchb[0] = 0;
+        }
         switch1.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
@@ -92,16 +103,27 @@ public class ShadowTransformer implements ViewPager.OnPageChangeListener, ViewPa
                     switch1.getThumbDrawable().setColorFilter(Color.rgb( 33, 130, 185), PorterDuff.Mode.MULTIPLY);
                     switch1.getTrackDrawable().setColorFilter(Color.argb( 100,255, 255, 255), PorterDuff.Mode.MULTIPLY);
                     switchb[0] = 1;
+                    status_1 = "1";
                 }else {
                     switch1.getThumbDrawable().setColorFilter(Color.WHITE, PorterDuff.Mode.MULTIPLY);
                     switch1.getTrackDrawable().setColorFilter(Color.BLACK, PorterDuff.Mode.MULTIPLY);
                     switchb[0] = 0;
+                    status_1 = "0";
                 }
                 sbar();
             }
         });
 
         final Switch switch2 = mAdapter.getCardViewAt(1).findViewById(R.id.switch1);
+        Log.d("傳值","狀態"+status_2);
+        if (status_2.equals("1")){
+            switch2.setChecked(true);
+            switchb[1] = 1;
+            Log.d("傳值","成功");
+        }else {
+            switchb[1] = 0;
+        }
+        //sbar();
         switch2.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
@@ -109,10 +131,12 @@ public class ShadowTransformer implements ViewPager.OnPageChangeListener, ViewPa
                     switch2.getThumbDrawable().setColorFilter(Color.rgb( 255, 64, 129), PorterDuff.Mode.MULTIPLY);
                     switch2.getTrackDrawable().setColorFilter(Color.argb( 100,255, 255, 255), PorterDuff.Mode.MULTIPLY);
                     switchb[1] = 1;
+                    status_2 = "1";
                 }else {
                     switch2.getThumbDrawable().setColorFilter(Color.WHITE, PorterDuff.Mode.MULTIPLY);
                     switch2.getTrackDrawable().setColorFilter(Color.BLACK, PorterDuff.Mode.MULTIPLY);
                     switchb[1] = 0;
+                    status_2 = "0";
                 }
                 sbar();
             }
@@ -162,20 +186,22 @@ public class ShadowTransformer implements ViewPager.OnPageChangeListener, ViewPa
     }
 
     public void setcheck(String a, String b){
-        final Switch switch1 = mAdapter.getCardViewAt(0).findViewById(R.id.switch1);
-        final Switch switch2 = mAdapter.getCardViewAt(1).findViewById(R.id.switch1);
-        if (a.equals("1")){
-            switch1.setChecked(true);
-            switchb[0] = 1;
-        }else {
-            switchb[0] = 0;
-        }
-        if (b.equals("1")){
-            switch2.setChecked(true);
-            switchb[1] = 1;
-        }else {
-            switchb[1] = 0;
-        }
-        sbar();
+        this.status_1 = a;
+        this.status_2 = b;
+//        final Switch switch1 = mAdapter.getCardViewAt(0).findViewById(R.id.switch1);
+//        final Switch switch2 = mAdapter.getCardViewAt(1).findViewById(R.id.switch1);
+//        if (a.equals("1")){
+//            switch1.setChecked(true);
+//            switchb[0] = 1;
+//        }else {
+//            switchb[0] = 0;
+//        }
+//        if (b.equals("1")){
+//            switch2.setChecked(true);
+//            switchb[1] = 1;
+//        }else {
+//            switchb[1] = 0;
+//        }
+//        sbar();
     }
 }

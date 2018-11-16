@@ -64,26 +64,32 @@ public class ai_manage extends AppCompatActivity {
                 "系統將自動幫您關閉當日鬧鐘\n" +
                 "讓您享有一個美好的早晨 : )\n", R.drawable.holiday));
 
-
-        mCardShadowTransformer = new ShadowTransformer(mViewPager, mCardAdapter);
         Intent intent1 = getIntent();
         slist = new ArrayList<>();
         if (intent1 != null){
             smartlist = intent1.getStringExtra("sbar");
+            Log.d("測試smartlist","安安"+smartlist);
             if (smartlist != null && !smartlist.equals("0  0")){
                 String[] arrays = smartlist.trim().split("\\s+");
                 for(String s : arrays){
                     slist.add(s);
                 }
+                Log.d("測試安安","@@"+slist);
+                if(slist != null){
+                    Log.d("測試安安","1:"+slist.get(0));
+                    Log.d("測試安安","2:"+slist.get(1));
+                    //mCardShadowTransformer.setcheck(slist.get(0), slist.get(1));
+                    mCardShadowTransformer = new ShadowTransformer(mViewPager, mCardAdapter,slist.get(0),slist.get(1));
+                }
+            }else {
+                mCardShadowTransformer = new ShadowTransformer(mViewPager, mCardAdapter,"0","0");
             }
-
         }
-
         mViewPager.setAdapter(mCardAdapter);
         mViewPager.setPageTransformer(false, mCardShadowTransformer);
         mViewPager.setOffscreenPageLimit(3);
         mCardShadowTransformer.enableScaling(true);
-        //mCardShadowTransformer.setcheck(slist.get(0), slist.get(1));
+
 
         Button save = findViewById(R.id.btn_save);
         save.setOnClickListener(new View.OnClickListener() {

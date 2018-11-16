@@ -149,6 +149,7 @@ public class ai_alarm extends Activity {
             public void onClick(View view) {
                 Intent intent1 = new Intent(ai_alarm.this, ai_manage.class);
                 intent1.putExtra("sbar", smartlist);
+                Log.d("測試slist","安安"+smartlist);
                 startActivityForResult(intent1, 1);
             }
         });
