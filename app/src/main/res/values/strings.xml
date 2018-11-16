@@ -37,6 +37,7 @@
     <string name="clear">CLEAR</string>
     <string name="about_us">A B O U T</string>
     <string name="find_bug">請大家多多幫我們找bug，歡迎回報</string>
+    <string name="address_warn">*若開啟颱風放假功能，請一定要填<b>「工作與住家縣市」</b></string>
 
 
     <string-array name="career">
@@ -48,6 +49,7 @@
     </string-array>
 
     <string-array name="address">
+        <item>請選擇</item>
         <item>臺北市</item>
         <item>新北市</item>
         <item>桃園市</item>
