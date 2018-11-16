@@ -51,10 +51,13 @@ public class setting_setup extends AppCompatActivity {
     View timekeeper_logo;
 
     // hamburger
-    Button menu, sign_out, edit_btn, save_btn, date_btn;
+    Button menu, sign_out, edit_btn, save_btn, date_btn,clear;
     PopupWindow popupWindow;
     TextView name, mail, pwd, gender, birth, job;
+
+
     EditText name_edit, birthday_edit, pwd_edit;
+
     LinearLayout show_layout, edit_layout, show_btn_layout, edit_btn_layout;
     RadioGroup gender_edit;
     RadioButton male,female;
@@ -88,6 +91,7 @@ public class setting_setup extends AppCompatActivity {
         edit_layout = findViewById(R.id.edit_layout);
         show_btn_layout = findViewById(R.id.show_btn_layout);
         edit_btn_layout = findViewById(R.id.edit_btn_latout);
+        clear = findViewById(R.id.btn_clear);
 
         final Connect_To_Server edit_data  = new Connect_To_Server();
 
@@ -96,17 +100,6 @@ public class setting_setup extends AppCompatActivity {
         ArrayAdapter<CharSequence> careerList = ArrayAdapter.createFromResource(setting_setup.this, R.array.career,
                 android.R.layout.simple_spinner_dropdown_item);
         spinner.setAdapter(careerList);
-        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                //點擊後的動作
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-
-            }
-        });
 
         //生日的輸入框動作
         birthday_edit.setInputType(InputType.TYPE_NULL); //不显示系统输入键盘
@@ -186,7 +179,16 @@ public class setting_setup extends AppCompatActivity {
                 name_edit.setVisibility(View.GONE);
             }
         });
-
+        clear.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                name_edit.setText("");
+                pwd_edit.setText("");
+                birthday_edit.setText("");
+                gender_edit.check(R.id.radioButton);
+                spinner.setSelection(0);
+            }
+        });
 
         final String u_id = getSharedPreferences(KEY, MODE_PRIVATE).getString("u_id", null);
         final Bitmap[] img = new Bitmap[1];
@@ -242,7 +244,7 @@ public class setting_setup extends AppCompatActivity {
                                         } catch (InterruptedException e) {
                                             e.printStackTrace();
                                         }
-                                        sticker.setBackgroundResource(R.drawable.ai_open);
+                                        sticker.setBackgroundResource(R.drawable.logo_small);
                                     }
                                 }).show();
 

@@ -7,22 +7,19 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 
-public class delete_img {
+public class data_img_prediction {
     private int serverResponseCode = 0;
     //private ProgressDialog dialog = null;
     private String upLoadServerUri;
 
-    public int deleteFile(final String user_id) {
+    public int produce_img(final String alarm_time) {
 
-        upLoadServerUri = "http://140.127.218.207:80/delete_img.php";
+        upLoadServerUri = "http://140.127.218.207:80/produce_data_img.php";
         HttpURLConnection conn = null;
         DataOutputStream dos = null;
         String lineEnd = "\r\n";
         String twoHyphens = "--";
         String boundary = "*****";
-        int bytesRead, bytesAvailable, bufferSize;
-        byte[] buffer;
-        int maxBufferSize = 1 * 1024 * 1024;
         //dialog = new ProgressDialog(context.getApplicationContext());
 
         try {
@@ -44,12 +41,13 @@ public class delete_img {
 
             dos.writeBytes(twoHyphens + boundary + lineEnd);
 
+
             //adding parameter
-            final String description =user_id+".png";
+
             //Send parameter #name
-            dos.writeBytes("Content-Disposition: form-data; name='description'" + lineEnd);
+            dos.writeBytes("Content-Disposition: form-data; name='alarm_time'" + lineEnd);
             dos.writeBytes(lineEnd);
-            dos.writeBytes(description + lineEnd);
+            dos.writeBytes(alarm_time + lineEnd);
             dos.writeBytes(twoHyphens + boundary + lineEnd);
 
 
@@ -60,7 +58,7 @@ public class delete_img {
             Log.i("uploadFile", "HTTP Response is : "
                     + serverResponseMessage + ": " + serverResponseCode);
             if(serverResponseCode == 200) {
-                Log.d("成功", "照片刪除");
+                Log.d("成功", "成功製圖");
             }else{
                 Log.d("失敗","失敗："+serverResponseCode);
             }
