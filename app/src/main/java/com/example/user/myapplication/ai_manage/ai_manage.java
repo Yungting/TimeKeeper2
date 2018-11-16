@@ -64,6 +64,7 @@ public class ai_manage extends AppCompatActivity {
                 "系統將自動幫您關閉當日鬧鐘\n" +
                 "讓您享有一個美好的早晨 : )\n", R.drawable.holiday));
 
+
         mCardShadowTransformer = new ShadowTransformer(mViewPager, mCardAdapter);
         Intent intent1 = getIntent();
         slist = new ArrayList<>();
