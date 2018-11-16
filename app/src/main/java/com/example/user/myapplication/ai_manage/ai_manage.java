@@ -82,7 +82,7 @@ public class ai_manage extends AppCompatActivity {
         mViewPager.setPageTransformer(false, mCardShadowTransformer);
         mViewPager.setOffscreenPageLimit(3);
         mCardShadowTransformer.enableScaling(true);
-        mCardShadowTransformer.setcheck(slist.get(0), slist.get(1));
+        //mCardShadowTransformer.setcheck(slist.get(0), slist.get(1));
 
         Button save = findViewById(R.id.btn_save);
         save.setOnClickListener(new View.OnClickListener() {
