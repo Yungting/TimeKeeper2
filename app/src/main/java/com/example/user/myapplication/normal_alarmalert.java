@@ -103,12 +103,6 @@ public class normal_alarmalert extends AppCompatActivity {
             public void onClick(DialogInterface dialog, int which) {
                 mp.stop();
                 h.removeCallbacksAndMessages(null);
-                Calendar cd = Calendar.getInstance();
-                cd.setTimeInMillis(System.currentTimeMillis());
-                long time = cd.getTimeInMillis();
-                Log.d("alert", "time"+time);
-                ai_count.clock_count++;//1017
-                send();
                 finish();
             }
         });

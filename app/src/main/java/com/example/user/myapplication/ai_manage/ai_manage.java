@@ -76,10 +76,11 @@ public class ai_manage extends AppCompatActivity {
                 }
                 Log.d("測試安安","@@"+slist);
                 if(slist != null){
-                    Log.d("測試安安","1:"+slist.get(0));
-                    Log.d("測試安安","2:"+slist.get(1));
-                    //mCardShadowTransformer.setcheck(slist.get(0), slist.get(1));
-                    mCardShadowTransformer = new ShadowTransformer(mViewPager, mCardAdapter,slist.get(0),slist.get(1));
+                    mCardShadowTransformer = new ShadowTransformer(mViewPager, mCardAdapter,slist.get(2),slist.get(3));
+                    int s_home = careerList1.getPosition(slist.get(0));
+                    spinner_home.setSelection(s_home);
+                    int s_work = careerList2.getPosition(slist.get(1));
+                    spinner_work.setSelection(s_work);
                 }
             }else {
                 mCardShadowTransformer = new ShadowTransformer(mViewPager, mCardAdapter,"0","0");
@@ -96,10 +97,13 @@ public class ai_manage extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 int[] swithb = mCardShadowTransformer.switchb;
-                String sbar = "";
+                String home = spinner_home.getSelectedItem().toString();
+                String work = spinner_work.getSelectedItem().toString();
+                String sbar = " " + home + " " + work + " ";
                 for (int i = 0; i < 2 ; i++){
                     sbar = sbar + swithb[i] + "  ";
                 }
+
                 Intent intent = new Intent(ai_manage.this, ai_alarm.class);
                 intent.putExtra("switchb", sbar);
                 setResult(4, intent);
@@ -108,16 +112,6 @@ public class ai_manage extends AppCompatActivity {
             }
         });
 
-    }
 
-    public void setcheck(String a, String b){
-        final Switch switch1 = mCardAdapter.getCardViewAt(0).findViewById(R.id.switch1);
-        final Switch switch2 = mCardAdapter.getCardViewAt(1).findViewById(R.id.switch1);
-        if (a.equals("1")){
-            switch1.setChecked(true);
-        }else { switch1.setChecked(false); }
-        if (b.equals("1")){
-            switch2.setChecked(true);
-        }else { switch2.setChecked(false); }
     }
 }

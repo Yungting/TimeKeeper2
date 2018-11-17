@@ -91,10 +91,13 @@ public class ShadowTransformer implements ViewPager.OnPageChangeListener, ViewPa
         final Switch switch1 = mAdapter.getCardViewAt(0).findViewById(R.id.switch1);
         if (status_1.equals("1")){
             switch1.setChecked(true);
-            Log.d("傳值","成功");
             switchb[0] = 1;
+            switch1.getThumbDrawable().setColorFilter(Color.rgb( 33, 130, 185), PorterDuff.Mode.MULTIPLY);
+            switch1.getTrackDrawable().setColorFilter(Color.argb( 100,255, 255, 255), PorterDuff.Mode.MULTIPLY);
         }else {
             switchb[0] = 0;
+            switch1.getThumbDrawable().setColorFilter(Color.WHITE, PorterDuff.Mode.MULTIPLY);
+            switch1.getTrackDrawable().setColorFilter(Color.BLACK, PorterDuff.Mode.MULTIPLY);
         }
         switch1.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
@@ -119,9 +122,12 @@ public class ShadowTransformer implements ViewPager.OnPageChangeListener, ViewPa
         if (status_2.equals("1")){
             switch2.setChecked(true);
             switchb[1] = 1;
-            Log.d("傳值","成功");
+            switch2.getThumbDrawable().setColorFilter(Color.rgb( 255, 64, 129), PorterDuff.Mode.MULTIPLY);
+            switch2.getTrackDrawable().setColorFilter(Color.argb( 100,255, 255, 255), PorterDuff.Mode.MULTIPLY);
         }else {
             switchb[1] = 0;
+            switch2.getThumbDrawable().setColorFilter(Color.WHITE, PorterDuff.Mode.MULTIPLY);
+            switch2.getTrackDrawable().setColorFilter(Color.BLACK, PorterDuff.Mode.MULTIPLY);
         }
         //sbar();
         switch2.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {

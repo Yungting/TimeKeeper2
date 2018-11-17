@@ -32,7 +32,9 @@ import android.widget.TimePicker;
 import com.example.user.myapplication.ai_manage.ai_manage;
 import com.example.user.myapplication.ai_group.ai_alarm_group;
 
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.List;
 
 import static com.example.user.myapplication.hideinput.hideSoftInput;
 import static com.example.user.myapplication.hideinput.isShouldHideInput;
@@ -361,19 +363,27 @@ public class ai_alarm extends Activity {
                 }
             }
         }
-        if (resultCode == 4){
-            if (requestCode == 1){
+        if (resultCode == 4) {
+            if (requestCode == 1) {
                 CheckBox manageb = findViewById(R.id.ai_manage_checkbox);
                 smartlist = data.getStringExtra("switchb");
-                Log.d("smartlist",":"+smartlist);
-                if (!smartlist.equals("0  0  ") ){
+                List<String> slist;
+                slist = new ArrayList<>();
+                Log.d("smartlist", ":" + smartlist);
+                if (smartlist != null && !smartlist.equals("0  0")) {
+                    String[] arrays = smartlist.trim().split("\\s+");
+                    for (String s : arrays) {
+                        slist.add(s);
+                    }
+                }
+                Log.d("測試安安", "@@" + slist);
+                if (!slist.get(2).equals("0") || !slist.get(3).equals("0")) {
                     manageb.setChecked(true);
-                }else if(smartlist.equals("0  0  ")){
+                } else {
                     manageb.setChecked(false);
                 }
             }
         }
-
     }
 
     //點擊空白處隱藏鍵盤
