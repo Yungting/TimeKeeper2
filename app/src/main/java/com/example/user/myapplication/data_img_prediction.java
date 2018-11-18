@@ -14,6 +14,7 @@ public class data_img_prediction {
     private int serverResponseCode = 0;
     //private ProgressDialog dialog = null;
     private String upLoadServerUri;
+    public String AI_response;
 
     public int produce_img(final String alarm_time) {
 
@@ -71,6 +72,7 @@ public class data_img_prediction {
                 reader.close();
                 Log.d("成功", "成功製圖");
                 Log.d("成功", "主機回傳結果："+sb.toString());
+                AI_response = sb.toString();
             }else{
                 Log.d("失敗","失敗："+serverResponseCode);
             }
