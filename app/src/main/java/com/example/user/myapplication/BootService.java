@@ -52,14 +52,23 @@ public class BootService extends Service {
             Long t = Long.parseLong(creq.getString(6));
             cal.setTimeInMillis(t);
             Boolean ifrepeat;
+            String type;
+            Intent intent1;
             if (creq.getString(4).equals("0")){
                 ifrepeat = false;
             }else {
                 ifrepeat = true;
             }
+            if (creq.getString(7).equals("ai")){
+                type = "ai";
+            }else{ type = "normal"; }
             int status = creq.getInt(8);
             AlarmManager alarm = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
-            Intent intent1 = new Intent(BootService.this, normal_alarmalert.class);
+            if (type.equals("ai")){
+                intent1 = new Intent(BootService.this, ai_alarmalert.class);
+            }else {
+                intent1 = new Intent(BootService.this, normal_alarmalert.class);
+            }
             intent1.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             intent1.putExtra("requestcode", req);
             PendingIntent pi1 = PendingIntent.getActivity(this, req, intent1, PendingIntent.FLAG_UPDATE_CURRENT);

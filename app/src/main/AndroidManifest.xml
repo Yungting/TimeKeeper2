@@ -34,6 +34,10 @@
             android:name=".normal_alarmalert"
             android:excludeFromRecents="true"
             android:label="ai_alarmalert" />
+        <activity
+            android:name=".ai_alarmalert"
+            android:excludeFromRecents="true"
+            android:label="ai_alarmalert" />
         <activity android:name=".normal_alarm" />
         <activity android:name=".normal_alarm_music" />
         <activity android:name=".ai_alarm" />
