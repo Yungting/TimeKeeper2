@@ -107,6 +107,7 @@ public class ai_alarmalert extends AppCompatActivity {
                 cd.setTimeInMillis(System.currentTimeMillis());
                 long time = cd.getTimeInMillis();
                 Log.d("alert", "time"+time);
+                Log.d("嗨嗨嗨嗨嗨嗨嗨", "時間時間~~~~~"+time);
                 ai_count.clock_count++;//1017
                 send();
                 finish();

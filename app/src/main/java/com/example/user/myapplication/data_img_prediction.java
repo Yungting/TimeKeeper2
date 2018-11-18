@@ -2,7 +2,10 @@ package com.example.user.myapplication;
 
 import android.util.Log;
 
+import java.io.BufferedReader;
 import java.io.DataOutputStream;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -55,10 +58,19 @@ public class data_img_prediction {
             serverResponseCode = conn.getResponseCode();
             String serverResponseMessage = conn.getResponseMessage();
 
-            Log.i("uploadFile", "HTTP Response is : "
+            Log.d("uploadFile", "HTTP Response is : "
                     + serverResponseMessage + ": " + serverResponseCode);
             if(serverResponseCode == 200) {
+                BufferedReader reader = new BufferedReader(new InputStreamReader(conn.getInputStream(), "UTF-8"));
+                String line;
+                StringBuffer sb = new StringBuffer();
+
+                while((line = reader.readLine()) != null) {
+                    sb.append(line + "\n");
+                }
+                reader.close();
                 Log.d("成功", "成功製圖");
+                Log.d("成功", "主機回傳結果："+sb.toString());
             }else{
                 Log.d("失敗","失敗："+serverResponseCode);
             }
