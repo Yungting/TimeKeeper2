@@ -12,6 +12,8 @@
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
     <uses-permission android:name="android.permission.VIBRATE"/>
+    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
+    <uses-permission android:name="android.permission.EXPAND_STATUS_BAR"/>
 
     <application
         android:allowBackup="true"
@@ -34,6 +36,10 @@
             android:name=".normal_alarmalert"
             android:excludeFromRecents="true"
             android:label="ai_alarmalert" />
+        <activity
+            android:name=".ai_alarmalert"
+            android:excludeFromRecents="true"
+            android:label="ai_alarmalert" />
         <activity android:name=".normal_alarm" />
         <activity android:name=".normal_alarm_music" />
         <activity android:name=".ai_alarm" />
@@ -54,7 +60,8 @@
                 <action android:name="android.intent.action.BOOT_COMPLETED"/>
             </intent-filter>
         </receiver>
-
+        <receiver android:name=".Sleep_NotificationReceiver" />
+        <receiver android:name=".Awake_NotificationReceiver" />
         <service
             android:name=".Friend_Invite_Service"
             android:enabled="true"

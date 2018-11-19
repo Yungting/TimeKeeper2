@@ -1,13 +1,25 @@
 package com.example.user.myapplication;
 
+import android.app.Notification;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.hardware.SensorManager;
+import android.os.Build;
+import android.os.Handler;
 import android.os.PowerManager;
+import android.support.v4.app.NotificationCompat;
+import android.support.v7.app.AlertDialog;
 import android.util.Log;
+import android.view.WindowManager;
 
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
@@ -206,7 +218,190 @@ public class ai_count{
             }
         });
         produce.start();
+        try {
+            produce.join();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        Log.d("回應：","安安"+produce_img.AI_response);
+        if(produce_img.AI_response.equals("1")){
+            Thread update_awake_1 = new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    connecting.connect("insert_sql","UPDATE `screen_record` SET `r_ifawake` = '1' WHERE `screen_record`.`Date` = '"+String.valueOf(time)+"';");
+                }
+            });
+            update_awake_1.start();
+            sendNotification("1",String.valueOf(time));
+        }else{
+            Thread update_awake_0 = new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    connecting.connect("insert_sql","UPDATE `screen_record` SET `r_ifawake` = '0' WHERE `screen_record`.`Date` = '"+String.valueOf(time)+"';");
+                }
+            });
+            update_awake_0.start();
+            sendNotification("0",String.valueOf(time));
+//            final AlertDialog alert = new AlertDialog.Builder(record).setTitle("貪睡提醒!!!")
+//                    .setMessage("TimeKeeper認為您還在賴床，於稍等將再為您設一個鬧鐘！如果已經醒來的話，請按我已起床。")
+//                    .setNegativeButton("我已起床!", new DialogInterface.OnClickListener() {
+//                        @Override
+//                        public void onClick(DialogInterface dialog, int which) {
+//                            Thread update_awake_1 = new Thread(new Runnable() {
+//                                @Override
+//                                public void run() {
+//                                    connecting.connect("insert_sql","UPDATE `screen_record` SET `r_ifawake` = '1' WHERE `screen_record`.`Date` = '"+String.valueOf(time)+"';");
+//                                }
+//                            });
+//                            update_awake_1.start();
+//                        }
+//                    })
+//                    .create();
+//            alert.getWindow().setType(WindowManager.LayoutParams.TYPE_SYSTEM_ALERT);
+//            alert.show();
+//            new Handler().postDelayed(new Runnable() {
+//                @Override
+//                public void run() {
+//                    alert.dismiss();
+//                }
+//            }, 10000);
+        }
     }
+
+
+
+    protected void sendNotification(String awake,String alarmtime){
+
+        int notification_num = 2;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+
+            String channel_id = "TimeKeeper 智慧時間管家";
+            NotificationChannel channelFriend = new NotificationChannel(
+                    channel_id,
+                    "AI判斷",
+                    NotificationManager.IMPORTANCE_HIGH);
+            channelFriend.setDescription("TimeKeeper 時間管家：判斷你是否起床");
+            channelFriend.enableLights(true);
+            channelFriend.enableVibration(true);
+
+
+            NotificationManager manager = (NotificationManager)
+                    record.getSystemService(Context.NOTIFICATION_SERVICE);
+            manager.createNotificationChannel(channelFriend);
+            if (awake.equals("0")){
+                final Intent sleep_Intent = new Intent(record, Sleep_NotificationReceiver.class); // 通知的的Intent
+                sleep_Intent.putExtra("alarmtime",alarmtime); // 傳入通知的識別號碼
+                sleep_Intent.putExtra("cancel_notify_id", notification_num);
+                int flags = PendingIntent.FLAG_ONE_SHOT; // ONE_SHOT：PendingIntent只使用一次；CANCEL_CURRENT：PendingIntent執行前會先結束掉之前的；NO_CREATE：沿用先前的PendingIntent，不建立新的PendingIntent；UPDATE_CURRENT：更新先前PendingIntent所帶的額外資料，並繼續沿用
+                final PendingIntent pendingCancelIntent = PendingIntent.getBroadcast(record, 0, sleep_Intent, flags); // 取得PendingIntent
+
+                final Notification.BigTextStyle bigTextStyle = new Notification.BigTextStyle(); // 建立BigTextStyle
+                bigTextStyle.setBigContentTitle("貪睡提醒!!!!"); // 當BigTextStyle顯示時，用BigTextStyle的setBigContentTitle覆蓋setContentTitle的設定
+                bigTextStyle.bigText("TimeKeeper認為您還在賴床，於稍等將再為您設一個鬧鐘！如果已經醒來的話，請按我已起床。"); // 設定BigTextStyle的文字內容
+
+                Notification.Builder builder =
+                        new Notification.Builder(record)
+                                .setSmallIcon(R.drawable.ai_alarm_btn)
+                                .setContentTitle("貪睡提醒!!!!")
+                                .setContentText("TimeKeeper認為您還在賴床，於稍等將再為您設一個鬧鐘！如果已經醒來的話，請按我已起床。")
+                                .addAction(R.drawable.ai_open,"我已起床",pendingCancelIntent)
+                                .setStyle(bigTextStyle)
+                                .setChannelId(channel_id);
+                manager.notify(notification_num, builder.build());
+                notification_num++;
+            }else{
+
+                final Intent awake_Intent = new Intent(record, Awake_NotificationReceiver.class); // 取消通知的的Intent
+                awake_Intent.putExtra("alarmtime",alarmtime); // 傳入通知的識別號碼
+                awake_Intent.putExtra("cancel_notify_id", notification_num);
+                int flags = PendingIntent.FLAG_ONE_SHOT; // ONE_SHOT：PendingIntent只使用一次；CANCEL_CURRENT：PendingIntent執行前會先結束掉之前的；NO_CREATE：沿用先前的PendingIntent，不建立新的PendingIntent；UPDATE_CURRENT：更新先前PendingIntent所帶的額外資料，並繼續沿用
+                final PendingIntent pendingCancelIntent = PendingIntent.getBroadcast(record, 0, awake_Intent, flags); // 取得PendingIntent
+
+
+                final Notification.BigTextStyle bigTextStyle = new Notification.BigTextStyle(); // 建立BigTextStyle
+                bigTextStyle.setBigContentTitle("恭喜起床!!"); // 當BigTextStyle顯示時，用BigTextStyle的setBigContentTitle覆蓋setContentTitle的設定
+                bigTextStyle.bigText("TimeKeeper認為您剛剛已經醒來，如果其實貪睡的話，請按我賴床了。"); // 設定BigTextStyle的文字內容
+
+                Notification.Builder builder =
+                        new Notification.Builder(record)
+                                .setSmallIcon(R.drawable.ai_alarm_btn)
+                                .setContentTitle("恭喜起床!!")
+                                .setContentText("TimeKeeper認為您剛剛已經醒來，如果其實貪睡的話，請按我賴床了。")
+                                .addAction(R.drawable.ai_open,"我賴床了",pendingCancelIntent)
+                                .setStyle(bigTextStyle)
+                                .setChannelId(channel_id);
+                manager.notify(notification_num, builder.build());
+                notification_num++;
+            }
+
+        }else{
+            NotificationCompat.Builder builder =
+                    new NotificationCompat.Builder(record);
+            // 準備設定通知效果用的變數
+            int defaults = 0;
+            // 加入震動效果
+            defaults |= Notification.DEFAULT_VIBRATE;
+            // 加入音效效果
+            defaults |= Notification.DEFAULT_SOUND;
+            // 加入閃燈效果
+            defaults |= Notification.DEFAULT_LIGHTS;
+
+            // 設定通知效果
+            builder.setDefaults(defaults);
+            // 設定小圖示、大圖示、狀態列文字、時間、內容標題、內容訊息和內容額外資訊
+            if (awake.equals("0")){
+                final Intent sleep_Intent = new Intent(record, Sleep_NotificationReceiver.class); // 通知的的Intent
+                sleep_Intent.putExtra("alarmtime",alarmtime); // 傳入通知的識別號碼
+                sleep_Intent.putExtra("cancel_notify_id", notification_num);
+                int flags = PendingIntent.FLAG_ONE_SHOT; // ONE_SHOT：PendingIntent只使用一次；CANCEL_CURRENT：PendingIntent執行前會先結束掉之前的；NO_CREATE：沿用先前的PendingIntent，不建立新的PendingIntent；UPDATE_CURRENT：更新先前PendingIntent所帶的額外資料，並繼續沿用
+                final PendingIntent pendingCancelIntent = PendingIntent.getBroadcast(record, 0, sleep_Intent, flags); // 取得PendingIntent
+
+                final android.support.v4.app.NotificationCompat.BigTextStyle bigTextStyle = new android.support.v4.app.NotificationCompat.BigTextStyle(); // 建立BigTextStyle
+                bigTextStyle.setBigContentTitle("貪睡提醒!!!!"); // 當BigTextStyle顯示時，用BigTextStyle的setBigContentTitle覆蓋setContentTitle的設定
+                bigTextStyle.bigText("TimeKeeper認為您還在賴床，於稍等將再為您設一個鬧鐘！如果已經醒來的話，請按我已起床。"); // 設定BigTextStyle的文字內容
+
+                builder.setSmallIcon(R.drawable.ai_alarm_btn)
+                        .setWhen(System.currentTimeMillis())
+                        .setContentTitle("貪睡提醒!!!!")
+                        .setContentText("TimeKeeper認為您還在賴床，於稍等將再為您設一個鬧鐘！如果已經醒來的話，請按我已起床。")
+                        .setContentInfo("3")
+                        .addAction(R.drawable.ai_open,"我已起床",pendingCancelIntent)
+                        .setStyle(bigTextStyle)
+                        .setAutoCancel(true);
+            }else{
+                final Intent awake_Intent = new Intent(record, Awake_NotificationReceiver.class); // 取消通知的的Intent
+                awake_Intent.putExtra("alarmtime",alarmtime); // 傳入通知的識別號碼
+                awake_Intent.putExtra("cancel_notify_id", notification_num);
+                int flags = PendingIntent.FLAG_ONE_SHOT; // ONE_SHOT：PendingIntent只使用一次；CANCEL_CURRENT：PendingIntent執行前會先結束掉之前的；NO_CREATE：沿用先前的PendingIntent，不建立新的PendingIntent；UPDATE_CURRENT：更新先前PendingIntent所帶的額外資料，並繼續沿用
+                final PendingIntent pendingCancelIntent = PendingIntent.getBroadcast(record, 0, awake_Intent, flags); // 取得PendingIntent
+
+                final android.support.v4.app.NotificationCompat.BigTextStyle bigTextStyle = new android.support.v4.app.NotificationCompat.BigTextStyle(); // 建立BigTextStyle
+                bigTextStyle.setBigContentTitle("恭喜起床!!"); // 當BigTextStyle顯示時，用BigTextStyle的setBigContentTitle覆蓋setContentTitle的設定
+                bigTextStyle.bigText("TimeKeeper認為您剛剛已經醒來，如果其實貪睡的話，請按我賴床了。"); // 設定BigTextStyle的文字內容
+
+
+                builder.setSmallIcon(R.drawable.ai_alarm_btn)
+                        .setWhen(System.currentTimeMillis())
+                        .setContentTitle("恭喜起床!!")
+                        .setContentText("TimeKeeper認為您剛剛已經醒來，如果其實貪睡的話，請按我賴床了。")
+                        .setContentInfo("3")
+                        .setStyle(bigTextStyle)
+                        .addAction(R.drawable.ai_open,"我賴床了",pendingCancelIntent)
+                        .setAutoCancel(true);
+            }
+            // 取得NotificationManager物件
+            NotificationManager manager = (NotificationManager)
+                    record.getSystemService(Context.NOTIFICATION_SERVICE);
+
+            Notification notification = builder.build();
+            manager.notify(notification_num, notification);
+            notification_num++;
+        }
+
+    }
+
+
+
     public void CheckState_SubmitRecord(){
         Thread thread_check_state = new Thread(new Runnable() {
             @Override
@@ -268,6 +463,8 @@ public class ai_count{
         });
         thread_check_state.start();
     }
+
+
     public void startListenAudio() {
         final int Base = 1;
         Thread thread_sound = new Thread(new Runnable() {
@@ -322,6 +519,8 @@ public class ai_count{
         });
         thread_sound.start();
     }
+
+
     private class ScreenBroadReceiver extends BroadcastReceiver {
         private String action = null;
         @Override
