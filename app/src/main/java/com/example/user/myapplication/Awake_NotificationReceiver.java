@@ -7,9 +7,11 @@ import android.content.Intent;
 import android.util.Log;
 
 public class Awake_NotificationReceiver extends BroadcastReceiver {
+    public static boolean user_response = false;
     Connect_To_Server connecting = new Connect_To_Server();
     @Override
     public void onReceive(final Context context, final Intent intent) {
+        user_response = true;
         final int notifyID = intent.getIntExtra("cancel_notify_id", 0);
         final NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE); // 取得系統的通知服務
         notificationManager.cancel(notifyID);

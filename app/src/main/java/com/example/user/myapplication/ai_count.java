@@ -18,6 +18,7 @@ import android.os.Handler;
 import android.os.PowerManager;
 import android.support.v4.app.NotificationCompat;
 import android.support.v7.app.AlertDialog;
+import android.text.format.DateFormat;
 import android.util.Log;
 import android.view.WindowManager;
 
@@ -26,6 +27,9 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Locale;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import static android.content.Context.MODE_PRIVATE;
 import static com.example.user.myapplication.mainpage.KEY;
@@ -242,37 +246,27 @@ public class ai_count{
             });
             update_awake_0.start();
             sendNotification("0",String.valueOf(time));
-//            final AlertDialog alert = new AlertDialog.Builder(record).setTitle("貪睡提醒!!!")
-//                    .setMessage("TimeKeeper認為您還在賴床，於稍等將再為您設一個鬧鐘！如果已經醒來的話，請按我已起床。")
-//                    .setNegativeButton("我已起床!", new DialogInterface.OnClickListener() {
-//                        @Override
-//                        public void onClick(DialogInterface dialog, int which) {
-//                            Thread update_awake_1 = new Thread(new Runnable() {
-//                                @Override
-//                                public void run() {
-//                                    connecting.connect("insert_sql","UPDATE `screen_record` SET `r_ifawake` = '1' WHERE `screen_record`.`Date` = '"+String.valueOf(time)+"';");
-//                                }
-//                            });
-//                            update_awake_1.start();
-//                        }
-//                    })
-//                    .create();
-//            alert.getWindow().setType(WindowManager.LayoutParams.TYPE_SYSTEM_ALERT);
-//            alert.show();
-//            new Handler().postDelayed(new Runnable() {
-//                @Override
-//                public void run() {
-//                    alert.dismiss();
-//                }
-//            }, 10000);
         }
     }
 
-
+    public class SetNewAlarm extends TimerTask
+    {
+        public void run()
+        {
+            //新增一個鬧鐘
+            Timer timer = new Timer(true);
+            if(!Sleep_NotificationReceiver.user_response){
+                Log.d("30秒到","設一個新鬧鐘!!");
+            }
+            timer.cancel();
+        }
+    };
 
     protected void sendNotification(String awake,String alarmtime){
 
         int notification_num = 2;
+
+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
 
             String channel_id = "TimeKeeper 智慧時間管家";
@@ -309,6 +303,7 @@ public class ai_count{
                                 .setChannelId(channel_id);
                 manager.notify(notification_num, builder.build());
                 notification_num++;
+
             }else{
 
                 final Intent awake_Intent = new Intent(record, Awake_NotificationReceiver.class); // 取消通知的的Intent
@@ -397,6 +392,15 @@ public class ai_count{
             manager.notify(notification_num, notification);
             notification_num++;
         }
+        if(awake.equals("0")){
+            Timer timer = new Timer(true);
+            Calendar cal = Calendar.getInstance(Locale.ENGLISH);
+            cal.setTimeInMillis(System.currentTimeMillis()+30000);
+            Date date = cal.getTime();
+            timer.schedule(new SetNewAlarm(), date);
+            Log.d("時間：","應該是30S後"+date);
+        }
+
 
     }
 
