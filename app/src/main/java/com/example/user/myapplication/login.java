@@ -17,6 +17,8 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import com.example.user.myapplication.guide.guide_page;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -112,7 +114,7 @@ public class login extends AppCompatActivity {
                         pref.edit().clear();
                         pref.edit().putString("u_id", db_u_id).putString("u_pwd", db_u_pwd).commit();
 
-                        Intent intent = new Intent(login.this, mainpage.class);
+                        Intent intent = new Intent(login.this, guide_page.class);
                         startActivity(intent);
                     } else {
                         new AlertDialog.Builder(login.this).setTitle("請再試試看").setMessage("帳號或密碼錯誤!!")

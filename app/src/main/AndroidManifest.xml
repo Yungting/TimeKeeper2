@@ -46,7 +46,6 @@
         <activity android:name=".login" />
         <activity android:name=".sign_up" />
         <activity android:name=".forget_pwd" />
-        <activity android:name=".check" />
         <activity android:name=".guide.guide_page"/>
         <activity android:name=".about"/>
 
