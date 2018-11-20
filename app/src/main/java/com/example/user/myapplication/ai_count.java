@@ -1,5 +1,6 @@
 package com.example.user.myapplication;
 
+import android.app.AlarmManager;
 import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
@@ -256,7 +257,14 @@ public class ai_count{
             //新增一個鬧鐘
             Timer timer = new Timer(true);
             if(!Sleep_NotificationReceiver.user_response){
+
                 Log.d("30秒到","設一個新鬧鐘!!");
+                AlarmManager am = (AlarmManager) record.getSystemService(Context.ALARM_SERVICE);
+                long triggertime = System.currentTimeMillis()+300000;
+                Intent intent = new Intent(record, normal_alarmalert.class);
+                PendingIntent op = PendingIntent.getActivity(record, 1, intent ,PendingIntent.FLAG_UPDATE_CURRENT);
+
+                am.setExact(AlarmManager.RTC, triggertime, op);
             }
             timer.cancel();
         }
