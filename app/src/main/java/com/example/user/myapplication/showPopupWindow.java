@@ -20,7 +20,7 @@ public class showPopupWindow extends Activity{
     ImageView photo_sticker;
     PopupWindow popupWindow;
     FrameLayout menu_window;
-    TextView set_up, friend, check, about;
+    TextView set_up, friend, about;
     Bitmap img;
     String user_id;
 
@@ -65,7 +65,6 @@ public class showPopupWindow extends Activity{
 
         set_up = view.findViewById(R.id.set_up);
         friend = view.findViewById(R.id.friend);
-        check = view.findViewById(R.id.check);
         about = view.findViewById(R.id.about);
 
         set_up.setOnClickListener(new View.OnClickListener() {
@@ -81,14 +80,6 @@ public class showPopupWindow extends Activity{
             public void onClick(View v) {
                 Intent intent3 = new Intent(context, setting_friend.class);
                 context.startActivity(intent3);
-            }
-        });
-
-        check.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent2 = new Intent(context, check.class);
-                context.startActivity(intent2);
             }
         });
 

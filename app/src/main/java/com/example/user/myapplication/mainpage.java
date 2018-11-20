@@ -258,7 +258,7 @@ public class mainpage extends Activity implements RecyclerTouchListener.Recycler
     @Override
     protected void onResume() {
         super.onResume();
-        checkusage();
+//        checkusage();
         mAdapter = new MainAdapter(this, getData());
         mRecyclerView.setAdapter(mAdapter);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
@@ -663,22 +663,22 @@ public class mainpage extends Activity implements RecyclerTouchListener.Recycler
         }
     }
 
-    public void checkusage(){
-        db = new DB_usage(this);
-        if (db != null) {
-            Cursor cursor = db.select();
-            if (cursor.getCount() > 0) {
-                for (cursor.moveToFirst(); !cursor.isAfterLast(); cursor.moveToNext()) {
-                    if (cursor.getString(3) == null) {
-                        Intent pageintent = new Intent(this, check.class);
-                        startActivity(pageintent);
-                        db.close();
-                        finish();
-                    }
-                }
-            }
-        }
-        db.close();
-    }
+//    public void checkusage(){
+//        db = new DB_usage(this);
+//        if (db != null) {
+//            Cursor cursor = db.select();
+//            if (cursor.getCount() > 0) {
+//                for (cursor.moveToFirst(); !cursor.isAfterLast(); cursor.moveToNext()) {
+//                    if (cursor.getString(3) == null) {
+//                        Intent pageintent = new Intent(this, check.class);
+//                        startActivity(pageintent);
+//                        db.close();
+//                        finish();
+//                    }
+//                }
+//            }
+//        }
+//        db.close();
+//    }
 
 }
