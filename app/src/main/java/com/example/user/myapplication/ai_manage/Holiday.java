@@ -155,32 +155,36 @@ public class Holiday {
 
     public boolean iftyphoon(String work, String home){
         String info = typhooninfo();
-        String[] in = info.split(" ");
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTimeInMillis(System.currentTimeMillis());
-        int year = calendar.get(Calendar.YEAR);
-        int month = calendar.get(Calendar.MONTH) + 1;
-        int day = calendar.get(Calendar.DAY_OF_MONTH);
-        String today = year +"-"+month+"-"+day;
-        String yesterday = year + "-" + month + "-" + (day-1);
-        if (!in[2].equals("今天") && !in[2].equals("明天")){
-            String[] m = in[0].split("-");
-            String md = m[1]+"/"+m[2];
-            if (in[2].equals(md)){
-                in[2] = "今天";
-            }else {
-                in[2] = "明天";
+        Log.d("info",":"+info);
+        if (info != null){
+            String[] in = info.split(" ");
+            Calendar calendar = Calendar.getInstance();
+            calendar.setTimeInMillis(System.currentTimeMillis());
+            int year = calendar.get(Calendar.YEAR);
+            int month = calendar.get(Calendar.MONTH) + 1;
+            int day = calendar.get(Calendar.DAY_OF_MONTH);
+            String today = year +"-"+month+"-"+day;
+            String yesterday = year + "-" + month + "-" + (day-1);
+            if (!in[2].equals("今天") && !in[2].equals("明天")){
+                String[] m = in[0].split("-");
+                String md = m[1]+"/"+m[2];
+                if (in[2].equals(md)){
+                    in[2] = "今天";
+                }else {
+                    in[2] = "明天";
+                }
             }
-        }
 
-        if (in[0].equals(today) && in[2].equals("今天")){
-            if (work.equals(in[1]) || home.equals(in[1])){
-                return true;
+            if (in[0].equals(today) && in[2].equals("今天")){
+                if (work.equals(in[1]) || home.equals(in[1])){
+                    return true;
+                }
+            }else if (in[0].equals(yesterday) && in[2].equals("明天")){
+                if (work.equals(in[1]) || home.equals(in[1])){
+                    return true;
+                }
             }
-        }else if (in[0].equals(yesterday) && in[2].equals("明天")){
-            if (work.equals(in[1]) || home.equals(in[1])){
-                return true;
-            }
+
         }
 
         return istyphoon;

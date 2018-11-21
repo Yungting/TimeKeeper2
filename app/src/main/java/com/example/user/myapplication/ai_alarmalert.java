@@ -48,11 +48,12 @@ public class ai_alarmalert extends AppCompatActivity {
         if (cursor != null && cursor.moveToFirst()){
             musicpath = cursor.getString(1);
             state = cursor.getInt(8);
-            String group = cursor.getString(9);
+            String group = cursor.getString(10);
+            Log.d("group",":"+group);
             String[] g_div = group.split(" ");
 
             Holiday holiday = new Holiday();
-            if(holiday.isholiday() || !holiday.iftyphoon(g_div[1], g_div[0])){
+            if(holiday.isholiday() || holiday.iftyphoon(g_div[1], g_div[0])){
                 finish();
             }
         }

@@ -143,7 +143,7 @@ public class ai_count{
         fivemin.setTimeInMillis(System.currentTimeMillis());
         Long five = fivemin.getTimeInMillis();
         Calendar fivmin2 = Calendar.getInstance();
-        fivmin2.setTimeInMillis(t+300000);
+        fivmin2.setTimeInMillis(t+60000);
         Long five2 = fivmin2.getTimeInMillis();
         if (five < five2){
             if (isScreenOn == true){
