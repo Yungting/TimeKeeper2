@@ -556,8 +556,10 @@ public class mainpage extends Activity implements RecyclerTouchListener.Recycler
                                     alarm_btn.setBackground(getResources().getDrawable(R.drawable.ai_close));
                                     alarm.setBackground(getResources().getDrawable(R.drawable.mainpage_alarm_background_close));
                                     state = 0;
+                                    db.updatestate(requestcode, state);
+
                                     AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
-                                    Intent intent = new Intent(mainpage.this, normal_alarmalert.class);
+                                    Intent intent = new Intent(mainpage.this, ai_alarmalert.class);
                                     PendingIntent pi = PendingIntent.getActivity(mainpage.this, requestcode, intent, PendingIntent.FLAG_UPDATE_CURRENT);
                                     alarmManager.cancel(pi);
                                     break;
@@ -566,9 +568,10 @@ public class mainpage extends Activity implements RecyclerTouchListener.Recycler
                                     alarm_btn.setBackground(getResources().getDrawable(R.drawable.ai_open));
                                     alarm.setBackground(getResources().getDrawable(R.drawable.mainpage_alarm_background));
                                     state = 1;
-                                    AlarmManager alarm = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
-                                    Intent intent1 = new Intent(mainpage.this, normal_alarmalert.class);
-                                    PendingIntent pi1 = PendingIntent.getActivity(mainpage.this, requestcode, intent1, PendingIntent.FLAG_UPDATE_CURRENT);
+                                    db.updatestate(requestcode, state);
+                                    Intent service = new Intent(mainpage.this, BootService.class);
+                                    service.putExtra("req",requestcode);
+                                    startService(service);
                                     break;
                             }
                         } else {
@@ -588,26 +591,9 @@ public class mainpage extends Activity implements RecyclerTouchListener.Recycler
                                     alarm.setBackground(getResources().getDrawable(R.drawable.mainpage_alarm_background));
                                     state = 1;
                                     db.updatestate(requestcode, state);
-                                    Cursor cursor = db.selectbycode(requestcode);
-                                    if (cursor != null && cursor.moveToFirst()) {
-                                        Boolean ifrepeat = Boolean.parseBoolean(cursor.getString(4));
-                                        AlarmManager alarm = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
-                                        Intent intent1 = new Intent(mainpage.this, normal_alarmalert.class);
-                                        intent1.putExtra("requestcode", requestcode);
-                                        PendingIntent pi1 = PendingIntent.getActivity(mainpage.this, requestcode, intent1, PendingIntent.FLAG_UPDATE_CURRENT);
-                                        if (ifrepeat) {
-                                            Log.d("case", ":repear");
-                                            alarm.setRepeating(AlarmManager.RTC_WAKEUP, Long.parseLong(cursor.getString(6)), 24 * 60 * 60 * 1000, pi1);
-                                        } else {
-                                            if (System.currentTimeMillis() > Long.parseLong(cursor.getString(6))) {
-                                                Log.d("case", ":settmr");
-                                                alarm.setExact(AlarmManager.RTC_WAKEUP, Long.parseLong(cursor.getString(6)) + 24 * 60 * 60 * 1000, pi1);
-                                            } else {
-                                                Log.d("case", ":settoday");
-                                                alarm.setExact(AlarmManager.RTC_WAKEUP, Long.parseLong(cursor.getString(6)), pi1);
-                                            }
-                                        }
-                                    }
+                                    Intent service = new Intent(mainpage.this, BootService.class);
+                                    service.putExtra("req",requestcode);
+                                    startService(service);
                                     break;
                             }
                         }
@@ -623,15 +609,18 @@ public class mainpage extends Activity implements RecyclerTouchListener.Recycler
                 state = rowModel.getState();
                 requestcode = rowModel.getRequestcode();
 
-                if (type.equals("normal")) {
-                    alarm_btn.setBackground(getResources().getDrawable(R.drawable.normal));
-                } else if (type.equals("ai")) {
-                    alarm_btn.setBackground(getResources().getDrawable(R.drawable.ai_open));
-                }
                 if (state == 0) {
                     alarm.setBackground(getResources().getDrawable(R.drawable.mainpage_alarm_background_close));
+                    if (type.equals("ai")){
+                        alarm_btn.setBackground(getResources().getDrawable(R.drawable.ai_close));
+                    }
                 } else {
                     alarm.setBackground(getResources().getDrawable(R.drawable.mainpage_alarm_background));
+                    if (type.equals("normal")) {
+                        alarm_btn.setBackground(getResources().getDrawable(R.drawable.normal));
+                    } else if (type.equals("ai")) {
+                        alarm_btn.setBackground(getResources().getDrawable(R.drawable.ai_open));
+                    }
                 }
             }
         }

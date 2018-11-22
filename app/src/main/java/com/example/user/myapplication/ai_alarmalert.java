@@ -53,11 +53,10 @@ public class ai_alarmalert extends AppCompatActivity {
             if(group != null){
                 Log.d("group",":"+group);
                 g_div = group.split(" ");
-            }
-
-            Holiday holiday = new Holiday();
-            if(holiday.isholiday() || holiday.iftyphoon(g_div[1], g_div[0])){
-                finish();
+                Holiday holiday = new Holiday();
+                if(holiday.isholiday() || holiday.iftyphoon(g_div[1], g_div[0])){
+                    finish();
+                }
             }
         }
 
