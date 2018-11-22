@@ -45,12 +45,15 @@ public class ai_alarmalert extends AppCompatActivity {
         // Set the volume of played media to your choice.
         audioManager.setStreamVolume (AudioManager.STREAM_MUSIC,10,0);
         Cursor cursor = db.selectbycode(requestcode);
+        String[] g_div = new String[0];
         if (cursor != null && cursor.moveToFirst()){
             musicpath = cursor.getString(1);
             state = cursor.getInt(8);
             String group = cursor.getString(10);
-            Log.d("group",":"+group);
-            String[] g_div = group.split(" ");
+            if(group != null){
+                Log.d("group",":"+group);
+                g_div = group.split(" ");
+            }
 
             Holiday holiday = new Holiday();
             if(holiday.isholiday() || holiday.iftyphoon(g_div[1], g_div[0])){
