@@ -229,7 +229,8 @@ public class ai_count{
             e.printStackTrace();
         }
         Log.d("回應：","安安"+produce_img.AI_response);
-        if(produce_img.AI_response.equals("1")){
+        int res = Integer.parseInt(produce_img.AI_response.trim());
+        if(res == 1){
             Thread update_awake_1 = new Thread(new Runnable() {
                 @Override
                 public void run() {
@@ -238,7 +239,7 @@ public class ai_count{
             });
             update_awake_1.start();
             sendNotification("1",String.valueOf(time));
-        }else{
+        }else if (res == 0){
             Thread update_awake_0 = new Thread(new Runnable() {
                 @Override
                 public void run() {
