@@ -56,7 +56,8 @@ public class mainpage extends Activity implements RecyclerTouchListener.Recycler
     LinearLayout normal_layout, ai_layout, counter_layout;
     FrameLayout frame_layout;
     CrossView crossView;
-    int[] itemlist = new int[50];
+    List<Integer> itemlist = new ArrayList<>();
+    List<Integer> requestcode = new ArrayList<>();
     AlertDialog dialog;
     DB_usage db;
 
@@ -89,7 +90,6 @@ public class mainpage extends Activity implements RecyclerTouchListener.Recycler
     private RecyclerTouchListener onTouchListener;
     private int openOptionsPosition;
     private OnActivityTouchListener touchListener;
-    int[] requestcode = new int[50];
     String[] alarmtype = new String[50];
     ImageView photo_sticker;
 
@@ -205,7 +205,7 @@ public class mainpage extends Activity implements RecyclerTouchListener.Recycler
                         } else {
                             intent = new Intent(mainpage.this, ai_alarm.class);
                         }
-                        intent.putExtra("requestcode", requestcode[position]);
+                        intent.putExtra("requestcode", requestcode.get(position));
                         startActivity(intent);
 
                     }
@@ -389,9 +389,9 @@ public class mainpage extends Activity implements RecyclerTouchListener.Recycler
                     }
                     list.add(new mainpage_RowModel(cursor.getString(0), cursor.getString(1), cursor.getString(2), cursor.getInt(3), Boolean.parseBoolean(cursor.getString(4))
                             , cursor.getString(5), time, cursor.getString(7), cursor.getInt(8)));
-                    requestcode[i] = cursor.getInt(3);
+                    requestcode.add(i, cursor.getInt(3));
                     alarmtype[i] = cursor.getString(7);
-                    itemlist[i] = i;
+                    itemlist.add(i, i);
                     i++;
                 }
             }
@@ -481,7 +481,24 @@ public class mainpage extends Activity implements RecyclerTouchListener.Recycler
                     holder.delete.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {
-                            removeData(itemlist[position]);
+                            DB_normal_alarm db = new DB_normal_alarm(mainpage.this);
+                            AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+                            Intent intent = new Intent(mainpage.this, normal_alarmalert.class);
+                            PendingIntent pi = PendingIntent.getActivity(mainpage.this, requestcode.get(position), intent, PendingIntent.FLAG_CANCEL_CURRENT);
+                            alarmManager.cancel(pi);
+                            db.delete(requestcode.get(position));
+                            removeData(itemlist.get(position));
+                            if (db != null) {
+                                Cursor cursor = db.select();
+                                if (cursor.getCount() > 0) {
+                                    int i = 0;
+                                    for (cursor.moveToFirst(); !cursor.isAfterLast(); cursor.moveToNext()) {
+                                        requestcode.add(i, cursor.getInt(3));
+                                        i++;
+                                    }
+                                }
+                            }
+                            db.close();
                         }
                     });
                     return;
@@ -498,14 +515,9 @@ public class mainpage extends Activity implements RecyclerTouchListener.Recycler
             modelList.remove(position);
             //删除动画
             notifyItemRemoved(position);
-            DB_normal_alarm db = new DB_normal_alarm(mainpage.this);
-            AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
-            Intent intent = new Intent(mainpage.this, normal_alarmalert.class);
-            PendingIntent pi = PendingIntent.getActivity(mainpage.this, requestcode[position], intent, PendingIntent.FLAG_UPDATE_CURRENT);
-            alarmManager.cancel(pi);
-            db.delete(requestcode[position]);
-            for (int a = position; itemlist.length >= a; a++) {
-                itemlist[position] = position - 1;
+            notifyItemRemoved(position);
+            for (int a = position+1; (itemlist.size()) > a; a++){
+                itemlist.set(a, itemlist.get(a)-1);
             }
         }
 
@@ -613,6 +625,8 @@ public class mainpage extends Activity implements RecyclerTouchListener.Recycler
                     alarm.setBackground(getResources().getDrawable(R.drawable.mainpage_alarm_background_close));
                     if (type.equals("ai")){
                         alarm_btn.setBackground(getResources().getDrawable(R.drawable.ai_close));
+                    }else{
+                        alarm_btn.setBackground(getResources().getDrawable(R.drawable.normal));
                     }
                 } else {
                     alarm.setBackground(getResources().getDrawable(R.drawable.mainpage_alarm_background));

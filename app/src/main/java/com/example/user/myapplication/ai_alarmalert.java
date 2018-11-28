@@ -69,14 +69,15 @@ public class ai_alarmalert extends AppCompatActivity {
         win.addFlags(WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD | WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED);
         win.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON | WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON);
 
-        detectrepeat(requestcode, cursor);
         db.updatestate(requestcode, state);
         db.close();
+        detectrepeat(requestcode, cursor);
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        Log.d("destory","!!");
         unregisterReceiver(receiver);
         if (mp!=null){
             if (mp.isPlaying()){
@@ -161,6 +162,7 @@ public class ai_alarmalert extends AppCompatActivity {
 
     public void detectrepeat(int requestcode, Cursor cursor) {
         ring(musicpath);
+        state = 0;
     }
 
     public void ring(String musicpath){
