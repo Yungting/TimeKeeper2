@@ -58,7 +58,7 @@ public class ai_alarmalert extends AppCompatActivity {
                 g_div = group.split(" ");
                 Holiday holiday = new Holiday();
                 if(holiday.isholiday() || holiday.iftyphoon(g_div[1], g_div[0])){
-                    finish();
+                    onDestroy();
                 }
             }
         }
