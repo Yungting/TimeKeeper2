@@ -44,6 +44,9 @@ public class ai_alarmalert extends AppCompatActivity {
         AudioManager audioManager =(AudioManager)this.getSystemService(Context.AUDIO_SERVICE);
         // Set the volume of played media to your choice.
         audioManager.setStreamVolume (AudioManager.STREAM_MUSIC,10,0);
+        if (requestcode == 0){
+
+        }
         Cursor cursor = db.selectbycode(requestcode);
         String[] g_div = new String[0];
         if (cursor != null && cursor.moveToFirst()){
@@ -69,9 +72,10 @@ public class ai_alarmalert extends AppCompatActivity {
         win.addFlags(WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD | WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED);
         win.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON | WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON);
 
+        detectrepeat(requestcode, cursor);
         db.updatestate(requestcode, state);
         db.close();
-        detectrepeat(requestcode, cursor);
+
     }
 
     @Override
@@ -122,6 +126,7 @@ public class ai_alarmalert extends AppCompatActivity {
                 Log.d("alert", "time"+time);
                 Log.d("嗨嗨嗨嗨嗨嗨嗨", "時間時間~~~~~"+time);
                 ai_count.clock_count++;//1017
+                ai_count.requestcode = requestcode;
                 send();
                 finish();
             }

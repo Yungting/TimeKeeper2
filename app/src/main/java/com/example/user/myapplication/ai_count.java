@@ -23,11 +23,16 @@ import android.text.format.DateFormat;
 import android.util.Log;
 import android.view.WindowManager;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 import java.util.Locale;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -65,6 +70,7 @@ public class ai_count{
     Connect_To_Server connecting;
     Context record ;
     data_img_prediction produce_img;
+    public static int requestcode;
 
     public void record(Context context){
         this.record = context;
@@ -266,6 +272,7 @@ public class ai_count{
                 PendingIntent op = PendingIntent.getActivity(record, 1, intent ,PendingIntent.FLAG_UPDATE_CURRENT);
 
                 am.setExact(AlarmManager.RTC, triggertime, op);
+
             }
             timer.cancel();
         }
@@ -545,6 +552,44 @@ public class ai_count{
                 state = "false";
             }
         }
+    }
+
+    public int asleeptimes(String date, String user){
+        connecting.connect("select_sql","SELECT asleep FROM `screen_record` WHERE User_id = '"+user+"' AND Date = '"+date+"'");
+        int atimes = 0;
+        try {
+            JSONArray times = new JSONArray(connecting.get_data);
+            int lenght = times.length();
+            for(int i = 0;i < lenght;i++){
+                JSONObject jsonObject = times.getJSONObject(i);
+                atimes = jsonObject.getInt("asleep");
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        return atimes;
+    }
+
+    public void updateasleep(int a, String date, String user){
+        connecting.connect("insert_sql","UPDATE `screen_record` SET `asleep` = '"+ a + "' WHERE `screen_record`.`Date` = '"+date+"' AND `screen_record`.`User_id` = '"+user+"';");
+    }
+
+    public List<String> getfriend(int req){
+        DB_normal_alarm db = new DB_normal_alarm(record);
+        Cursor cursor = db.selectbycode(req);
+        List<String> idlist = null;
+        if (cursor != null && cursor.moveToFirst()){
+            String f = cursor.getString(9);
+            if (f != null && !f.equals("")){
+                String[] arrays = f.trim().split("\\s+");
+                for(String s : arrays){
+                    idlist.add(s);
+                }
+            }
+
+        }
+        return idlist;
     }
 }
 

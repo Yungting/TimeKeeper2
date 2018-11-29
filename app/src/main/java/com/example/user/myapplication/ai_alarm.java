@@ -196,6 +196,18 @@ public class ai_alarm extends Activity {
                 }
             }
         });
+
+        final CheckBox check_group = findViewById(R.id.group_checkbox);
+        check_group.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (!isChecked){
+                    idlist = null;
+                }else if (idlist == null){
+                    check_group.setChecked(false);
+                }
+            }
+        });
     }
 
     //////////Method//////////

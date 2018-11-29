@@ -47,64 +47,64 @@ public class BootService extends Service {
             Cursor creq = db.selectbycode(req);
             if (creq.getCount() > 0 && creq.moveToFirst()){
                 Log.d("creq",":>0");
-            }
-            Calendar cal = Calendar.getInstance();
-            Long t = Long.parseLong(creq.getString(6));
-            cal.setTimeInMillis(t);
-            Boolean ifrepeat;
-            String type;
-            Intent intent1;
-            if (creq.getString(4).equals("0")){
-                ifrepeat = false;
-            }else {
-                ifrepeat = true;
-            }
-            if (creq.getString(7).equals("ai")){
-                type = "ai";
-            }else{ type = "normal"; }
-            int status = creq.getInt(8);
-            AlarmManager alarm = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
-            if (type.equals("ai")){
-                intent1 = new Intent(BootService.this, ai_alarmalert.class);
-            }else {
-                intent1 = new Intent(BootService.this, normal_alarmalert.class);
-            }
-            intent1.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-            intent1.putExtra("requestcode", req);
-            PendingIntent pi1 = PendingIntent.getActivity(this, req, intent1, PendingIntent.FLAG_UPDATE_CURRENT);
-            Log.d("req",":"+creq.getInt(3));
-            repeat(creq);
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                Log.d("build", "23up");
-                Log.d("ifrepeat",":"+ifrepeat);
-                Log.d("status",":"+status);
-                Log.d("nearest",":"+nearest);
-                Long longtime = Long.parseLong(creq.getString(6)) + nearest*24*60*60*1000;
-                if (ifrepeat && status == 1) {
-                    Log.d("case", ":set");
-                    alarm.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP,
-                            longtime, pi1);
-                }else if (!ifrepeat && status == 1){
-                    if (System.currentTimeMillis()+5 > Long.parseLong(creq.getString(6))) {
-                        Log.d("case", ":settmr");
-                        alarm.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, Long.parseLong(creq.getString(6)) + 24 * 60 * 60 * 1000, pi1);
-                    } else {
-                        Log.d("case", ":settoday");
-                        alarm.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, Long.parseLong(creq.getString(6)), pi1);
-                    }
+                Calendar cal = Calendar.getInstance();
+                Long t = Long.parseLong(creq.getString(6));
+                cal.setTimeInMillis(t);
+                Boolean ifrepeat;
+                String type;
+                Intent intent1;
+                if (creq.getString(4).equals("0")){
+                    ifrepeat = false;
+                }else {
+                    ifrepeat = true;
                 }
-            }else {
-                if (ifrepeat && status == 1) {
-                    Log.d("case", ":settoday");
-                    alarm.setExact(AlarmManager.RTC_WAKEUP,
-                            Long.parseLong(creq.getString(6)) + nearest*24*60*60*1000, pi1);
-                } else if (!ifrepeat && status == 1){
-                    if (System.currentTimeMillis()+5 > Long.parseLong(creq.getString(6))) {
-                        Log.d("case", ":settmr");
-                        alarm.setExact(AlarmManager.RTC_WAKEUP, Long.parseLong(creq.getString(6)) + 24 * 60 * 60 * 1000, pi1);
-                    } else {
+                if (creq.getString(7).equals("ai")){
+                    type = "ai";
+                }else{ type = "normal"; }
+                int status = creq.getInt(8);
+                AlarmManager alarm = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+                if (type.equals("ai")){
+                    intent1 = new Intent(BootService.this, ai_alarmalert.class);
+                }else {
+                    intent1 = new Intent(BootService.this, normal_alarmalert.class);
+                }
+                intent1.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                intent1.putExtra("requestcode", req);
+                PendingIntent pi1 = PendingIntent.getActivity(this, req, intent1, PendingIntent.FLAG_UPDATE_CURRENT);
+                Log.d("req",":"+creq.getInt(3));
+                repeat(creq);
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                    Log.d("build", "23up");
+                    Log.d("ifrepeat",":"+ifrepeat);
+                    Log.d("status",":"+status);
+                    Log.d("nearest",":"+nearest);
+                    Long longtime = Long.parseLong(creq.getString(6)) + nearest*24*60*60*1000;
+                    if (ifrepeat && status == 1) {
+                        Log.d("case", ":set");
+                        alarm.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP,
+                                longtime, pi1);
+                    }else if (!ifrepeat && status == 1){
+                        if (System.currentTimeMillis()+5 > Long.parseLong(creq.getString(6))) {
+                            Log.d("case", ":settmr");
+                            alarm.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, Long.parseLong(creq.getString(6)) + 24 * 60 * 60 * 1000, pi1);
+                        } else {
+                            Log.d("case", ":settoday");
+                            alarm.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, Long.parseLong(creq.getString(6)), pi1);
+                        }
+                    }
+                }else {
+                    if (ifrepeat && status == 1) {
                         Log.d("case", ":settoday");
-                        alarm.setExact(AlarmManager.RTC_WAKEUP, Long.parseLong(creq.getString(6)), pi1);
+                        alarm.setExact(AlarmManager.RTC_WAKEUP,
+                                Long.parseLong(creq.getString(6)) + nearest*24*60*60*1000, pi1);
+                    } else if (!ifrepeat && status == 1){
+                        if (System.currentTimeMillis()+5 > Long.parseLong(creq.getString(6))) {
+                            Log.d("case", ":settmr");
+                            alarm.setExact(AlarmManager.RTC_WAKEUP, Long.parseLong(creq.getString(6)) + 24 * 60 * 60 * 1000, pi1);
+                        } else {
+                            Log.d("case", ":settoday");
+                            alarm.setExact(AlarmManager.RTC_WAKEUP, Long.parseLong(creq.getString(6)), pi1);
+                        }
                     }
                 }
             }
