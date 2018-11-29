@@ -43,6 +43,7 @@ public class ai_alarmalert extends AppCompatActivity {
         requestcode = intent.getIntExtra("requestcode", 0);
         timedate = intent.getLongExtra("timedate",0);
         Log.d("request",":"+requestcode);
+        Log.d("timedate",""+timedate);
         AudioManager audioManager =(AudioManager)this.getSystemService(Context.AUDIO_SERVICE);
         // Set the volume of played media to your choice.
         audioManager.setStreamVolume (AudioManager.STREAM_MUSIC,10,0);
@@ -131,10 +132,7 @@ public class ai_alarmalert extends AppCompatActivity {
                 ai_count.requestcode = requestcode;
                 if (timedate != 0){
                 }else{
-                    Calendar cd2 = Calendar.getInstance();
-                    cd2.setTimeInMillis(System.currentTimeMillis());
-                    long time2 = cd.getTimeInMillis();
-                    ai_count.timedate = time2;
+                    ai_count.timedate = timedate;
                 }
                 Log.d("tag", "get"+time);
                 send();

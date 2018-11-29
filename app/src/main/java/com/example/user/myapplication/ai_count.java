@@ -72,6 +72,8 @@ public class ai_count{
     data_img_prediction produce_img;
     public static int requestcode;
     public static long timedate;
+    long ttdd;
+    List<String> idlist;
 
     public void record(Context context){
         this.record = context;
@@ -114,7 +116,13 @@ public class ai_count{
 
         u_id = record.getSharedPreferences(KEY,MODE_PRIVATE).getString("u_id",null);
 
-        getScreen(timedate);
+        Calendar cc = Calendar.getInstance();
+        cc.setTimeInMillis(System.currentTimeMillis());
+        ttdd = cc.getTimeInMillis();
+        getScreen(ttdd);
+        if (timedate == 0){
+            timedate = ttdd;
+        }
 //        start_time = System.currentTimeMillis();
 //        stop_record_time = start_time+ 60*1000;//結束時間設為一分鐘後
         Log.d("state", "s"+state);
@@ -129,7 +137,7 @@ public class ai_count{
 
     public void usagetime(long stopuse){
         Calendar calendar1 = Calendar.getInstance();
-        calendar1.setTimeInMillis(timedate);
+        calendar1.setTimeInMillis(ttdd);
         Calendar calendar2 = Calendar.getInstance();
         calendar2.setTimeInMillis(stopuse);
         Long tt = calendar2.getTimeInMillis() - calendar1.getTimeInMillis();
@@ -220,7 +228,7 @@ public class ai_count{
         Thread produce = new Thread(new Runnable() {
             @Override
             public void run() {
-                produce_img.produce_img(String.valueOf(timedate));
+                produce_img.produce_img(String.valueOf(ttdd));
             }
         });
         produce.start();
@@ -235,27 +243,50 @@ public class ai_count{
             Thread update_awake_1 = new Thread(new Runnable() {
                 @Override
                 public void run() {
-                    connecting.connect("insert_sql","UPDATE `screen_record` SET `r_ifawake` = '1' WHERE `screen_record`.`Date` = '"+String.valueOf(timedate)+"';");
+                    connecting.connect("insert_sql","UPDATE `screen_record` SET `r_ifawake` = '1' WHERE `screen_record`.`Date` = '"+String.valueOf(ttdd)+"';");
                 }
             });
             update_awake_1.start();
-            sendNotification("1",String.valueOf(timedate));
+            sendNotification("1",String.valueOf(ttdd));
         }else if (res == 0){
             Thread update_awake_0 = new Thread(new Runnable() {
                 @Override
                 public void run() {
-                    connecting.connect("insert_sql","UPDATE `screen_record` SET `r_ifawake` = '0' WHERE `screen_record`.`Date` = '"+String.valueOf(timedate)+"';");
+                    connecting.connect("insert_sql","UPDATE `screen_record` SET `r_ifawake` = '0' WHERE `screen_record`.`Date` = '"+String.valueOf(ttdd)+"';");
                 }
             });
             update_awake_0.start();
-            sendNotification("0",String.valueOf(timedate));
+            sendNotification("0",String.valueOf(ttdd));
 
             int count = asleeptimes(String.valueOf(timedate));
-            if(count < 3){
-                updateasleep(count+1,String.valueOf(timedate));
-            }else if(count == 3){
+            Log.d("inttimes",""+count);
+            if(count < 1){
+                count++;
+                Log.d("安安",""+count);
+                updateasleep(count,String.valueOf(timedate));
+            }else if(count == 1){
                 //送通知
-                Log.d("測試","睡著三次了");
+                String[] grouplist = getfriend(requestcode);
+                Log.d("group列表",""+grouplist);
+                if(grouplist!=null){
+                    String group_sql ="INSERT INTO `alarm_group_Notification` (`user_id`, `friend_id`) VALUES";
+                    for(int i = 0;i<grouplist.length;i++){
+                        if(i == grouplist.length-1){
+                            group_sql = group_sql+"('"+u_id+"', '"+grouplist[i]+"');";
+                        }else {
+                            group_sql = group_sql+"('"+u_id+"', '"+grouplist[i]+"'),";
+                        }
+                    }
+                    final String finalGroup_sql = group_sql;
+                    Thread sendgroupsql = new Thread(new Runnable() {
+                        @Override
+                        public void run() {
+                            connecting.connect("insert_sql", finalGroup_sql);
+                        }
+                    });
+                    sendgroupsql.start();
+                    Log.d("測試","睡著三次了"+finalGroup_sql);
+                }
             }
 
         }
@@ -273,6 +304,7 @@ public class ai_count{
                 AlarmManager am = (AlarmManager) record.getSystemService(Context.ALARM_SERVICE);
                 long triggertime = System.currentTimeMillis()+30000;
                 Intent intent = new Intent(record, ai_alarmalert.class);
+                intent.putExtra("requestcode",requestcode);
                 intent.putExtra("timedate",timedate);
                 PendingIntent op = PendingIntent.getActivity(record, 1, intent ,PendingIntent.FLAG_UPDATE_CURRENT);
 
@@ -325,7 +357,7 @@ public class ai_count{
                 manager.notify(notification_num, builder.build());
                 notification_num++;
 
-            }else{
+            }else if(awake.equals("1")){
 
                 final Intent awake_Intent = new Intent(record, Awake_NotificationReceiver.class); // 取消通知的的Intent
                 awake_Intent.putExtra("alarmtime",alarmtime); // 傳入通知的識別號碼
@@ -384,7 +416,7 @@ public class ai_count{
                         .addAction(R.drawable.ai_open,"我已起床",pendingCancelIntent)
                         .setStyle(bigTextStyle)
                         .setAutoCancel(true);
-            }else{
+            }else if(awake.equals("1")){
                 final Intent awake_Intent = new Intent(record, Awake_NotificationReceiver.class); // 取消通知的的Intent
                 awake_Intent.putExtra("alarmtime",alarmtime); // 傳入通知的識別號碼
                 awake_Intent.putExtra("cancel_notify_id", notification_num);
@@ -432,7 +464,7 @@ public class ai_count{
             @Override
             public void run() {
                 while(state == "true"){
-                    getScreen(timedate);
+                    getScreen(ttdd);
                     Log.d("執行續", "檢查螢幕狀態");
                     try {
                         Thread.sleep(500);
@@ -446,12 +478,13 @@ public class ai_count{
                     calendar2.setTimeInMillis(System.currentTimeMillis());
                     stopuse = calendar2.getTimeInMillis();
                     usagetime(stopuse);
-                    dbUsage.insert(u_id,String.valueOf(timedate),(int)sec);
+                    dbUsage.insert(u_id,String.valueOf(ttdd),(int)sec);
+
+
                     Log.d("測試", "帳號:"+u_id);
                     Log.d("紀錄", "結束");
                     Log.d("TAG", "螢幕使用狀態上傳");
                 }
-
                 Cursor update_cursor = dbUsage.select_update();
                 for(int i = 0; i<update_cursor.getCount();i++){
                     update_cursor.moveToPosition(i);
@@ -534,7 +567,7 @@ public class ai_count{
                 for(int i = 0;i<id.size();i++){
                     dbSoundaxis.insert(id.get(i).toString(), (Timestamp) date_time.get(i), Double.parseDouble(x_axis.get(i).toString()),
                             Double.parseDouble(y_axis.get(i).toString()),Double.parseDouble(z_axis.get(i).toString()),
-                            Double.parseDouble(sound_db.get(i).toString()), String.valueOf(timedate));
+                            Double.parseDouble(sound_db.get(i).toString()), String.valueOf(ttdd));
                     Log.d("資料庫",id.get(i).toString()+"/"+(Timestamp) date_time.get(i)+"/"+Double.parseDouble(x_axis.get(i).toString())+"/"+Double.parseDouble(y_axis.get(i).toString())+"/"+Double.parseDouble(z_axis.get(i).toString())+"/"+Double.parseDouble(sound_db.get(i).toString()));
                 }
                 Log.d("紀錄", "結束");
@@ -591,27 +624,35 @@ public class ai_count{
         Thread updatesleep = new Thread(new Runnable() {
             @Override
             public void run() {
-                connecting.connect("insert_sql","UPDATE `screen_record` SET `asleep` = '"+ a + "' WHERE `screen_record`.`Date` = '"+date+"' ;");
+                Log.d("updatedate",""+date);
+                Log.d("updatedate",""+a);
+                connecting.connect("insert_sql","UPDATE `screen_record` SET `asleep` = '"+a+ "' WHERE `screen_record`.`Date` = '"+date+"' ;");
             }
         });
         updatesleep.start();
     }
 
-    public List<String> getfriend(int req){
+    public String[] getfriend(int req){
         DB_normal_alarm db = new DB_normal_alarm(record);
         Cursor cursor = db.selectbycode(req);
-        List<String> idlist = null;
+        String[] ff = new String[0];
         if (cursor != null && cursor.moveToFirst()){
             String f = cursor.getString(9);
+            Log.d("好晚啦啦啦啊啦","累"+f);
+
             if (f != null && !f.equals("")){
-                String[] arrays = f.trim().split("\\s+");
-                for(String s : arrays){
-                    idlist.add(s);
+                ff = f.split("  ");
+                for (int a = 0; a < ff.length; a++){
+                    Log.d("呵呵呵呵呵呵呵呵呵呵呵呵呵幹",""+ff[a]);
                 }
+//                String[] arrays = f.trim().split("\\s+");
+//                for(String s : arrays){
+//                    Log.d("shite幹幹幹",""+s);
+//                }
             }
 
         }
-        return idlist;
+        return ff;
     }
 }
 

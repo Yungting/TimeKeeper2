@@ -162,6 +162,9 @@ public class mainpage extends Activity implements RecyclerTouchListener.Recycler
         service.putExtra("my_id", user);
         startService(service);
         Log.d("背景", "測試");
+        Intent group_service = new Intent(this, Group_service.class);
+        group_service.putExtra("my_id", user);
+        startService(group_service);
 
         //recyclerview
         unclickableRows = new ArrayList<>();

@@ -67,6 +67,10 @@
             android:enabled="true"
             android:exported="true"/>
         <service
+            android:name=".Group_service"
+            android:enabled="true"
+            android:exported="true"/>
+        <service
             android:name=".AlertService"
             android:enabled="true"
             android:exported="true" />
