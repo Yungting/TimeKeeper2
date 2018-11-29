@@ -82,7 +82,7 @@ public class login extends AppCompatActivity {
                 });
                 get_data.start();
                 try {
-                    Thread.sleep(400);
+                   get_data.join();
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }

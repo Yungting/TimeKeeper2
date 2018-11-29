@@ -33,6 +33,7 @@ public class ai_alarmalert extends AppCompatActivity {
     AlertDialog dialog;
     private MyReceiver receiver;
     int state = 1;
+    long timedate;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,13 +41,14 @@ public class ai_alarmalert extends AppCompatActivity {
         DB_normal_alarm db = new DB_normal_alarm(this);
         Intent intent = getIntent();
         requestcode = intent.getIntExtra("requestcode", 0);
+        timedate = intent.getLongExtra("timedate",0);
         Log.d("request",":"+requestcode);
         AudioManager audioManager =(AudioManager)this.getSystemService(Context.AUDIO_SERVICE);
         // Set the volume of played media to your choice.
         audioManager.setStreamVolume (AudioManager.STREAM_MUSIC,10,0);
         if (requestcode == 0){
-
         }
+
         Cursor cursor = db.selectbycode(requestcode);
         String[] g_div = new String[0];
         if (cursor != null && cursor.moveToFirst()){
@@ -127,6 +129,14 @@ public class ai_alarmalert extends AppCompatActivity {
                 Log.d("嗨嗨嗨嗨嗨嗨嗨", "時間時間~~~~~"+time);
                 ai_count.clock_count++;//1017
                 ai_count.requestcode = requestcode;
+                if (timedate != 0){
+                }else{
+                    Calendar cd2 = Calendar.getInstance();
+                    cd2.setTimeInMillis(System.currentTimeMillis());
+                    long time2 = cd.getTimeInMillis();
+                    ai_count.timedate = time2;
+                }
+                Log.d("tag", "get"+time);
                 send();
                 finish();
             }
