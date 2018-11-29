@@ -24,6 +24,7 @@ import android.view.Window;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -180,6 +181,30 @@ public class ai_alarm extends Activity {
                     setAlarm();
                 }else {
                     updateAlarm(rcode1);
+                }
+            }
+        });
+
+        final CheckBox check_manage = findViewById(R.id.ai_manage_checkbox);
+        check_manage.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (!isChecked){
+                    smartlist = null;
+                }else if (smartlist == null){
+                    check_manage.setChecked(false);
+                }
+            }
+        });
+
+        final CheckBox check_group = findViewById(R.id.group_checkbox);
+        check_group.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (!isChecked){
+                    idlist = null;
+                }else if (idlist == null){
+                    check_group.setChecked(false);
                 }
             }
         });

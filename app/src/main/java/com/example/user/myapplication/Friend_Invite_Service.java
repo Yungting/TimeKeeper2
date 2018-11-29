@@ -105,7 +105,7 @@ public class Friend_Invite_Service extends Service{
                     getSystemService(Context.NOTIFICATION_SERVICE);
             manager.createNotificationChannel(channelFriend);
             Notification.Builder builder =
-                    new Notification.Builder(this)
+                    new Notification.Builder(this, "default")
                             .setSmallIcon(R.drawable.ai_alarm_btn)
                             .setContentTitle("收到一封好友邀請!")
                             .setContentText(f_name+"想要和你成為好友呦")

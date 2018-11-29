@@ -23,11 +23,16 @@ import android.text.format.DateFormat;
 import android.util.Log;
 import android.view.WindowManager;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 import java.util.Locale;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -38,7 +43,7 @@ import static com.example.user.myapplication.mainpage.KEY;
 //extends AppCompatActivity
 public class ai_count{
     public static int clock_count = 0;
-    long time, stopuse;
+    long stopuse;
     int sec;
     static String state;
     static double volume;
@@ -65,6 +70,8 @@ public class ai_count{
     Connect_To_Server connecting;
     Context record ;
     data_img_prediction produce_img;
+    public static int requestcode;
+    public static long timedate;
 
     public void record(Context context){
         this.record = context;
@@ -107,13 +114,7 @@ public class ai_count{
 
         u_id = record.getSharedPreferences(KEY,MODE_PRIVATE).getString("u_id",null);
 
-
-        Calendar cd = Calendar.getInstance();
-        cd.setTimeInMillis(System.currentTimeMillis());
-        time = cd.getTimeInMillis();
-        Log.d("tag", "get"+time);
-
-        getScreen(time);
+        getScreen(timedate);
 //        start_time = System.currentTimeMillis();
 //        stop_record_time = start_time+ 60*1000;//結束時間設為一分鐘後
         Log.d("state", "s"+state);
@@ -128,7 +129,7 @@ public class ai_count{
 
     public void usagetime(long stopuse){
         Calendar calendar1 = Calendar.getInstance();
-        calendar1.setTimeInMillis(time);
+        calendar1.setTimeInMillis(timedate);
         Calendar calendar2 = Calendar.getInstance();
         calendar2.setTimeInMillis(stopuse);
         Long tt = calendar2.getTimeInMillis() - calendar1.getTimeInMillis();
@@ -219,7 +220,7 @@ public class ai_count{
         Thread produce = new Thread(new Runnable() {
             @Override
             public void run() {
-                produce_img.produce_img(String.valueOf(time));
+                produce_img.produce_img(String.valueOf(timedate));
             }
         });
         produce.start();
@@ -229,24 +230,34 @@ public class ai_count{
             e.printStackTrace();
         }
         Log.d("回應：","安安"+produce_img.AI_response);
-        if(produce_img.AI_response.equals("1")){
+        int res = Integer.parseInt(produce_img.AI_response.trim());
+        if(res == 1){
             Thread update_awake_1 = new Thread(new Runnable() {
                 @Override
                 public void run() {
-                    connecting.connect("insert_sql","UPDATE `screen_record` SET `r_ifawake` = '1' WHERE `screen_record`.`Date` = '"+String.valueOf(time)+"';");
+                    connecting.connect("insert_sql","UPDATE `screen_record` SET `r_ifawake` = '1' WHERE `screen_record`.`Date` = '"+String.valueOf(timedate)+"';");
                 }
             });
             update_awake_1.start();
-            sendNotification("1",String.valueOf(time));
-        }else{
+            sendNotification("1",String.valueOf(timedate));
+        }else if (res == 0){
             Thread update_awake_0 = new Thread(new Runnable() {
                 @Override
                 public void run() {
-                    connecting.connect("insert_sql","UPDATE `screen_record` SET `r_ifawake` = '0' WHERE `screen_record`.`Date` = '"+String.valueOf(time)+"';");
+                    connecting.connect("insert_sql","UPDATE `screen_record` SET `r_ifawake` = '0' WHERE `screen_record`.`Date` = '"+String.valueOf(timedate)+"';");
                 }
             });
             update_awake_0.start();
-            sendNotification("0",String.valueOf(time));
+            sendNotification("0",String.valueOf(timedate));
+
+            int count = asleeptimes(String.valueOf(timedate));
+            if(count < 3){
+                updateasleep(count+1,String.valueOf(timedate));
+            }else if(count == 3){
+                //送通知
+                Log.d("測試","睡著三次了");
+            }
+
         }
     }
 
@@ -260,11 +271,13 @@ public class ai_count{
 
                 Log.d("30秒到","設一個新鬧鐘!!");
                 AlarmManager am = (AlarmManager) record.getSystemService(Context.ALARM_SERVICE);
-                long triggertime = System.currentTimeMillis()+300000;
-                Intent intent = new Intent(record, normal_alarmalert.class);
+                long triggertime = System.currentTimeMillis()+30000;
+                Intent intent = new Intent(record, ai_alarmalert.class);
+                intent.putExtra("timedate",timedate);
                 PendingIntent op = PendingIntent.getActivity(record, 1, intent ,PendingIntent.FLAG_UPDATE_CURRENT);
 
                 am.setExact(AlarmManager.RTC, triggertime, op);
+
             }
             timer.cancel();
         }
@@ -419,7 +432,7 @@ public class ai_count{
             @Override
             public void run() {
                 while(state == "true"){
-                    getScreen(time);
+                    getScreen(timedate);
                     Log.d("執行續", "檢查螢幕狀態");
                     try {
                         Thread.sleep(500);
@@ -433,7 +446,7 @@ public class ai_count{
                     calendar2.setTimeInMillis(System.currentTimeMillis());
                     stopuse = calendar2.getTimeInMillis();
                     usagetime(stopuse);
-                    dbUsage.insert(u_id,String.valueOf(time),(int)sec);
+                    dbUsage.insert(u_id,String.valueOf(timedate),(int)sec);
                     Log.d("測試", "帳號:"+u_id);
                     Log.d("紀錄", "結束");
                     Log.d("TAG", "螢幕使用狀態上傳");
@@ -521,7 +534,7 @@ public class ai_count{
                 for(int i = 0;i<id.size();i++){
                     dbSoundaxis.insert(id.get(i).toString(), (Timestamp) date_time.get(i), Double.parseDouble(x_axis.get(i).toString()),
                             Double.parseDouble(y_axis.get(i).toString()),Double.parseDouble(z_axis.get(i).toString()),
-                            Double.parseDouble(sound_db.get(i).toString()), String.valueOf(time));
+                            Double.parseDouble(sound_db.get(i).toString()), String.valueOf(timedate));
                     Log.d("資料庫",id.get(i).toString()+"/"+(Timestamp) date_time.get(i)+"/"+Double.parseDouble(x_axis.get(i).toString())+"/"+Double.parseDouble(y_axis.get(i).toString())+"/"+Double.parseDouble(z_axis.get(i).toString())+"/"+Double.parseDouble(sound_db.get(i).toString()));
                 }
                 Log.d("紀錄", "結束");
@@ -544,6 +557,61 @@ public class ai_count{
                 state = "false";
             }
         }
+    }
+
+    public int asleeptimes(final String date){
+        Thread get_sleep = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                connecting.connect("select_sql","SELECT asleep FROM `screen_record` WHERE  Date = '"+date+"'");
+            }
+        });
+        get_sleep.start();
+        try {
+            get_sleep.join();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        int atimes = 0;
+        try {
+            JSONArray times = new JSONArray(connecting.get_data);
+            int lenght = times.length();
+            for(int i = 0;i < lenght;i++){
+                JSONObject jsonObject = times.getJSONObject(i);
+                atimes = jsonObject.getInt("asleep");
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        return atimes;
+    }
+
+    public void updateasleep(final int a, final String date){
+        Thread updatesleep = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                connecting.connect("insert_sql","UPDATE `screen_record` SET `asleep` = '"+ a + "' WHERE `screen_record`.`Date` = '"+date+"' ;");
+            }
+        });
+        updatesleep.start();
+    }
+
+    public List<String> getfriend(int req){
+        DB_normal_alarm db = new DB_normal_alarm(record);
+        Cursor cursor = db.selectbycode(req);
+        List<String> idlist = null;
+        if (cursor != null && cursor.moveToFirst()){
+            String f = cursor.getString(9);
+            if (f != null && !f.equals("")){
+                String[] arrays = f.trim().split("\\s+");
+                for(String s : arrays){
+                    idlist.add(s);
+                }
+            }
+
+        }
+        return idlist;
     }
 }
 

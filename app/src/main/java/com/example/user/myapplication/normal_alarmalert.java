@@ -141,19 +141,8 @@ public class normal_alarmalert extends AppCompatActivity {
     }
 
     public void detectrepeat(int requestcode, Cursor cursor) {
-        Boolean ifrepeat;
-        if (cursor.getString(4).equals("0")) {
-            ifrepeat = false;
-        } else {
-            ifrepeat = true;
-        }
-        if (ifrepeat) {
-            ring(musicpath);
-        } else {
-            Log.d("ring", "else");
-            ring(musicpath);
-            state = 0;
-        }
+        ring(musicpath);
+        state = 0;
     }
 
     public void ring(String musicpath){

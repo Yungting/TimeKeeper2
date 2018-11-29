@@ -33,6 +33,7 @@ public class ai_alarmalert extends AppCompatActivity {
     AlertDialog dialog;
     private MyReceiver receiver;
     int state = 1;
+    long timedate;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,21 +41,27 @@ public class ai_alarmalert extends AppCompatActivity {
         DB_normal_alarm db = new DB_normal_alarm(this);
         Intent intent = getIntent();
         requestcode = intent.getIntExtra("requestcode", 0);
+        timedate = intent.getLongExtra("timedate",0);
         Log.d("request",":"+requestcode);
         AudioManager audioManager =(AudioManager)this.getSystemService(Context.AUDIO_SERVICE);
         // Set the volume of played media to your choice.
         audioManager.setStreamVolume (AudioManager.STREAM_MUSIC,10,0);
+        if (requestcode == 0){
+        }
+
         Cursor cursor = db.selectbycode(requestcode);
+        String[] g_div = new String[0];
         if (cursor != null && cursor.moveToFirst()){
             musicpath = cursor.getString(1);
             state = cursor.getInt(8);
             String group = cursor.getString(10);
-            Log.d("group",":"+group);
-            String[] g_div = group.split(" ");
-
-            Holiday holiday = new Holiday();
-            if(holiday.isholiday() || holiday.iftyphoon(g_div[1], g_div[0])){
-                finish();
+            if(group != null){
+                Log.d("group",":"+group);
+                g_div = group.split(" ");
+                Holiday holiday = new Holiday();
+                if(holiday.isholiday() || holiday.iftyphoon(g_div[1], g_div[0])){
+                    finish();
+                }
             }
         }
 
@@ -70,11 +77,13 @@ public class ai_alarmalert extends AppCompatActivity {
         detectrepeat(requestcode, cursor);
         db.updatestate(requestcode, state);
         db.close();
+
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        Log.d("destory","!!");
         unregisterReceiver(receiver);
         if (mp!=null){
             if (mp.isPlaying()){
@@ -119,6 +128,15 @@ public class ai_alarmalert extends AppCompatActivity {
                 Log.d("alert", "time"+time);
                 Log.d("嗨嗨嗨嗨嗨嗨嗨", "時間時間~~~~~"+time);
                 ai_count.clock_count++;//1017
+                ai_count.requestcode = requestcode;
+                if (timedate != 0){
+                }else{
+                    Calendar cd2 = Calendar.getInstance();
+                    cd2.setTimeInMillis(System.currentTimeMillis());
+                    long time2 = cd.getTimeInMillis();
+                    ai_count.timedate = time2;
+                }
+                Log.d("tag", "get"+time);
                 send();
                 finish();
             }
@@ -158,19 +176,8 @@ public class ai_alarmalert extends AppCompatActivity {
     }
 
     public void detectrepeat(int requestcode, Cursor cursor) {
-        Boolean ifrepeat;
-        if (cursor.getString(4).equals("0")) {
-            ifrepeat = false;
-        } else {
-            ifrepeat = true;
-        }
-        if (ifrepeat) {
-            ring(musicpath);
-        } else {
-            Log.d("ring", "else");
-            ring(musicpath);
-            state = 0;
-        }
+        ring(musicpath);
+        state = 0;
     }
 
     public void ring(String musicpath){

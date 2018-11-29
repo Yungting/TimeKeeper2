@@ -23,6 +23,7 @@ public class Connect_To_Server {
     private final static String mUrl = "http://140.127.218.207:80/Connecter.php";
     public static Boolean internet_connect = false;
     public String get_data = "";
+
     public void connect(final String sqltype, final String sql){
         Thread connecting = new Thread(new Runnable() {
             @Override
