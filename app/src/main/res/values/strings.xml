@@ -25,6 +25,9 @@
     <string name="username">USERNAME :</string>
     <string name="female">FEMALE</string>
     <string name="male">MALE</string>
+    <string name="monster">MONSTER</string>
+    <string name="blood_left">瘋狂貪睡</string>
+    <string name="blood_right">起床達人</string>
     <string name="forget_chatbox">Please do not forget your password again : )</string>
 
     <!-- TODO: Remove or change this placeholder text -->

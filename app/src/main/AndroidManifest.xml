@@ -10,10 +10,10 @@
         tools:ignore="ProtectedPermissions" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
-    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
-    <uses-permission android:name="android.permission.VIBRATE"/>
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+    <uses-permission android:name="android.permission.VIBRATE" />
     <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
-    <uses-permission android:name="android.permission.EXPAND_STATUS_BAR"/>
+    <uses-permission android:name="android.permission.EXPAND_STATUS_BAR" />
 
     <application
         android:allowBackup="true"
@@ -31,7 +31,6 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
         <activity
             android:name=".normal_alarmalert"
             android:excludeFromRecents="true"
@@ -52,24 +51,25 @@
         <activity android:name=".login" />
         <activity android:name=".sign_up" />
         <activity android:name=".forget_pwd" />
-        <activity android:name=".guide.guide_page"/>
-        <activity android:name=".about"/>
+        <activity android:name=".guide.guide_page" />
+        <activity android:name=".about" />
 
         <receiver android:name=".Reciver">
             <intent-filter>
-                <action android:name="android.intent.action.BOOT_COMPLETED"/>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
             </intent-filter>
         </receiver>
         <receiver android:name=".Sleep_NotificationReceiver" />
         <receiver android:name=".Awake_NotificationReceiver" />
+
         <service
             android:name=".Friend_Invite_Service"
             android:enabled="true"
-            android:exported="true"/>
+            android:exported="true" />
         <service
             android:name=".Group_service"
             android:enabled="true"
-            android:exported="true"/>
+            android:exported="true" />
         <service
             android:name=".AlertService"
             android:enabled="true"
@@ -77,7 +77,9 @@
         <service
             android:name=".BootService"
             android:enabled="true"
-            android:exported="true"/>
+            android:exported="true" />
+
+        <activity android:name=".monster"></activity>
     </application>
 
 </manifest>
