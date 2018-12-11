@@ -22,28 +22,6 @@
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:visibility="gone">
-
-                <View
-                    android:id="@+id/view"
-                    android:layout_width="match_parent"
-                    android:layout_height="124dp"
-                    android:background="@drawable/timekeeper_titlebar" />
-
-                <Button
-                    android:id="@+id/menu"
-                    android:layout_width="30dp"
-                    android:layout_height="30dp"
-                    android:layout_alignParentEnd="true"
-                    android:layout_alignParentTop="true"
-                    android:layout_marginEnd="29dp"
-                    android:layout_marginTop="27dp"
-                    android:background="@drawable/mainpage_menu" />
-            </RelativeLayout>
-
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
                 android:paddingLeft="20dp"
                 android:paddingRight="20dp"
                 android:paddingTop="30dp">
@@ -56,7 +34,8 @@
                     android:src="@drawable/blood_background" />
 
                 <ImageView
-                    android:layout_width="193dp"
+                    android:id="@+id/blood"
+                    android:layout_width="159dp"
                     android:layout_height="wrap_content"
                     android:layout_alignStart="@+id/blood_background"
                     android:layout_marginTop="-13dp"
@@ -82,6 +61,7 @@
                     android:textSize="12sp" />
 
                 <Button
+                    android:id="@+id/qus"
                     android:layout_width="30dp"
                     android:layout_height="30dp"
                     android:layout_alignEnd="@+id/pic"
@@ -110,16 +90,17 @@
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/quicksand_bold"
                 android:paddingTop="10dp"
-                android:text="時間寶寶"
+                android:text="嗜睡鬼娃"
                 android:textAlignment="center"
                 android:textColor="@color/text2"
+                android:letterSpacing="0.3"
                 android:textSize="30sp" />
 
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:paddingTop="5dp"
-                android:text="貪睡時間：5 min"
+                android:text="貪睡時間：1 min"
                 android:textAlignment="center"
                 android:textColor="@color/text2"
                 android:textSize="15sp" />
@@ -239,10 +220,10 @@
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="20dp"
                     android:layout_marginTop="10dp"
-                    android:text="怪物總成長數： -1格"
+                    android:text="怪物總成長數： -15 格"
                     android:textAlignment="center"
                     android:textColor="@color/text"
-                    android:textSize="16sp" />
+                    android:textSize="18sp" />
 
             </LinearLayout>
 
@@ -252,12 +233,41 @@
 
     <ImageButton
         android:id="@+id/fab"
-        android:layout_width="55dp"
-        android:layout_height="55dp"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
         android:layout_gravity="bottom|right"
         android:layout_margin="16dp"
         android:background="@drawable/monster_home"
-        android:src="@drawable/home"
-        android:translationZ="4dp" />
+        android:elevation="4dp"
+        android:src="@drawable/home" />
+
+    <RelativeLayout
+        android:id="@+id/kind_list"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/pressed_btn"
+        android:visibility="gone">
+
+        <ImageView
+            android:id="@+id/monster_list"
+            android:layout_width="wrap_content"
+            android:layout_height="550dp"
+            android:layout_marginTop="40dp"
+            android:layout_marginBottom="20dp"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
+            android:background="@drawable/monster_list"  />
+
+        <Button
+            android:id="@+id/close"
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:layout_alignTop="@+id/monster_list"
+            android:layout_marginLeft="40dp"
+            android:layout_marginTop="22dp"
+            android:background="@drawable/close_btn" />
+
+
+    </RelativeLayout>
 
 </FrameLayout>
