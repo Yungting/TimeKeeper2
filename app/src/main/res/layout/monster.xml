@@ -220,7 +220,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="20dp"
                     android:layout_marginTop="10dp"
-                    android:text="怪物總成長數： -15 格"
+                    android:text="怪物總成長數： -12 格"
                     android:textAlignment="center"
                     android:textColor="@color/text"
                     android:textSize="18sp" />
@@ -233,8 +233,8 @@
 
     <ImageButton
         android:id="@+id/fab"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
         android:layout_gravity="bottom|right"
         android:layout_margin="16dp"
         android:background="@drawable/monster_home"

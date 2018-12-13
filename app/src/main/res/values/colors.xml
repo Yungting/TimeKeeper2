@@ -19,5 +19,7 @@
     <color name="about">#FF6A6A</color>
     <color name="find_bug">#417505</color>
     <color name="yellow">#FFF61A</color>
+    <color name="pressed">#DCDCDC</color>
+    <color name="blue">#31618C</color>
 
 </resources>

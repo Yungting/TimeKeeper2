@@ -25,6 +25,8 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
+import android.view.animation.Animation;
+import android.view.animation.TranslateAnimation;
 import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
@@ -148,6 +150,7 @@ public class mainpage extends Activity implements RecyclerTouchListener.Recycler
             public void onClick(View view) {
                 Intent intent1 = new Intent(mainpage.this, normal_alarm.class);
                 startActivity(intent1);
+                closeMenu();
             }
         });
 
@@ -156,6 +159,7 @@ public class mainpage extends Activity implements RecyclerTouchListener.Recycler
             public void onClick(View view) {
                 Intent intent1 = new Intent(mainpage.this, ai_alarm.class);
                 startActivity(intent1);
+                closeMenu();
             }
         });
         Intent service = new Intent(this, Friend_Invite_Service.class);
@@ -235,8 +239,6 @@ public class mainpage extends Activity implements RecyclerTouchListener.Recycler
                     }
                 });
     }
-
-
 
     //設定add btn的顯示與隱藏
     private void openMenu() {
@@ -592,6 +594,7 @@ public class mainpage extends Activity implements RecyclerTouchListener.Recycler
                         } else {
                             switch (state) {
                                 case 1:
+                                    alarm_btn.setBackground(getResources().getDrawable(R.drawable.normal_close));
                                     alarm.setBackground(getResources().getDrawable(R.drawable.mainpage_alarm_background_close));
                                     state = 0;
                                     db.updatestate(requestcode, state);
@@ -603,6 +606,7 @@ public class mainpage extends Activity implements RecyclerTouchListener.Recycler
                                     break;
 
                                 case 0:
+                                    alarm_btn.setBackground(getResources().getDrawable(R.drawable.normal));
                                     alarm.setBackground(getResources().getDrawable(R.drawable.mainpage_alarm_background));
                                     state = 1;
                                     db.updatestate(requestcode, state);
@@ -629,7 +633,7 @@ public class mainpage extends Activity implements RecyclerTouchListener.Recycler
                     if (type.equals("ai")){
                         alarm_btn.setBackground(getResources().getDrawable(R.drawable.ai_close));
                     }else{
-                        alarm_btn.setBackground(getResources().getDrawable(R.drawable.normal));
+                        alarm_btn.setBackground(getResources().getDrawable(R.drawable.normal_close));
                     }
                 } else {
                     alarm.setBackground(getResources().getDrawable(R.drawable.mainpage_alarm_background));

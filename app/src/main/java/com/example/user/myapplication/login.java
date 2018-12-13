@@ -12,9 +12,12 @@ import android.util.Log;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.user.myapplication.guide.guide_page;
@@ -30,6 +33,7 @@ import static com.example.user.myapplication.mainpage.KEY;
 
 public class login extends AppCompatActivity {
     Connect_To_Server db_select;
+    ImageView logo;
     TextView signup, forget;
     EditText user_mail, user_pwd;
     JSONArray get_result;
@@ -43,6 +47,10 @@ public class login extends AppCompatActivity {
         user_mail = (EditText) findViewById(R.id.user_mail);
         user_pwd = (EditText) findViewById(R.id.user_pwd);
         db_select = new Connect_To_Server();
+
+        logo = findViewById(R.id.logo);
+        Animation scaleAnimation = AnimationUtils.loadAnimation(this, R.anim.alpha_from_up);
+        logo.startAnimation(scaleAnimation);
 
         user_mail.setText(getSharedPreferences(KEY, MODE_PRIVATE).getString("u_id", null));
         user_pwd.setText(getSharedPreferences(KEY, MODE_PRIVATE).getString("u_pwd", null));

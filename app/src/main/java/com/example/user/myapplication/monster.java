@@ -42,6 +42,8 @@ public class monster extends Activity {
             }
         });
 
+
+        linearLayout = findViewById(R.id.linearLayout);
         list = findViewById(R.id.list);
         kind_list = findViewById(R.id.kind_list);
         qus = findViewById(R.id.qus);
@@ -49,10 +51,8 @@ public class monster extends Activity {
             @Override
             public void onClick(View v) {
                 kind_list.setVisibility(View.VISIBLE);
-                list.setSmoothScrollingEnabled(false);
-                list.setScrollbarFadingEnabled(false);
-                list.setVerticalScrollBarEnabled(false);
-                list.setHorizontalScrollBarEnabled(false);
+                linearLayout.setFocusableInTouchMode(true);
+                linearLayout.setFocusable(true);
             }
         });
 
@@ -62,6 +62,8 @@ public class monster extends Activity {
             @Override
             public void onClick(View v) {
                 kind_list.setVisibility(View.GONE);
+                linearLayout.setFocusableInTouchMode(false);
+                linearLayout.setFocusable(false);
             }
         });
     }

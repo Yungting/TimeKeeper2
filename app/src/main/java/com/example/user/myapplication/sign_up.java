@@ -11,9 +11,12 @@ import android.util.Log;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -24,6 +27,7 @@ import static com.example.user.myapplication.hideinput.isShouldHideInput;
 import static com.example.user.myapplication.mainpage.KEY;
 
 public class sign_up extends AppCompatActivity {
+    ImageView logo;
     Connect_To_Server db_select;
     Connect_To_Server db_insert;
     JSONArray get_result;
@@ -35,6 +39,10 @@ public class sign_up extends AppCompatActivity {
 
         db_select = new Connect_To_Server();
         db_insert = new Connect_To_Server();
+
+        logo = findViewById(R.id.logo);
+        Animation scaleAnimation = AnimationUtils.loadAnimation(this, R.anim.alpha_from_up);
+        logo.startAnimation(scaleAnimation);
 
         Button signup_btn = findViewById(R.id.signup_btn);
         signup_btn.setOnClickListener(new View.OnClickListener() {

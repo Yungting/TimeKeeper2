@@ -1,7 +1,9 @@
 package com.example.user.myapplication;
 
+import android.app.Activity;
 import android.app.AlarmManager;
 import android.app.AlertDialog;
+import android.app.Dialog;
 import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -16,14 +18,18 @@ import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.KeyEvent;
+import android.view.LayoutInflater;
+import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import java.io.IOException;
 import java.util.Calendar;
 
-public class normal_alarmalert extends AppCompatActivity {
+public class normal_alarmalert extends Activity {
     int requestcode;
     MediaPlayer mp;
     String musicpath;
@@ -87,30 +93,62 @@ public class normal_alarmalert extends AppCompatActivity {
         this.startService(intent3);
     }
 
+//    public void alarmDialog(){
+//        final AlertDialog.Builder builder = new AlertDialog.Builder(this);
+//        LayoutInflater inflater = this.getLayoutInflater();
+//
+//        builder.setView(inflater.inflate(R.layout.dialog_normal, null));
+//
+//        builder.setPositiveButton("LATER", new DialogInterface.OnClickListener() {
+//            @Override
+//            public void onClick(DialogInterface dialog, int which) {
+//                alarm();
+//                h.removeCallbacksAndMessages(null);
+//                finish();
+//            }
+//        });
+//        builder.setNegativeButton("CLOSED", new DialogInterface.OnClickListener() {
+//            @Override
+//            public void onClick(DialogInterface dialog, int which) {
+//                mp.stop();
+//                h.removeCallbacksAndMessages(null);
+//                finish();
+//            }
+//        });
+//
+//        dialog = builder.show();
+//        builder.create();
+//        dialog.setCancelable(false);
+//        dialog.setCanceledOnTouchOutside(false);
+//    }
+
     public void alarmDialog(){
-        final AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setMessage("WAKE UP NOW!!");
-        builder.setPositiveButton("LATER", new DialogInterface.OnClickListener() {
+        Dialog dialog = new Dialog(this,R.style.mDialog_normal);
+        dialog.setContentView(R.layout.dialog_normal);
+
+        dialog.show();
+        dialog.setCancelable(false);
+        dialog.setCanceledOnTouchOutside(false);
+
+        TextView ok = dialog.findViewById(R.id.ok);
+        ok.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(DialogInterface dialog, int which) {
-                alarm();
-                h.removeCallbacksAndMessages(null);
-                finish();
-            }
-        });
-        builder.setNegativeButton("CLOSED", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
+            public void onClick(View v) {
                 mp.stop();
                 h.removeCallbacksAndMessages(null);
                 finish();
             }
         });
 
-        dialog = builder.show();
-        builder.show();
-        dialog.setCancelable(false);
-        dialog.setCanceledOnTouchOutside(false);
+        TextView later = dialog.findViewById(R.id.later);
+        later.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                alarm();
+                h.removeCallbacksAndMessages(null);
+                finish();
+            }
+        });
     }
 
     private void alarm(){

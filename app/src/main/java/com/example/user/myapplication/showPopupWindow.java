@@ -73,6 +73,7 @@ public class showPopupWindow extends Activity{
             public void onClick(View v) {
                 Intent intent2 = new Intent(context, setting_setup.class);
                 context.startActivity(intent2);
+                popupWindow.dismiss();
             }
         });
 
@@ -81,6 +82,7 @@ public class showPopupWindow extends Activity{
             public void onClick(View v) {
                 Intent intent3 = new Intent(context, setting_friend.class);
                 context.startActivity(intent3);
+                popupWindow.dismiss();
             }
         });
 
@@ -89,6 +91,7 @@ public class showPopupWindow extends Activity{
             public void onClick(View v) {
                 Intent intent3 = new Intent(context, about.class);
                 context.startActivity(intent3);
+                popupWindow.dismiss();
             }
         });
 
@@ -97,6 +100,7 @@ public class showPopupWindow extends Activity{
             public void onClick(View v) {
                 Intent intent3 = new Intent(context, monster.class);
                 context.startActivity(intent3);
+                popupWindow.dismiss();
             }
         });
 
