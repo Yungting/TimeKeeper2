@@ -146,8 +146,6 @@ public class setting_friend extends AppCompatActivity {
         });
     }
 
-    //跳出選單
-
     // 按返回鍵取消delete狀態
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {

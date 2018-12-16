@@ -79,7 +79,9 @@
             android:enabled="true"
             android:exported="true" />
 
-        <activity android:name=".monster"></activity>
+        <activity android:name=".monster" />
+        <activity android:name=".counter" />
+        <activity android:name=".counter_countdown"></activity>
     </application>
 
 </manifest>

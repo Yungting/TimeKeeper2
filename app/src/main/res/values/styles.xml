@@ -1,7 +1,7 @@
 <resources>
 
     <!-- Base application theme. -->
-    <style name="HoloTheme" parent="android:Theme.Holo.Light.NoActionBar.Fullscreen">
+    <style name="HoloTheme" parent="android:Theme.Holo.Light.NoActionBar">
         <!-- Customize your theme here. -->
         <item name="android:fontFamily">@font/quicksand_regular</item>
     </style>
@@ -10,7 +10,8 @@
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
-        <item name="android:windowFullscreen">true</item>
+        <item name="android:windowTranslucentStatus">true</item>
+        <item name="android:windowFullscreen">false</item>
         <item name="android:fontFamily">@font/quicksand_regular</item>
     </style>
 

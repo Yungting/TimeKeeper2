@@ -5,12 +5,18 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
+import android.widget.Button;
 import android.widget.LinearLayout;
+import android.widget.PopupWindow;
 import android.widget.TextView;
+
+import static com.example.user.myapplication.mainpage.KEY;
 
 public class about extends AppCompatActivity {
 
     TextView about_content;
+    Button menu;
+    PopupWindow popupWindow;
     View timekeeper_logo;
     LinearLayout line, mail;
 
@@ -59,6 +65,28 @@ public class about extends AppCompatActivity {
                 Uri uri1 = Uri.parse("mailto:timekeepernukim@gmail.com");
                 Intent intent2 = new Intent(Intent.ACTION_SENDTO, uri1);
                 startActivity(intent2);
+            }
+        });
+
+        // 選單彈跳
+        menu = findViewById(R.id.menu);
+        menu.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(popupWindow==null){
+                    showPopupWindow show = new showPopupWindow(about.this,getSharedPreferences(KEY, MODE_PRIVATE).getString("u_id", null));
+                    try {
+                        show.showPopupWindow(menu);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                    //showPopupWindow();
+                }else if(popupWindow.isShowing()){
+                    popupWindow.dismiss();
+                }
+                else{
+                    popupWindow.showAsDropDown(menu,-200,-155);
+                }
             }
         });
 

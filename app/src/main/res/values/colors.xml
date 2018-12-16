@@ -21,5 +21,11 @@
     <color name="yellow">#FFF61A</color>
     <color name="pressed">#DCDCDC</color>
     <color name="blue">#31618C</color>
+    <color name="accent">#F5FA55</color>
+    <color name="circle_start">#d7bfe6</color>
+    <color name="circle_center">#dbc4db</color>
+    <color name="circle_end">#e0b6bc</color>
+    <color name="circle_background_start">#d3f3f6</color>
+    <color name="circle_background_end">#eee4f1</color>
 
 </resources>

@@ -4,15 +4,15 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-
     <LinearLayout
         android:id="@+id/normal_layout"
-        android:layout_width="wrap_content"
+        android:layout_width="150dp"
         android:layout_height="wrap_content"
         android:layout_gravity="center|bottom"
-        android:layout_marginBottom="40dp"
-        android:layout_marginRight="70dp"
-        android:orientation="vertical"
+        android:gravity="left"
+        android:layout_marginLeft="45dp"
+        android:layout_marginBottom="90dp"
+        android:orientation="horizontal"
         android:visibility="gone">
 
         <ImageButton
@@ -21,6 +21,7 @@
             android:layout_height="60dp"
             android:clickable="true"
             android:focusable="true"
+            android:layout_marginTop="3dp"
             android:layout_gravity="center"
             android:background="@drawable/mainpage_normal_alarm" />
 
@@ -28,31 +29,22 @@
             android:id="@+id/normal_text"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginLeft="15dp"
             android:layout_gravity="center"
             android:text="@string/normal"
-            android:textAlignment="center"
             android:textColor="@color/text"
             android:textSize="12sp" />
     </LinearLayout>
 
     <LinearLayout
         android:id="@+id/ai_layout"
-        android:layout_width="wrap_content"
+        android:layout_width="150dp"
         android:layout_height="wrap_content"
+        android:layout_marginLeft="45dp"
         android:layout_gravity="center|bottom"
-        android:layout_marginBottom="90dp"
-        android:orientation="vertical"
+        android:layout_marginBottom="160dp"
+        android:orientation="horizontal"
         android:visibility="gone">
-
-        <TextView
-            android:id="@+id/ai_text"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:text="@string/ai_alarm"
-            android:textAlignment="center"
-            android:textColor="@color/text"
-            android:textSize="12sp" />
 
         <ImageButton
             android:id="@+id/ai_btn"
@@ -64,35 +56,45 @@
             android:focusable="true"
             android:background="@drawable/mainpage_ai_alarm" />
 
-    </LinearLayout>
-
-    <LinearLayout
-        android:id="@+id/counter_layout"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center|bottom"
-        android:layout_marginBottom="40dp"
-        android:layout_marginLeft="70dp"
-        android:orientation="vertical"
-        android:visibility="gone">
-
-        <ImageButton
-            android:id="@+id/counter_btn"
-            android:layout_width="60dp"
-            android:layout_height="60dp"
-            android:layout_gravity="center"
-            android:clickable="true"
-            android:focusable="true"
-            android:background="@drawable/mainpage_counter" />
-
         <TextView
-            android:id="@+id/counter_text"
-            android:layout_width="wrap_content"
+            android:id="@+id/ai_text"
+            android:layout_width="match_parent"
+            android:layout_marginLeft="15dp"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:text="@string/counter"
+            android:text="@string/ai_alarm"
             android:textColor="@color/text"
             android:textSize="12sp" />
+
     </LinearLayout>
+
+    <!--<LinearLayout-->
+        <!--android:id="@+id/counter_layout"-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_gravity="center|bottom"-->
+        <!--android:layout_marginBottom="40dp"-->
+        <!--android:layout_marginLeft="70dp"-->
+        <!--android:orientation="vertical"-->
+        <!--android:visibility="visible">-->
+
+        <!--<ImageButton-->
+            <!--android:id="@+id/counter_btn"-->
+            <!--android:layout_width="60dp"-->
+            <!--android:layout_height="60dp"-->
+            <!--android:layout_gravity="center"-->
+            <!--android:clickable="true"-->
+            <!--android:focusable="true"-->
+            <!--android:background="@drawable/mainpage_counter" />-->
+
+        <!--<TextView-->
+            <!--android:id="@+id/counter_text"-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:layout_gravity="center"-->
+            <!--android:text="@string/counter"-->
+            <!--android:textColor="@color/text"-->
+            <!--android:textSize="12sp" />-->
+    <!--</LinearLayout>-->
 
 </FrameLayout>

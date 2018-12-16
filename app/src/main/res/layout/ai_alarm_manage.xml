@@ -13,13 +13,14 @@
         <View
             android:id="@+id/title_bar"
             android:layout_width="wrap_content"
-            android:layout_height="68dp"
+            android:layout_height="93dp"
             android:background="@drawable/ai_music_titlebar"
             app:layout_constraintStart_toStartOf="parent" />
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="68dp"
+            android:layout_marginTop="25dp"
             android:gravity="center"
             android:text="@string/ai_manage"
             android:textColor="@color/black"

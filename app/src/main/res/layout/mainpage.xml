@@ -15,7 +15,7 @@
     <View
         android:id="@+id/view"
         android:layout_width="match_parent"
-        android:layout_height="124dp"
+        android:layout_height="150dp"
         android:background="@drawable/timekeeper_titlebar"/>
 
     <Button
@@ -25,7 +25,7 @@
         android:layout_alignParentEnd="true"
         android:layout_alignParentTop="true"
         android:layout_marginEnd="29dp"
-        android:layout_marginTop="27dp"
+        android:layout_marginTop="45dp"
         android:background="@drawable/mainpage_menu" />
 
     <LinearLayout
@@ -132,18 +132,18 @@
             android:id="@+id/recyclerView"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_marginTop="134dp" />
+            android:layout_marginTop="159dp" />
 
-        <ImageButton
-            android:id="@+id/qus"
-            android:layout_width="38dp"
-            android:layout_height="38dp"
-            android:layout_gravity="bottom|right"
-            android:layout_marginBottom="20dp"
-            android:layout_marginRight="20dp"
-            android:background="@drawable/qus_btn"
-            android:scaleType="centerInside"
-            android:src="@drawable/question" />
+        <!--<ImageButton-->
+            <!--android:id="@+id/qus"-->
+            <!--android:layout_width="38dp"-->
+            <!--android:layout_height="38dp"-->
+            <!--android:layout_gravity="bottom|right"-->
+            <!--android:layout_marginBottom="20dp"-->
+            <!--android:layout_marginRight="20dp"-->
+            <!--android:background="@drawable/qus_btn"-->
+            <!--android:scaleType="centerInside"-->
+            <!--android:src="@drawable/question" />-->
 
         <View
             android:id="@+id/add_background"

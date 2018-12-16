@@ -11,13 +11,14 @@
     <View
         android:id="@+id/title_bar"
         android:layout_width="wrap_content"
-        android:layout_height="68dp"
+        android:layout_height="93dp"
         android:background="@drawable/ai_music_titlebar"
         app:layout_constraintStart_toStartOf="parent" />
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="68dp"
+        android:layout_marginTop="24dp"
         android:orientation="horizontal">
 
         <View
@@ -46,7 +47,7 @@
         android:id="@+id/group_list"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginTop="70dp"
+        android:layout_marginTop="95dp"
         android:backgroundTint="@color/white"
         android:divider="@null" />
 

@@ -98,7 +98,6 @@ public class mainpage extends Activity implements RecyclerTouchListener.Recycler
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.mainpage);
 
         add_background = findViewById(R.id.add_background);
@@ -108,21 +107,21 @@ public class mainpage extends Activity implements RecyclerTouchListener.Recycler
         ai_layout = findViewById(R.id.ai_layout);
         normal_btn = findViewById(R.id.normal_btn);
         normal_layout = findViewById(R.id.normal_layout);
-        counter_btn = findViewById(R.id.counter_btn);
-        counter_layout = findViewById(R.id.counter_layout);
+//        counter_btn = findViewById(R.id.counter_btn);
+//        counter_layout = findViewById(R.id.counter_layout);
         crossView = findViewById(R.id.cross_view);
         frame_layout = findViewById(R.id.framelayout);
 
-        qus = findViewById(R.id.qus);
-        qus_view = findViewById(R.id.qus_view);
-        qus.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(mainpage.this, guide_page.class);
-                startActivity(intent);
-                finish();
-            }
-        });
+//        qus = findViewById(R.id.qus);
+//        qus_view = findViewById(R.id.qus_view);
+//        qus.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                Intent intent = new Intent(mainpage.this, guide_page.class);
+//                startActivity(intent);
+//                finish();
+//            }
+//        });
 
         textView1 = findViewById(R.id.textView1);
         textView1.setText("當鬧鐘響後\n" +
@@ -162,6 +161,16 @@ public class mainpage extends Activity implements RecyclerTouchListener.Recycler
                 closeMenu();
             }
         });
+
+//        counter_btn.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                Intent intent1 = new Intent(mainpage.this, counter_countdown.class);
+//                startActivity(intent1);
+//                closeMenu();
+//            }
+//        });
+
         Intent service = new Intent(this, Friend_Invite_Service.class);
         service.putExtra("my_id", user);
         startService(service);
@@ -193,7 +202,7 @@ public class mainpage extends Activity implements RecyclerTouchListener.Recycler
         add_background.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (normal_layout.getVisibility() == View.VISIBLE && ai_layout.getVisibility() == View.VISIBLE && counter_layout.getVisibility() == View.VISIBLE) {
+                if (normal_layout.getVisibility() == View.VISIBLE && ai_layout.getVisibility() == View.VISIBLE) {
                     closeMenu();
                 }
             }
@@ -245,7 +254,7 @@ public class mainpage extends Activity implements RecyclerTouchListener.Recycler
         mRecyclerView.setLayoutFrozen(true);
         normal_layout.setVisibility(View.VISIBLE);
         ai_layout.setVisibility(View.VISIBLE);
-        counter_layout.setVisibility(View.VISIBLE);
+//        counter_layout.setVisibility(View.VISIBLE);
         crossView.cross();
         add_background.setVisibility(View.VISIBLE);
     }
@@ -254,7 +263,7 @@ public class mainpage extends Activity implements RecyclerTouchListener.Recycler
         mRecyclerView.setLayoutFrozen(false);
         normal_layout.setVisibility(View.GONE);
         ai_layout.setVisibility(View.GONE);
-        counter_layout.setVisibility(View.GONE);
+//        counter_layout.setVisibility(View.GONE);
         crossView.plus();
         add_background.setVisibility(View.GONE);
     }
@@ -295,7 +304,7 @@ public class mainpage extends Activity implements RecyclerTouchListener.Recycler
 
             @Override
             public void onClick(View view) {
-                if (normal_layout.getVisibility() == View.VISIBLE && ai_layout.getVisibility() == View.VISIBLE && counter_layout.getVisibility() == View.VISIBLE) {
+                if (normal_layout.getVisibility() == View.VISIBLE && ai_layout.getVisibility() == View.VISIBLE) {
                     closeMenu();
                 } else {
                     openMenu();

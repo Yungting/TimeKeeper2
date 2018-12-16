@@ -57,7 +57,6 @@ public class ai_alarm extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.ai_alarm);
         Button creat_btn = findViewById(R.id.creat_btn);
         TextView ai_edit_title = findViewById(R.id.ai_edit_title);

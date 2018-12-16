@@ -122,7 +122,7 @@ public class login extends AppCompatActivity {
                         pref.edit().clear();
                         pref.edit().putString("u_id", db_u_id).putString("u_pwd", db_u_pwd).commit();
 
-                        Intent intent = new Intent(login.this, guide_page.class);
+                        Intent intent = new Intent(login.this, mainpage.class);
                         startActivity(intent);
                     } else {
                         new AlertDialog.Builder(login.this).setTitle("請再試試看").setMessage("帳號或密碼錯誤!!")
