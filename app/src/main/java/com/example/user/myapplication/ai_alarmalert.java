@@ -67,8 +67,8 @@ public class ai_alarmalert extends Activity {
                 Log.d("group",":"+group);
                 g_div = group.split(" ");
                 Holiday holiday = new Holiday();
-                if(holiday.isholiday() || holiday.iftyphoon(g_div[1], g_div[0])){
-                    onDestroy();
+                if(!holiday.isholiday() || holiday.iftyphoon(g_div[1], g_div[0])){
+                    finish();
                 }
             }
         }
@@ -92,7 +92,9 @@ public class ai_alarmalert extends Activity {
     protected void onDestroy() {
         super.onDestroy();
         Log.d("destory","!!");
-        unregisterReceiver(receiver);
+        if (receiver != null){
+            unregisterReceiver(receiver);
+        }
         if (mp!=null){
             if (mp.isPlaying()){
                 mp.stop();
@@ -194,7 +196,7 @@ public class ai_alarmalert extends Activity {
 
         Log.d("code",":"+requestcode);
         long triggertime = System.currentTimeMillis()+300000;
-        Intent intent = new Intent(this, normal_alarmalert.class);
+        Intent intent = new Intent(this, ai_alarmalert.class);
         intent.putExtra("requestcode", requestcode);
         PendingIntent op = PendingIntent.getActivity(this, 1, intent ,PendingIntent.FLAG_UPDATE_CURRENT);
 
